@@ -66,6 +66,11 @@ export const outerNavItems = [
 // Variables 
 // Setting
 export const toggleBarItems = [
+    
+    {
+        label:"Start",
+        imgUrl:"/icons/run.svg"
+    },
     {
         label: "items",
         imgUrl: "/icons/block.svg"

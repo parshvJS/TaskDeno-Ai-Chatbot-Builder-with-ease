@@ -1,6 +1,72 @@
 # Chatbot Embedding and API Integration
 
-
+{
+  "project_id": "project-1",
+  "user_id": "user-1",
+  "project_name": "Complex Project",
+  "variables": [
+    { "name": "userName", "type": "string", "defaultValue": "" },
+    { "name": "age", "type": "number", "defaultValue": 0 }
+  ],
+  "nodes": [
+    {
+      "id": "node-1",
+      "type": "text",
+      "position": { "x": 100, "y": 100 },
+      "data": { "label": "Hello, what's your name?" }
+    },
+    {
+      "id": "node-2",
+      "type": "input",
+      "position": { "x": 100, "y": 200 },
+      "data": { "label": "Please enter your name:", "variable": "userName" }
+    },
+    {
+      "id": "node-3",
+      "type": "text",
+      "position": { "x": 100, "y": 300 },
+      "data": { "label": "How old are you?" }
+    },
+    {
+      "id": "node-4",
+      "type": "input",
+      "position": { "x": 100, "y": 400 },
+      "data": { "label": "Please enter your age:", "variable": "age" }
+    },
+    {
+      "id": "node-5",
+      "type": "condition",
+      "position": { "x": 100, "y": 500 },
+      "data": { "label": "Check if user is an adult", "condition": "age >= 18" }
+    },
+    {
+      "id": "node-6",
+      "type": "text",
+      "position": { "x": 100, "y": 600 },
+      "data": { "label": "You are an adult." }
+    },
+    {
+      "id": "node-7",
+      "type": "text",
+      "position": { "x": 100, "y": 700 },
+      "data": { "label": "You are a minor." }
+    }
+  ],
+  "edges": [
+    { "id": "edge-1", "source": "node-1", "target": "node-2" },
+    { "id": "edge-2", "source": "node-2", "target": "node-3" },
+    { "id": "edge-3", "source": "node-3", "target": "node-4" },
+    { "id": "edge-4", "source": "node-4", "target": "node-5" },
+    { "id": "edge-5", "source": "node-5", "target": "node-6", "condition": "true" },
+    { "id": "edge-6", "source": "node-5", "target": "node-7", "condition": "false" }
+  ],
+  "node_content": [
+    { "id": "node-1", "ai": "Hello, what's your name?", "user": "" },
+    { "id": "node-3", "ai": "How old are you?", "user": "" }
+  ],
+  "createdAt": "2023-01-01T00:00:00Z",
+  "updatedAt": "2023-01-01T00:00:00Z"
+}
 
 ## Full List with Descriptions
 

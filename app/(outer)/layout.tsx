@@ -1,7 +1,6 @@
-
+'use client'
 import LeftSideBar from "@/components/LeftSideBar";
-import RightSideBar from "@/components/RightSideBar";
-import Image from "next/image";
+
 import { Toaster } from "@/components/ui/toaster";
 import MobileNav from "@/components/MobileNav";
 import { outerNavItems } from "@/constants/constants";

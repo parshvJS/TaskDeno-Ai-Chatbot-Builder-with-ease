@@ -2,7 +2,6 @@ import React, { createContext, useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { IChatbotType } from "@/types/types";
 import { useToast } from "@/components/ui/use-toast";
-import { useDebounceCallback } from "usehooks-ts";
 
 export const INITIAL_PROJECT_DATA = {
     project_id: "",
@@ -20,7 +19,10 @@ export const INITIAL_PROJECT = {
     setIsStoredInDb: () => { },
     isSyncLoading: false,
     setIsSyncLoading: () => { },
+    syncing: false,
+    setSyncing: () => { },
     getPreviousData: (projectId: string) => { },
+    storeChangesInDb: () => { },
 };
 
 const projectContext = createContext<IChatbotType>(INITIAL_PROJECT);
@@ -31,38 +33,8 @@ export const ProjectProvider = ({ children }: { children: React.ReactNode }) => 
     const [project, setProject] = useState(INITIAL_PROJECT_DATA);
     const [isStoredInDb, setIsStoredInDb] = useState(false);
     const [isSyncLoading, setIsSyncLoading] = useState(false);
-    const debounceSync = useDebounceCallback(setProject,5000);
-    useEffect(() => {
-        async function storeChangesInDb() {
-            if (isStoredInDb === true) {
-                return;
-            }
-            try {
-                const { data } = await axios.post('/api/syncData', {
-                    project: project,
-                    projectId: project.project_id
-                })
-                if (data.data.success === false || data.data.statusCode > 200) {
-                    toast({
-                        title: data.data.message,
-                        variant: "destructive"
-                    })
-                }
-                if(data.data.success === true){
-                    setIsStoredInDb(true);
-                    setIsSyncLoading(false)
-                }
-            } catch (error: any) {
+    const [syncing, setSyncing] = useState(false);
 
-                toast({
-                    title: error.message,
-                    variant: "destructive"
-                })
-                throw new Error(error.message); 
-            } 
-        }
-        storeChangesInDb();
-    }, [project, setIsStoredInDb])
 
     useEffect(() => {
         // Load project ID from local storage on component mount
@@ -88,6 +60,42 @@ export const ProjectProvider = ({ children }: { children: React.ReactNode }) => 
         }
     }, [project.project_id]);
 
+    // to sync changes to database
+    async function storeChangesInDb() {
+        setSyncing(true)
+        console.log("processing sync");
+
+        if (isStoredInDb === true) {
+            return;
+        }
+        try {
+            const { data } = await axios.post('/api/syncData', {
+                project: project,
+                projectId: project.project_id
+            })
+            console.log("data is", data);
+
+            if (data.success === false || data.statusCode > 200) {
+                toast({
+                    title: data.message,
+                    variant: "destructive"
+                })
+            }
+            if (data.success === true) {
+                setIsStoredInDb(true);
+            }
+        } catch (error: any) {
+
+            toast({
+                title: error.message,
+                variant: "destructive"
+            })
+            throw new Error(error.message);
+        } finally {
+            setSyncing(false)
+        }
+    }
+    //get previous data in initital loading 
     const getPreviousData = useCallback(async (projectId: string) => {
         try {
             setIsSyncLoading(true);
@@ -122,7 +130,9 @@ export const ProjectProvider = ({ children }: { children: React.ReactNode }) => 
         isSyncLoading,
         setIsSyncLoading,
         getPreviousData,
-        debounceSync
+        storeChangesInDb,
+        syncing,
+        setSyncing
     }
     return (
         <projectContext.Provider

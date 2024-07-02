@@ -6,7 +6,7 @@ export interface IChatbotDataType{
     variables:never[],
     nodes :never[],
     edges :never[], 
-    node_content:never[],
+    aiPrompts:never[]
 }
 
 export interface IChatbotType {
@@ -17,5 +17,7 @@ export interface IChatbotType {
     isSyncLoading: boolean;
     setIsSyncLoading: Dispatch<SetStateAction<boolean>>;
     getPreviousData: (projectId: string) => void;
-    debounceSync:Dispatch<SetStateAction<IChatbotDataType>>
+    syncing: boolean,
+    setSyncing: Dispatch<SetStateAction<boolean>>,
+    storeChangesInDb: () => void,
   }
