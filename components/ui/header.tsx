@@ -27,7 +27,7 @@ export default function Header() {
               {
                 !isLoaded ?
                   (
-                    <Loader className='animation-spin' />
+                    <Loader className='animate-spin text-yellow-8' />
                   ) :
                   (
                     isSignedIn ?
@@ -35,17 +35,17 @@ export default function Header() {
                         <Link href="/mydenos" className="font-medium text-black transition-duration-200  px-5 py-3 flex items-center ease-in-out p-4 bg-yellow-400 hover:bg-yellow-300 hover:text-white-1">Dashboard</Link>
                       ) :
                       (
-                        <div>
+                        <div className='flex gap-2 w-full justify-end items-center'> 
                           <li>
                             <Link
-                              href="/signin"
+                              href="/sign-in"
                               className="font-medium text-yellow-500 hover:text-white-1px-4 py-3 flex items-center transition duration-150 ease-in-out"
                             >
                               Sign in
                             </Link>
                           </li>
                           <li>
-                            <Link href="/signup" className="btn-sm text-white-1bg-yellow-500 hover:bg-yellow-700 ml-3">
+                            <Link href="/sign-up" className="btn-sm text-white-1 bg-yellow-500 hover:bg-yellow-400 hover:text-white-1 ml-3">
                               Sign up
                             </Link>
                           </li>

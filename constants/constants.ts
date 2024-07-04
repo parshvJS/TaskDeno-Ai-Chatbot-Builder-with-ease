@@ -52,12 +52,12 @@ export const outerNavItems = [
         label: 'Setting',
         imgUrl: '/icons/setting.svg'
     },
-    {
-        route: '/logout',
-        label: 'Logout',
-        imgUrl: '/icons/logout.svg'
+    // {
+    //     route: '/logout',
+    //     label: 'Logout',
+    //     imgUrl: '/icons/logout.svg'
 
-    }
+    // }
 
 ]
 

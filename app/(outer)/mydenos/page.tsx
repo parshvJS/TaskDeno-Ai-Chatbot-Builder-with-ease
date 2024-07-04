@@ -34,17 +34,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { z } from 'zod';
 import { cn } from '@/lib/utils';
-import { title } from 'process';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@clerk/nextjs';
 import projectContext from '@/context/chatbotContext';
 import { useUserProjects } from '@/tanstack/query';
 
 
-const fetchUserProjects = async (userId:any) => {
-  const { data } = await axios.post('/api/getUserProjects', { userId });
-  return data.data.data;
-};
 
 const MyDeno = () => {
   const { toast } = useToast();
@@ -53,10 +48,9 @@ const MyDeno = () => {
   const [loading, isLoading] = useState(false);
   const router = useRouter();
 
-  
 
-  
-  
+
+
   const form = useForm<z.infer<typeof createProjectSchema>>({
     resolver: zodResolver(createProjectSchema),
     defaultValues: {
@@ -214,26 +208,37 @@ const MyDeno = () => {
             <Loader2 className="animate-spin" size={50} />
           </div>
         ) : (
-          <div className='flex gap-4 w-full h-full mt-5'>
-            {previousProjects?.map((project:any, index:any) => (
-              <Link key={index} href={`/builder/${project._id}?nw=false`}>
-                <section className='flex flex-col justify-center items-center gap-5 cursor-pointer w-[240px] h-32 rounded-lg bg-gray-100 border-2 border-gray-200 hover:border-gray-400 transition-all'>
-                  <div className='flex justify-center flex-col items-center gap-2'>
-                    <Image
-                      src={'/icons/bot.svg'}
-                      width={22}
-                      height={22}
-                      alt="create new workflow"
-                      className='rounded-full bg-gray-400 w-[30px] h-[30px] p-1'
-                    />
-                    <p className='text-black-1 font-bold text-16'>
-                      {project?.name || "AI chatbot"}
-                    </p>
-                  </div>
-                </section>
-              </Link>
-            ))}
-          </div>
+          previousProjects == 201 ? (
+            <div className='flex flex-col  justify-center items-center'>
+              <Image
+                src={'/images/creative.png'}
+                alt='ideas'
+                width={210}
+                height={210}
+              />
+              <h1 className='font-bold text-xl '>You Dont Have Any Chatbot Right Not</h1>
+            </div>
+          ) :
+            <div className='flex gap-4 w-full h-full mt-5 flex-wrap'>
+              {previousProjects?.map((project: any, index: any) => (
+                <Link key={index} href={`/builder/${project._id}?nw=false`}>
+                  <section className='flex flex-col justify-center items-center gap-5 cursor-pointer w-[240px] h-32 rounded-lg bg-gray-100 border-2 border-gray-200 hover:border-gray-400 transition-all'>
+                    <div className='flex justify-center flex-col items-center gap-2'>
+                      <Image
+                        src={'/icons/bot.svg'}
+                        width={22}
+                        height={22}
+                        alt="create new workflow"
+                        className='rounded-full bg-gray-400 w-[30px] h-[30px] p-1'
+                      />
+                      <p className='text-black-1 font-bold text-16'>
+                        {project?.name || "AI chatbot"}
+                      </p>
+                    </div>
+                  </section>
+                </Link>
+              ))}
+            </div>
         )}
       </section>
     </div>

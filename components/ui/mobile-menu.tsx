@@ -61,13 +61,13 @@ export default function MobileMenu() {
       >
         <ul className="bg-white-800 px-4 py-2">
           <li>
-            <Link href="/signin" className="flex font-medium w-full text-yellow-500 hover:text-white-1py-2 justify-center" onClick={() => setMobileNavOpen(false)}>
+            <Link href="/sign-in" className="flex font-medium w-full text-yellow-500 hover:text-white-1py-2 justify-center" onClick={() => setMobileNavOpen(false)}>
               Sign in
             </Link>
           </li>
           <li>
             <Link
-              href="/signup"
+              href="/sign-up"
               className="font-medium w-full inline-flex items-center justify-center border border-transparent px-4 py-2 my-2 rounded-sm text-white-1bg-yellow-500 hover:bg-yellow-700 transition duration-150 ease-in-out" onClick={() => setMobileNavOpen(false)}
             >
               Sign up

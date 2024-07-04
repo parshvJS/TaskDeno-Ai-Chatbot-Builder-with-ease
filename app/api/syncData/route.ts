@@ -16,8 +16,46 @@ export async function POST(req: Request) {
             })
         }
         console.log("Syncing in backend ",project,projectId);
-        
-        const projectData = await Project.findByIdAndUpdate(projectId, { project }, { new: true });
+        // {
+        //     "project_id": "6682adf7f38e56848fed930f",
+        //     "project_name": "nikunjsheth",
+        //     "nodes": [
+        //         {
+        //             "id": "input-3",
+        //             "type": "chatbotCommand",
+        //             "position": {
+        //                 "x": 290,
+        //                 "y": 246
+        //             },
+        //             "data": {
+        //                 "label": "Custom Form"
+        //             }
+        //         },
+        //         {
+        //             "id": "input-4",
+        //             "type": "chatbotCommand",
+        //             "position": {
+        //                 "x": 290,
+        //                 "y": 246
+        //             },
+        //             "data": {
+        //                 "label": "Number"
+        //             }
+        //         }
+        //     ],
+        //     "edges": [],
+        //     "variables": [],
+        //     "aiPrompts": []
+        // }
+        const projectData = await Project.findByIdAndUpdate(projectId, 
+            { 
+                nodes:project.nodes,
+                edges:project.edges,
+                variables:project.variable,
+                aiPrompts:project.aiPrompts
+
+            },
+            { new: true });
         if(!projectData){
             return Response.json({
                 success: false,

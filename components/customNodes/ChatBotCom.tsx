@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input"
 import { nodeSchema } from '@/schema/nodeSchema';
 import { z } from 'zod';
 import Image from 'next/image';
+import { nanoid } from 'nanoid';
 const handleStyle = { left: 10 };
 
 export default function ChatBotCom({
@@ -30,14 +31,6 @@ export default function ChatBotCom({
     removeNode:(id:string | number)=>void
 }) {
 
-    const { project, debounceSync, setProject } = useContext(projectContext)
-
-    function onSubmit(values: z.infer<typeof nodeSchema>) {
-        console.log(values)
-    }
-
-
-
     return (
         <>
             <ContextMenu>
@@ -46,7 +39,7 @@ export default function ChatBotCom({
                     <div className='p-2 w-[300px] h-[170px] bg-gray-100 border-2 border-dashed border-gray-300 rounded-md  hover:border-gray-400'>
                         {/* node name */}
 
-                        <Input defaultValue={`Group # ${(Math.floor(Math.random() * 1000)) + 1}`} className='bg-gray-100 border-none p-0 m-0 w-full h-fit focus:border-gray-200 focus:outline-none rounded-sm font-medium ' placeholder="Enter Unique Name" />
+                        <Input defaultValue={`Group # ${nanoid(4)}`} className='bg-gray-100 border-none p-0 m-0 w-full h-fit focus:border-gray-200 focus:outline-none rounded-sm font-medium ' placeholder="Enter Unique Name" />
 
                         {/* Ai */}
 

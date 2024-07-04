@@ -33,7 +33,7 @@ export default function ResetPassword() {
               </div>
             </form>
             <div className="text-white-1text-center mt-6">
-              <Link href="/signin" className="text-yellow-500 hover:text-white-1transition duration-150 ease-in-out">Cancel</Link>
+              <Link href="/sign-in" className="text-yellow-500 hover:text-white-1transition duration-150 ease-in-out">Cancel</Link>
             </div>
           </div>
 

@@ -7,19 +7,22 @@ import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { navItems } from '@/constants/constants'
 import Logo from './Logo'
+import { useClerk } from '@clerk/nextjs'
 
 const LeftSideBar = ({
-    navArray
+    navArray,
+    isLogoutVisible = false
 }: {
-    navArray: typeof navItems
+    navArray: typeof navItems,
+    isLogoutVisible?: boolean
 }) => {
     const pathname = usePathname();
     const router = useRouter();
+    const { signOut } = useClerk    ();
     return (
         <section className='left_sidebar transition-all'>
             <nav className='flex flex-col gap-2 transition-all'>
                 <Logo />
-                
 
                 {/* nav items */}
                 {
@@ -36,7 +39,24 @@ const LeftSideBar = ({
                         </Link>
                     })
                 }
+
+                {
+                    isLogoutVisible && (
+                        <div className='py-[12px] hover:bg-gradient-to-l to-white-1 from-yellow-100'>
+                            <button className='flex gap-2 ' onClick={()=>signOut({redirectUrl:'/'})}>
+                                <Image
+                                    src={'/icons/logout.svg'}
+                                    width={20}
+                                    height={20}
+                                    alt="logout"
+                                />
+                                <p className='font-semibold text-black text-sm'>Logout</p>
+                            </button>
+                        </div>
+                    )
+                }
             </nav>
+
 
         </section>
     )

@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import SideLabel from './SideLabel';
 
-const SidePanel = ({ addNode }:any) => {
+const SidePanel = ({ addNode,syncChangesToContext }:any) => {
   const router = useRouter();
   const { project, isSyncLoading, isStoredInDb,storeChangesInDb,syncing } = useContext(projectContext);
   const [activeState, setActiveState] = useState(0);
@@ -78,7 +78,7 @@ const SidePanel = ({ addNode }:any) => {
                 </Button>
               </div>
               <div>
-                <Button onClick={storeChangesInDb} variant={"ghost"} className='bg-gray-100 flex justify-start slim-border w-full gap-2'>
+                <Button onClick={syncChangesToContext} variant={"ghost"} className='bg-gray-100 flex justify-start slim-border w-full gap-2'>
                   <Save width={20} height={20} />
                   <p className='font-medium'>Save</p>
                 </Button>

@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { IChatbotType } from "@/types/types";
 import { useToast } from "@/components/ui/use-toast";
 
 export const INITIAL_PROJECT_DATA = {
@@ -14,113 +13,122 @@ export const INITIAL_PROJECT_DATA = {
 
 export const INITIAL_PROJECT = {
     project: INITIAL_PROJECT_DATA,
-    setProject: () => { },
+    setProject: (project: any) => { },
     isStoredInDb: false,
-    setIsStoredInDb: () => { },
+    setIsStoredInDb: (value: boolean) => { },
     isSyncLoading: false,
-    setIsSyncLoading: () => { },
+    setIsSyncLoading: (value: boolean) => { },
     syncing: false,
-    setSyncing: () => { },
-    getPreviousData: (projectId: string) => { },
-    storeChangesInDb: () => { },
+    setSyncing: (value: boolean) => { },
+    getPreviousData: async (projectId: string) => { },
+    storeChangesInDb: async () => { },
 };
 
-const projectContext = createContext<IChatbotType>(INITIAL_PROJECT);
+const projectContext = createContext(INITIAL_PROJECT);
 
-export const ProjectProvider = ({ children }: { children: React.ReactNode }) => {
-    const { toast } = useToast()
+export const ProjectProvider = ({ children }: { children: any }) => {
+    const { toast } = useToast();
 
     const [project, setProject] = useState(INITIAL_PROJECT_DATA);
-    const [isStoredInDb, setIsStoredInDb] = useState(false);
+    const [isStoredInDb, setIsStoredInDb] = useState(true);
     const [isSyncLoading, setIsSyncLoading] = useState(false);
     const [syncing, setSyncing] = useState(false);
 
-
     useEffect(() => {
-        // Load project ID from local storage on component mount
-        const storedProjects = JSON.parse(localStorage.getItem("projects") || "[]");
-        if (storedProjects.length > 0) {
-            setProject((prevProject) => ({
-                ...prevProject,
-                project_id: storedProjects[0], // Load the first project ID for now
-            }));
-        }
-    }, []);
+        console.log("i am project changed in context", project);
+        async function fetchData() {
+            console.log("changed project and storing in database", project);
 
-    useEffect(() => {
-        // Save project IDs to local storage whenever it changes
-        if (project.project_id && !localStorage.getItem("projects")) {
-            localStorage.setItem("projects", JSON.stringify([project.project_id]));
-        } else if (project.project_id) {
-            const storedProjects = JSON.parse(localStorage.getItem("projects") || "[]");
-            if (!storedProjects.includes(project.project_id)) {
-                const updatedProjects = [...storedProjects, project.project_id];
-                localStorage.setItem("projects", JSON.stringify(updatedProjects));
+            if(project.project_id && project){
+                console.log("got id going to databas");
+                
+                await storeChangesInDb();
             }
-        }
-    }, [project.project_id]);
+        } fetchData();
+    }, [project])
 
-    // to sync changes to database
+
+
+    // useEffect(() => {
+    //     const storedProjects = JSON.parse(localStorage.getItem("projects") || "[]");
+    //     if (storedProjects.length > 0) {
+    //         setProject((prevProject) => ({
+    //             ...prevProject,
+    //             project_id: storedProjects[0],
+    //         }));
+    //     }
+    //     console.log("Initial load - Project:", project);
+    // }, []);
+
+    // useEffect(() => {
+    //     if (project.project_id && !localStorage.getItem("projects")) {
+    //         localStorage.setItem("projects", JSON.stringify([project.project_id]));
+    //     } else if (project.project_id) {
+    //         const storedProjects = JSON.parse(localStorage.getItem("projects") || "[]");
+    //         if (!storedProjects.includes(project.project_id)) {
+    //             const updatedProjects = [...storedProjects, project.project_id];
+    //             localStorage.setItem("projects", JSON.stringify(updatedProjects));
+    //         }
+    //     }
+    //     console.log("Project ID updated - Project:", project);
+    // }, [project.project_id]);
+
     async function storeChangesInDb() {
-        setSyncing(true)
-        console.log("processing sync");
+        setSyncing(true);
+        console.log(project, "is getting context added");
 
-        if (isStoredInDb === true) {
-            return;
-        }
         try {
             const { data } = await axios.post('/api/syncData', {
                 project: project,
                 projectId: project.project_id
-            })
-            console.log("data is", data);
-
+            });
             if (data.success === false || data.statusCode > 200) {
                 toast({
                     title: data.message,
                     variant: "destructive"
-                })
+                });
             }
+            console.log("i am in context", data);
+
             if (data.success === true) {
                 setIsStoredInDb(true);
             }
         } catch (error: any) {
-
             toast({
                 title: error.message,
                 variant: "destructive"
-            })
+            });
             throw new Error(error.message);
         } finally {
-            setSyncing(false)
+            setSyncing(false);
         }
     }
-    //get previous data in initital loading 
-    const getPreviousData = useCallback(async (projectId: string) => {
+
+    const getPreviousData = async (projectId: string) => {
         try {
             setIsSyncLoading(true);
             const response = await axios.post(`/api/getProjectData`, {
                 projectId: projectId
             });
-
             const data = response.data.data;
-            console.log(data, "data", response, "response");
-
             setProject({
-                project_id: data?._id,
-                project_name: data?.name,
-                nodes: data?.nodes,
-                edges: data?.edges,
-                variables: data?.variables,
-                aiPrompts: data?.aiPrompts,
+                project_id: data._id,
+                project_name: data.name,
+                nodes: data.nodes,
+                edges: data.edges,
+                variables: data.variables,
+                aiPrompts: data.aiPrompts,
             });
             setIsStoredInDb(true);
+            console.log("Data fetched from server - Project:", data);
+            return data
         } catch (error) {
             console.error("Error fetching project data:", error);
         } finally {
             setIsSyncLoading(false);
         }
-    }, []);
+    };
+
 
     const values = {
         project,
@@ -133,11 +141,10 @@ export const ProjectProvider = ({ children }: { children: React.ReactNode }) => 
         storeChangesInDb,
         syncing,
         setSyncing
-    }
+    };
+
     return (
-        <projectContext.Provider
-            value={values}
-        >
+        <projectContext.Provider value={values}>
             {children}
         </projectContext.Provider>
     );
