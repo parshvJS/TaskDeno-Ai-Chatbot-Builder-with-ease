@@ -37,8 +37,8 @@
 <!--####### 5 week - 34 days left #######-->
 
 1. 5 - 07 - 24 (complete and store builder )
-        i. create initital implementation of all core feature
-        ii. fix context fault    
+        ✅i. create initital implementation of all core feature
+        ✅ii. fix context fault    
         iii. Start - Adding task To workflow
             - create side bar
             - define schema
@@ -86,6 +86,7 @@ O.  context func - storeChangesInDb
     Template : 
     NODE:
         data : {
+            nodeName:"group #dR_g"
             response,ai:{
                 type:text,
                 content:"xyz",
@@ -193,6 +194,44 @@ O.  context func - storeChangesInDb
 
 4. show data as per user in react flow nodes and edges
 
+
+
+<!-- output -->
+
+1. instructions on each node 
+
+2. interaction with node using sidebar
+
+3. storing in above schema
+
+
+<!-- approuch -->
+
+1. create RightSideBar component
+2. data field of any node
+3. context of project
+
+<!-- working -->
+
+i. when nodes are created add initital values to it
+
+
+1. create initital sidebar
+2. create context : 
+{
+    isSidebarActive
+    activeNodeId,
+    node object of current id
+}
+
+3. create side bar take node id and mount current content
+
+4. manipulate content using side bar and update is in node
+
+5. at last we have 1. side bar 2. node with data manup using sidebar 3. nodes stored in context and can change things 
+
+
+
 <!-- Execute chatbot -->
 
 1. embed api will be executed 
@@ -213,9 +252,6 @@ O.  context func - storeChangesInDb
     3. get chatbot response
 
 2. create neccessary script and scalable html css bundle and deploy 
-
-
-
 
 <!-- analytics -->
 

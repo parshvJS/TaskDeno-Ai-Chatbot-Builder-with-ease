@@ -16,7 +16,7 @@ export default function Home() {
       <div className="flex flex-col min-h-screen overflow-hidden min-w-screen">
         <Header/>
         <Hero />
-        <Features />
+        {/* <Features /> */}
         <Zigzag />
         <Testimonials />
         <Newsletter />

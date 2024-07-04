@@ -66,10 +66,10 @@ export const outerNavItems = [
 // Variables 
 // Setting
 export const toggleBarItems = [
-    
+
     {
-        label:"Start",
-        imgUrl:"/icons/run.svg"
+        label: "Start",
+        imgUrl: "/icons/run.svg"
     },
     {
         label: "items",
@@ -97,41 +97,61 @@ export const toggleBarItems = [
 // number
 // date / time
 // custom form
+
 export const UserInput = [
     {
+
         label: "Text",
         value: "text",
-        imgUrl: "/icons/text.svg"
+        imgUrl: "/icons/text.svg",
+        initialDatagram: {
+            type: "text",
+            variable: ""
+        }
     },
     {
         label: "Phone",
         value: "phone",
-        imgUrl: "/icons/phone.svg"
+        imgUrl: "/icons/phone.svg",
+        initialDatagram: {
+            type: "phone",
+            variable: ""
+        }
     },
     {
         label: "Email",
         value: "email",
-        imgUrl: "/icons/email.svg"
-    },
-    {
-        label: "Image",
-        value: "image",
-        imgUrl: "/icons/image.svg"
+        imgUrl: "/icons/email.svg",
+        initialDatagram: {
+            type: "email",
+            variable: ""
+        }
     },
     {
         label: "Number",
         value: "number",
-        imgUrl: "/icons/number.svg"
-    },
-    {
-        label: "Date/Time",
-        value: "datetime",
-        imgUrl: "/icons/dataTime.svg"
+        imgUrl: "/icons/number.svg",
+        initialDatagram: {
+            type: "number",
+            variable: ""
+        }
     },
     {
         label: "Custom Form",
         value: "custom",
-        imgUrl: "/icons/form.svg"
+        imgUrl: "/icons/form.svg",
+        initialDatagram: {
+            type: "custom",
+            content: "",
+            form: [
+                {
+                    label: "Name",
+                    // type:["text","phone","number","email"],
+                    type: "Text",
+                    variable: ""
+                }
+            ]
+        }
     }
 ]
 
@@ -140,8 +160,68 @@ export const giveResponse = [
     {
         label: "AI Response",
         value: "text",
-        imgUrl: "/icons/text.svg"
+        imgUrl: "/icons/text.svg",
+        initialDatagram: {
+            type: "text",
+            aiPrompt: "",
+            question: "",
+            variable: ""
+        }
     },
+]
+
+export const sentMessage = [
+    {
+        label: "Image",
+        value: "image",
+        imgUrl: "/icons/image.svg",
+        initialDatagram: {
+            type: "image",
+            URL:"",
+            variable: ""
+        }
+    },
+    {
+        label: "Text",
+        value: "text",
+        imgUrl: "/icons/text.svg",
+        initialDatagram: {
+            type: "text",
+            content:"",
+            variable: ""
+        }
+    },
+    {
+        label: "Phone",
+        value: "phone",
+        imgUrl: "/icons/phone.svg",
+        initialDatagram: {
+            type: "phone",
+            content:"",
+            variable: ""
+        }
+    },
+    {
+        label: "Email",
+        value: "email",
+        imgUrl: "/icons/email.svg",
+        initialDatagram: {
+            type: "email",
+            content:"",
+            variable: ""
+        }
+    },
+    {
+        label: "Number",
+        value: "number",
+        imgUrl: "/icons/number.svg",
+        initialDatagram: {
+            type: "number",
+            content:"",
+            variable: ""
+        }
+    },
+
 ]
 
 export const quickMessage = [

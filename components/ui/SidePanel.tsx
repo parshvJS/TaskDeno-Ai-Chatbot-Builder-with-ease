@@ -6,15 +6,16 @@ import projectContext from '@/context/chatbotContext';
 import { ArrowLeft, Check, Dot, Flame, Loader, Save, ScanSearch } from 'lucide-react';
 import { Button } from './button';
 import { useRouter } from 'next/navigation';
-import { giveResponse, toggleBarItems, UserInput } from '@/constants/constants';
+import { giveResponse, sentMessage, toggleBarItems, UserInput } from '@/constants/constants';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import SideLabel from './SideLabel';
+import { ScrollArea } from "@/components/ui/scroll-area"
 
-const SidePanel = ({ addNode,syncChangesToContext }:any) => {
+const SidePanel = ({ addNode, syncChangesToContext }: any) => {
   const router = useRouter();
-  const { project, isSyncLoading, isStoredInDb,storeChangesInDb,syncing } = useContext(projectContext);
+  const { project, isSyncLoading, isStoredInDb, storeChangesInDb, syncing } = useContext(projectContext);
   const [activeState, setActiveState] = useState(0);
 
   const redirectToHome = () => {
@@ -40,13 +41,13 @@ const SidePanel = ({ addNode,syncChangesToContext }:any) => {
       return (
         <div className='flex items-center p-2 gap-2'>
           <Dot size={28} className='text-yellow-6' />
-          <p className='font-semibold text-yellow-500'>Draft</p>
+          <p className='font-semibold text-yellow-500'>Unsaved Changes</p>
         </div>
       )
     }
   }
 
-  const showSidePanel = (index:number) => {
+  const showSidePanel = (index: number) => {
     switch (index) {
       case 0:
         return (
@@ -88,16 +89,17 @@ const SidePanel = ({ addNode,syncChangesToContext }:any) => {
         )
       case 1:
         return (
-          <div className='w-full h-[80%] slim-border bg-white-1 p-2'>
-            <SideLabel
-              label='User Input'
-              imgUrl='/icons/uInput.svg'
-              helpText='Use these blocks to take input from the user'
-            />
-            <div className='h-fit mb-6 grid grid-cols-2 gap-2'>
-              {UserInput.map((item, index) => (
-                <div key={index} className='bg-gray-100 rounded-sm' onClick={() => addNode('input', item.label)}>
-                  <div className='flex gap-2 bg-gray-100 p-2 rounded-sm'>
+          <ScrollArea className="w-full h-[80%]">
+
+            <div className='w-full h-[80%] slim-border bg-white-1 p-2'>
+              <SideLabel
+                label='Sent Message'
+                imgUrl='/icons/chat.svg'
+                helpText='Use this blocks to sent some static message '
+              />
+              <div className='h-fit mb-6 grid grid-cols-2 gap-2'>
+                {sentMessage.map((item, index) => (
+                  <div key={index} className=' cursor-pointer flex gap-2 bg-gray-100 p-2 rounded-sm' onClick={() => addNode('message', item.label,item.initialDatagram,)}>
                     <Image
                       alt={item.label}
                       src={item.imgUrl}
@@ -106,28 +108,49 @@ const SidePanel = ({ addNode,syncChangesToContext }:any) => {
                     />
                     <p className='font-medium text-14 capitalize'>{item.label}</p>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+              <SideLabel
+                label='User Input'
+                imgUrl='/icons/uInput.svg'
+                helpText='Use these blocks to take input from the user'
+              />
+              <div className='h-fit mb-6 grid grid-cols-2 gap-2'>
+                {UserInput.map((item, index) => (
+                  <div key={index} className='cursor-pointer bg-gray-100 rounded-sm' onClick={() => addNode('user', item.label, item.initialDatagram)}>
+                    <div className='flex gap-2 bg-gray-100 p-2 rounded-sm'>
+                      <Image
+                        alt={item.label}
+                        src={item.imgUrl}
+                        width={16}
+                        height={16}
+                      />
+                      <p className='font-medium text-14 capitalize'>{item.label}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <SideLabel
+                label='AI Output'
+                imgUrl='/icons/chatbot.svg'
+                helpText='Use this block to create response from AI'
+              />
+              <div className='h-fit mb-6 grid grid-cols-2 gap-2'>
+                {giveResponse.map((item, index) => (
+                  <div key={index} className='cursor-pointer flex gap-2 bg-gray-100 p-2 rounded-sm' onClick={() => addNode('ai', item.label,item.initialDatagram)}>
+                    <Image
+                      alt={item.label}
+                      src={item.imgUrl}
+                      width={16}
+                      height={16}
+                    />
+                    <p className='font-medium text-14 capitalize'>{item.label}</p>
+                  </div>
+                ))}
+              </div>
+
             </div>
-            <SideLabel
-              label='AI Output'
-              imgUrl='/icons/chatbot.svg'
-              helpText='Use this block to create response from AI'
-            />
-            <div className='h-fit mb-6 grid grid-cols-2 gap-2'>
-              {giveResponse.map((item, index) => (
-                <div key={index} className='flex gap-2 bg-gray-100 p-2 rounded-sm' onClick={() => addNode('output', item.label)}>
-                  <Image
-                    alt={item.label}
-                    src={item.imgUrl}
-                    width={16}
-                    height={16}
-                  />
-                  <p className='font-medium text-14 capitalize'>{item.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+          </ScrollArea>
         );
       default:
         return null;
@@ -173,6 +196,7 @@ const SidePanel = ({ addNode,syncChangesToContext }:any) => {
           </div>
           <div className='w-full h-full'>
             {showSidePanel(activeState)}
+
           </div>
         </div>
       </Panel>
