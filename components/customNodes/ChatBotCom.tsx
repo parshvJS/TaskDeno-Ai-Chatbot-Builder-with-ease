@@ -57,20 +57,29 @@ export default function ChatBotCom({
                     <Handle type="target" position={Position.Top} id='b' />
                     <div
                         onClick={handleRightSideBar}
-                        className='p-2 w-[300px] h-[170px] bg-gray-100 border-2 border-dashed border-gray-300 rounded-md  hover:border-gray-400'>
+                        className='p-2 w-[270px] h-[170px] bg-gray-100 border-2 border-dashed border-gray-300 rounded-md  hover:border-gray-400'>
                         {/* node name */}
-                        <p>{currNode?.data?.nodeName}</p>
+                        <p className='font-medium text-12'>{currNode?.data?.nodeName}</p>
                         {/* <Input defaultValue={currNode?.data?.nodeName} className='bg-gray-100 border-none p-0 m-0 w-full h-fit focus:border-gray-200 focus:outline-none rounded-sm font-medium ' placeholder="Enter Unique Name" /> */}
 
                         {/* Ai */}
 
                         <div className='flex gap-2 mt-2'>
-                            <Image
-                                src={'/icons/bot.svg'}
-                                width={20}
-                                height={20}
-                                alt="bot"
-                            />
+                            {
+                                currNode?.data?.message?.type ?
+                                    <Image
+                                        src={'/icons/chat.svg'}
+                                        width={16}
+                                        height={16}
+                                        alt="bot"
+                                    /> :
+                                    <Image
+                                        src={'/icons/bot.svg'}
+                                        width={20}
+                                        height={20}
+                                        alt="bot"
+                                    />
+                            }
                             <p className='font-medium text-12'>{currNode?.data?.message?.type || currNode?.data?.ai?.type || "AI"}</p>
                         </div>
 

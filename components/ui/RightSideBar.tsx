@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from './input';
 import SidebarContext from '@/context/RightSideBarContext';
 import { cn } from '@/lib/utils';
+import RightSideLabel from './RightSideLabel';
 
 function RightSideBar() {
     const { sidebar, setSidebar, setIsSidebarActive } = useContext(SidebarContext);
@@ -69,8 +70,13 @@ function RightSideBar() {
                             </TabsList>
                             <TabsContent value="account">Make changes to your account here.</TabsContent>
                             <TabsContent value="password">
-                                
-                                
+                                <div className='p-2'>
+                                    <RightSideLabel
+                                        label='Store User Response In Variable'
+                                        isOptional={true}
+                                        helpText='Variables hold User Response and can be used for next messages !'
+                                    />
+                                </div>
                             </TabsContent>
                         </Tabs>
                     </section>
