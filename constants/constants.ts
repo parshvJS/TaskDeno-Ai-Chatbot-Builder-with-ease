@@ -85,7 +85,7 @@ export const toggleBarItems = [
     },
     {
         label: "Setting",
-        imgUrl: "/icons/setting.svg"
+        imgUrl: "/icons/bolt.svg"
     }
 ]
 
@@ -177,7 +177,7 @@ export const sentMessage = [
         imgUrl: "/icons/image.svg",
         initialDatagram: {
             type: "image",
-            URL:"",
+            URL: "",
             variable: ""
         }
     },
@@ -187,7 +187,7 @@ export const sentMessage = [
         imgUrl: "/icons/text.svg",
         initialDatagram: {
             type: "text",
-            content:"",
+            content: "",
             variable: ""
         }
     },
@@ -197,7 +197,7 @@ export const sentMessage = [
         imgUrl: "/icons/phone.svg",
         initialDatagram: {
             type: "phone",
-            content:"",
+            content: "",
             variable: ""
         }
     },
@@ -207,7 +207,7 @@ export const sentMessage = [
         imgUrl: "/icons/email.svg",
         initialDatagram: {
             type: "email",
-            content:"",
+            content: "",
             variable: ""
         }
     },
@@ -217,7 +217,7 @@ export const sentMessage = [
         imgUrl: "/icons/number.svg",
         initialDatagram: {
             type: "number",
-            content:"",
+            content: "",
             variable: ""
         }
     },

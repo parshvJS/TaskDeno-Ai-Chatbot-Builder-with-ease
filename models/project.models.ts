@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { string } from "zod";
 const projectSchema = new mongoose.Schema({
     userId: {
         type: String,
@@ -10,15 +11,21 @@ const projectSchema = new mongoose.Schema({
     },
     nodes: {
         type: [],
+
     },
     edges: {
         type: [],
     },
     variables: {
         type: [],
+        default: ['user_name', 'user_location', 'user_contact_no']
     },
     aiPrompts: {
         type: [],
+    },
+    aiModel: {
+        type: String,
+        default: "GPT-3.5"
     }
 }, { timestamps: true })
 

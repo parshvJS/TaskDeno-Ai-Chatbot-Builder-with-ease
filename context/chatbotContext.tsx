@@ -9,6 +9,7 @@ export const INITIAL_PROJECT_DATA = {
     nodes: [],
     edges: [],
     aiPrompts: [],
+    aiModel:"GPT-3.5"
 };
 
 export const INITIAL_PROJECT = {

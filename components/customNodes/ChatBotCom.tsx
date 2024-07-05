@@ -1,5 +1,5 @@
 'use client'
-import { Handle, Position } from 'reactflow';
+import { Handle, Position, useReactFlow } from 'reactflow';
 import {
     ContextMenu,
     ContextMenuContent,
@@ -11,6 +11,8 @@ import Image from 'next/image';
 import { nanoid } from 'nanoid';
 import { useContext, useEffect, useState } from 'react';
 import projectContext from '@/context/chatbotContext';
+import SidebarContext, { RightSideBarProvider } from '@/context/RightSideBarContext';
+import { Sidebar } from 'lucide-react';
 
 export default function ChatBotCom({
     id,
@@ -21,29 +23,44 @@ export default function ChatBotCom({
     removeNode: (id: string | number) => void,
     nodes: []
 }) {
-    const { project } = useContext(projectContext)
-    const [currNode, setCurrNode] = useState({})
-    useEffect(() => {
-        if (nodes.length !== 0) {
-            const currentNode = nodes.filter((node: object) => (node.id == id))
-            console.log("nodes", nodes, "currentNode", currentNode, "id", id)
-            setCurrNode(currentNode[0])
-            
-        }
-        else {
-            console.log("not");
+    const { isSidebarActive, setIsSidebarActive, setSidebar, sidebar } = useContext(SidebarContext);
+    const [currNode, setCurrNode] = useState({});
+    const { getNode } = useReactFlow()
+    const [awake, setAwake] = useState(false)
 
-        }
-    }, [nodes, project])
+    // useEffect(() => {
+
+    // }, [getNode, awake]);
+
+    useEffect(() => {
+        console.log("3rd change");
+
+        const currentNode = getNode(id)
+        setCurrNode(currentNode)
+    }, [isSidebarActive, awake, getNode, sidebar])
+
+    function handleRightSideBar() {
+        setAwake(!awake)
+        const currentNode = getNode(id)
+        setCurrNode(currentNode)
+        setSidebar({
+            activeNodeId: id,
+            currentNode: currentNode
+        })
+        setIsSidebarActive(true)
+    }
+
     return (
         <>
             <ContextMenu>
                 <ContextMenuTrigger>
                     <Handle type="target" position={Position.Top} id='b' />
-                    <div className='p-2 w-[300px] h-[170px] bg-gray-100 border-2 border-dashed border-gray-300 rounded-md  hover:border-gray-400'>
+                    <div
+                        onClick={handleRightSideBar}
+                        className='p-2 w-[300px] h-[170px] bg-gray-100 border-2 border-dashed border-gray-300 rounded-md  hover:border-gray-400'>
                         {/* node name */}
-
-                        <Input defaultValue={currNode?.data?.nodeName + 'sdfsd' || "uuuuu"} className='bg-gray-100 border-none p-0 m-0 w-full h-fit focus:border-gray-200 focus:outline-none rounded-sm font-medium ' placeholder="Enter Unique Name" />
+                        <p>{currNode?.data?.nodeName}</p>
+                        {/* <Input defaultValue={currNode?.data?.nodeName} className='bg-gray-100 border-none p-0 m-0 w-full h-fit focus:border-gray-200 focus:outline-none rounded-sm font-medium ' placeholder="Enter Unique Name" /> */}
 
                         {/* Ai */}
 

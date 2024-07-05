@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext, useCallback, useEffect, useMemo, use } from 'react';
+import React, { useContext, useCallback, useEffect, useMemo, use, useState } from 'react';
 import SidePanel from '@/components/ui/SidePanel';
 import projectContext from '@/context/chatbotContext';
 import { LoaderCircle, LoaderPinwheel } from 'lucide-react';
@@ -9,9 +9,12 @@ import 'reactflow/dist/style.css';
 import ChatBotCom from '@/components/customNodes/ChatBotCom';
 import { nanoid } from 'nanoid';
 import Logo from '@/components/Logo';
+import RightSideBar from '@/components/ui/RightSideBar';
+import SidebarContext from '@/context/RightSideBarContext';
 
 export default function App() {
   const { getPreviousData, project, isSyncLoading, setProject, setIsStoredInDb, storeChangesInDb } = useContext(projectContext);
+  const { isSidebarActive, setIsSidebarActive } = useContext(SidebarContext)
   const params = useParams<{ id: string }>();
 
   const reactFlowInstance = useReactFlow();
@@ -21,16 +24,23 @@ export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
 
+  //cache data for project that will be stored
+  const [variables, setVariables] = useState([])
+  const [aiPrompt, setAiPrompt] = useState([])
+  const [aiModel, setAiModel] = useState("")
   const nodeTypes = useMemo(() => ({
     chatbotCommand: (props: any) => <ChatBotCom {...props} removeNode={removeNode} nodes={nodes} />
-  }), [setNodes]);
+  }), [setNodes, project]);
 
   useEffect(() => {
     async function fetchData() {
       const data = await getPreviousData(params.id);
+      console.log(data, "get previous data")
       setNodes(data.nodes);
       setEdges(data.edges);
-
+      setVariables(data.variables)
+      setAiPrompt(data.aiPrompts)
+      setAiModel(data.aiModel)
       // const currentNode = nodes.filter((node:object)=> (node.id !== 'Group-22Zl'))
       // console.log("nodes",nodes,"currentNode",currentNode,"id",id)
     }
@@ -40,6 +50,8 @@ export default function App() {
       console.log("i am cleaning here");
     }
   }, [params.id])
+
+
 
 
   async function syncChangesToContext() {
@@ -58,52 +70,56 @@ export default function App() {
 
   const addNode = useCallback((type: string, label: string, initialDatagram: object) => {
     setIsStoredInDb(false);
-    const uniqueName = `Group-${nanoid(4)}`
+    const uniqueName = `Group-${nanoid(4)}`;
     let data;
-    if (type == 'user') {
+
+    if (type === 'user') {
       data = {
         nodeName: uniqueName,
         isStaticMessage: false,
-        user: initialDatagram
-      }
-
-    }
-    else if (type == 'message') {
+        user: initialDatagram,
+      };
+    } else if (type === 'message') {
       data = {
         nodeName: uniqueName,
         isStaticMessage: true,
-        message: initialDatagram
-      }
-    }
-    else if (type == 'ai') {
+        message: initialDatagram,
+      };
+    } else if (type === 'ai') {
       data = {
         nodeName: uniqueName,
         isStaticMessage: false,
-        ai: initialDatagram
-      }
+        ai: initialDatagram,
+      };
     }
+
     const { x, y, zoom } = reactFlowInstance.getViewport();
     const position = {
-      x: x + window.innerWidth / 2 / zoom - 250,
-      y: y + window.innerHeight / 2 / zoom - 150,
+      x: (window.innerWidth / 2 - x) / zoom - 250,
+      y: (window.innerHeight / 2 - y) / zoom - 150,
     };
+
     const newNode = {
       id: uniqueName,
       type: 'chatbotCommand',
       position: position,
-      data: data
+      data: data,
     };
+
     setNodes((nds) => [...nds, newNode]);
     console.log("Node added:", newNode);
-  }, [reactFlowInstance, setProject, setIsStoredInDb]);
+  }, [reactFlowInstance, setNodes, setIsStoredInDb]);
+
 
   const removeNode = useCallback((id: string) => {
     setIsStoredInDb(false);
-
+    setIsSidebarActive(false)
     setNodes((nds) => nds.filter((node) => node.id !== id));
 
     console.log("Node removed:", id);
   }, [setProject, setIsStoredInDb]);
+
+
   const onConnect = (params: any) => {
     setEdges((eds) => addEdge(params, eds))
 
@@ -155,10 +171,22 @@ export default function App() {
         <Background />
         <div className='flex items-center w-full h-full'>
           <SidePanel
+            nodes={nodes}
+            setNodes={setNodes}
             addNode={addNode}
             syncChangesToContext={syncChangesToContext}
+            aiModel={aiModel}
+            aiPrompt={aiPrompt}
+            variables={variables}
+            setAiModel={setAiModel}
+            setAiPrompt={setAiPrompt}
+            setVariables={setVariables}
           />
+          {
+            isSidebarActive ? <RightSideBar /> : null
+          }
         </div>
+
       </ReactFlow>
     </div>
   );

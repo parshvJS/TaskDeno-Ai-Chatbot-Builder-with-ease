@@ -1,9 +1,9 @@
 'use client'
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Panel } from 'reactflow';
 import Logo from '../Logo';
 import projectContext from '@/context/chatbotContext';
-import { ArrowLeft, Check, Dot, Flame, Loader, Save, ScanSearch } from 'lucide-react';
+import { ArrowLeft, ArrowLeftSquare, Check, Divide, Dot, Flame, Loader, Pen, Plus, Save, ScanSearch, X } from 'lucide-react';
 import { Button } from './button';
 import { useRouter } from 'next/navigation';
 import { giveResponse, sentMessage, toggleBarItems, UserInput } from '@/constants/constants';
@@ -12,12 +12,138 @@ import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import SideLabel from './SideLabel';
 import { ScrollArea } from "@/components/ui/scroll-area"
+import SidebarContext, { RightSideBarProvider } from '@/context/RightSideBarContext';
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from 'zod';
 
-const SidePanel = ({ addNode, syncChangesToContext }: any) => {
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { useToast } from './use-toast';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
+
+const formSchema = z.object({
+  name: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }).max(15, {
+    message: "Max variable length is 15 charactr"
+  }),
+})
+
+const SidePanel = ({
+  nodes,
+  setNodes,
+  addNode,
+  syncChangesToContext,
+  aiModel,
+  aiPrompt,
+  variables,
+  setAiModel,
+  setAiPrompt,
+  setVariables }: any) => {
   const router = useRouter();
   const { project, isSyncLoading, isStoredInDb, storeChangesInDb, syncing } = useContext(projectContext);
+  const { isSidebarActive, setIsSidebarActive } = useContext(SidebarContext)
   const [activeState, setActiveState] = useState(0);
+  const [activeVariableIndex, setActiveVariableIndex] = useState(-1)
+  const { toast } = useToast();
+  // shadcn form
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+    },
+  })
+  // shadcn form submit function
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    const isExist = variables.includes(values.name)
+    if (isExist) {
+      toast({
+        title: "Can't add variable",
+        description: "Variable With Same Name Already Exist !",
+        variant: "destructive"
+      })
+    }
+    else {
+      const variable = values.name.replace(" ", "_")
+      setVariables((prevVariable: [{ type: string }]) => [...prevVariable, variable])
+      toast({
+        title: "Variable Added !",
+        variant: "success"
+      })
+      setActiveState(3)
+    }
+  }
 
+  function deleteVariable(index: number) {
+    setVariables((prevVariables: []) => prevVariables.filter((vari: string) => (vari != variables[index])));
+    console.log("deleted variabel");
+    form.reset()
+  }
+
+  function handleVariableInteraction(index: number) {
+    setActiveVariableIndex(index);
+    setActiveState(6)
+  }
+
+  function onVariableNameChange(values: z.infer<typeof formSchema>) {
+    if (variables[activeVariableIndex]) {
+      const newName = values.name;
+
+      // Update the variables array
+      setVariables((prevVariables: string[]) => {
+        const minusVariable = prevVariables.filter((vari: string) => vari !== variables[activeVariableIndex]);
+        const newVariables = [...minusVariable, newName];
+        return newVariables;
+      });
+
+      // Update the nodes array
+      const updatedNodes = nodes.map((node: any) => {
+        if (node.data.variable === variables[activeVariableIndex]) {
+          console.log("found changed variable", node);
+
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              variable: newName
+            }
+          };
+        }
+        return node;
+      });
+
+      // Assuming you have a function or state setter to update nodes
+      setNodes(updatedNodes);
+
+      // Reset active state and index
+      setActiveState(3);
+      setActiveVariableIndex(-1);
+      form.reset()
+    }
+  }
+
+
+  useEffect(() => {
+    console.log("Model", aiModel, "Pr", aiPrompt, "var", variables);
+
+  }, [aiModel, aiPrompt, variables])
   const redirectToHome = () => {
     router.push('/mydenos');
   };
@@ -25,7 +151,7 @@ const SidePanel = ({ addNode, syncChangesToContext }: any) => {
   const getStatus = () => {
     if (syncing) {
       return (
-        <div className='flex items-center p-2 gap-2'>
+        <div className=' bg-green flex items-center p-2 gap-2'>
           <Loader width={20} height={20} className=' animate-spin' />
           <p className='font-semibold text-black'>Syncing with database</p>
         </div>
@@ -48,6 +174,8 @@ const SidePanel = ({ addNode, syncChangesToContext }: any) => {
   }
 
   const showSidePanel = (index: number) => {
+    console.log("indes iz", index);
+
     switch (index) {
       case 0:
         return (
@@ -99,7 +227,7 @@ const SidePanel = ({ addNode, syncChangesToContext }: any) => {
               />
               <div className='h-fit mb-6 grid grid-cols-2 gap-2'>
                 {sentMessage.map((item, index) => (
-                  <div key={index} className=' cursor-pointer flex gap-2 bg-gray-100 p-2 rounded-sm' onClick={() => addNode('message', item.label,item.initialDatagram,)}>
+                  <div key={index} className=' cursor-pointer flex gap-2 bg-gray-100 p-2 rounded-sm' onClick={() => addNode('message', item.label, item.initialDatagram,)}>
                     <Image
                       alt={item.label}
                       src={item.imgUrl}
@@ -137,7 +265,7 @@ const SidePanel = ({ addNode, syncChangesToContext }: any) => {
               />
               <div className='h-fit mb-6 grid grid-cols-2 gap-2'>
                 {giveResponse.map((item, index) => (
-                  <div key={index} className='cursor-pointer flex gap-2 bg-gray-100 p-2 rounded-sm' onClick={() => addNode('ai', item.label,item.initialDatagram)}>
+                  <div key={index} className='cursor-pointer flex gap-2 bg-gray-100 p-2 rounded-sm' onClick={() => addNode('ai', item.label, item.initialDatagram)}>
                     <Image
                       alt={item.label}
                       src={item.imgUrl}
@@ -152,6 +280,207 @@ const SidePanel = ({ addNode, syncChangesToContext }: any) => {
             </div>
           </ScrollArea>
         );
+
+      case 2:
+        return (<div>
+          sdfsdfsd
+        </div>)
+      case 3:
+        return (
+          <ScrollArea className="w-full h-[80%]">
+
+            <div className='w-full h-[80%] slim-border bg-white-1 p-2'>
+              <SideLabel
+                label='Create Variable'
+                imgUrl='/icons/pencil.svg'
+                helpText='Create New Variables '
+              />
+              <div className='w-full h-full mb-5'>
+                <Button
+                  onClick={() => setActiveState(5)}
+                  variant={"ghost"} className='w-full bg-gray-100 gap-2' >
+                  <Plus />
+                  Add New Variable
+                </Button>
+              </div>
+
+
+              <SideLabel
+                label='Variables'
+                imgUrl='/icons/var.svg'
+                helpText='Variables are used to store chatbot response and user input  '
+              />
+              <div className='w-full h-full'>
+                {
+                  (variables && variables.length < 1) ? (
+                    <div className='flex flex-col justify-center items-center'>
+                      <Image
+                        src={'/images/dino-wonder.png'}
+                        width={120}
+                        height={120}
+                        alt='dino'
+                      />
+                      <p className='text-center font-semibold text-16'>
+                        No Variables are there
+                        <br />
+                        create new variables!
+                      </p>
+                    </div>
+                  ) : (
+                    <div className='flex flex-col items-start justify-start gap-1'>
+                      {
+                        variables.map((variable: string, index: number) => (
+                          <button
+                            key={index}
+                            className='group w-full p-2 h-[40px] bg-gray-100 rounded-sm slim-border hover:bg-gray-200 flex justify-between items-center cursor-pointer'>
+
+                            <p className='font-semibold w-[80%] text-left' onClick={() => handleVariableInteraction(index)}
+                            >{variable}</p>
+                            <div className='hidden group-hover:block'>
+                              <Dialog>
+                                <DialogTrigger className="block hover:bg-gray-300 h-full w-full ">
+                                  <Image
+                                    src={'/icons/delete.svg'}
+                                    alt='delete'
+                                    width={15}
+                                    height={15}
+                                  />
+                                </DialogTrigger>
+                                <DialogContent>
+                                  <DialogHeader>
+                                    <DialogTitle>Do you really want to Delete Variable?</DialogTitle>
+                                    <DialogDescription className='flex gap-5 flex-col'>
+                                      <ul itemType='circle'>
+                                        <li>Make Sure you are not deleting variable that is being used by ai</li>
+                                        <li>That Can Break or occurpt your chatbot !</li>
+                                      </ul>
+                                      <div>
+                                        <Button
+                                          variant={"destructive"}
+                                          onClick={() => deleteVariable(index)}
+                                        >
+                                          Delete
+                                        </Button>
+                                      </div>
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                </DialogContent>
+                              </Dialog>
+                            </div>
+                          </button>
+                        ))
+                      }
+                    </div>
+                  )
+                }
+              </div>
+
+
+            </div>
+          </ScrollArea>
+        )
+
+      case 4:
+        return (
+          <div className='w-full h-[40%] slim-border bg-white-1 p-2'>
+
+          </div>
+        )
+      case 5:
+        // create new variable
+
+        return (
+          <div className='w-full h-[80%] slim-border bg-white-1'>
+            <div className='bg-gray-200 flex justify-start items-center gap-2 h-[55px] p-2 '>
+              <div
+                onClick={() => setActiveState(3)}
+                className='w-10 h-10 flex justify-center items-center hover:bg-gray-300 rounded-lg transition-all cursor-pointer'
+              >
+                <ArrowLeft />
+              </div>
+              <p className='font-semibold text-16'>Create New Variable</p>
+            </div>
+
+            <div className='flex gap-2 items-center justify-center w-full'>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="w-full p-4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <FormLabel>Variable Name</FormLabel>
+                        <FormControl>
+                          <Input className='w-full slim-border' placeholder="user_email" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        <FormDescription>
+                          Spaces Will Be Replaced With "_"
+                        </FormDescription>
+                      </FormItem>
+                    )}
+                  />
+                  <div className='w-full h-full mt-5'>
+                    <Button
+                      type='submit'
+                      className='w-full bg-black hover:bg-gray-600 gap-2 text-white-1 font-semibold' >
+                      <Plus />
+                      Create Variable
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+
+
+            </div>
+          </div>
+
+        )
+
+
+      case 6:
+        return (
+          <div className='w-full h-[80%] slim-border bg-white-1'>
+            <div className='flex gap-2 items-center bg-gray-200 p-2'>
+              <div
+                onClick={() => setActiveState(3)}
+                className='w-10 h-10 flex justify-center items-center hover:bg-gray-300 rounded-lg transition-all cursor-pointer'
+              >
+                <ArrowLeft />
+              </div>
+              <p className='font-semibold '>Make Changes In Variable</p>
+
+            </div>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onVariableNameChange)} className="w-full p-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem className='w-full'>
+                      <FormLabel>New variable Name</FormLabel>
+                      <FormControl>
+                        <Input className='w-full slim-border' placeholder={`Old : ${variables[activeVariableIndex]}`} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                      <FormDescription>
+                        Don't enter name that i already available
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <div className='w-full h-full mt-5'>
+                  <Button
+                    type='submit'
+                    className='w-full bg-black hover:bg-gray-600 gap-2 text-white-1 font-semibold' >
+                    <Pen width={16} height={16} />
+                    Change Variable
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        )
       default:
         return null;
     }
@@ -177,7 +506,7 @@ const SidePanel = ({ addNode, syncChangesToContext }: any) => {
                 <TooltipProvider delayDuration={10} key={index}>
                   <Tooltip>
                     <TooltipTrigger>
-                      <Button variant={"ghost"} size={"icon"} className={cn('w-[40px] h-[40px]', { "bg-gray-200": isActive })} onClick={() => setActiveState(isActive ? -1 : index)}>
+                      <Button variant={"ghost"} size={"icon"} className={cn('w-[40px] h-[40px]', { "bg-gray-200": isActive })} onClick={() => { setIsSidebarActive(false); setActiveState(isActive ? -1 : index) }}>
                         <Image
                           src={item.imgUrl}
                           width={20}
@@ -194,10 +523,9 @@ const SidePanel = ({ addNode, syncChangesToContext }: any) => {
               );
             })}
           </div>
-          <div className='w-full h-full'>
-            {showSidePanel(activeState)}
 
-          </div>
+          {!isSidebarActive ? showSidePanel(activeState) : null}
+
         </div>
       </Panel>
     </div>
