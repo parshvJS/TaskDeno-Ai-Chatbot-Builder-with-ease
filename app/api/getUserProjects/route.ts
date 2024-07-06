@@ -19,7 +19,7 @@ export async function POST(req: Request) {
             userId: userId
         }).select(["name","_id"])
         
-        console.log(userProjectDoc, "here");
+        
         if (userProjectDoc.length === 0) {
             return Response.json({
                 success: true,
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
             data: userProjectDoc
         })
     } catch (error) {
-        console.log(error)
+        
         return Response.json({
             success: false,
             statusCode: 403,

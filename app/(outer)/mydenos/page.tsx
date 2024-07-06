@@ -76,12 +76,12 @@ const MyDeno = () => {
         project_name: values.name,
         project_id: res.data._id,
       }));
-      console.log(project, "afdasdfs", values, res);
+      
 
       // router.push(`/builder/${res.data.data._id}?nw=true`);
       router.push(`/dashboard`);
     } catch (error: any) {
-      console.log(error);
+      
       toast({
         title: "Can't create project",
         description: error.message.slice(0, 10),

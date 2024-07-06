@@ -15,9 +15,9 @@ export const createUser = async (userData: any) => {
 
   try {
     const savedUser = await newUser.save();
-    console.log('User created:', savedUser);
+    
   } catch (error) {
-    console.error('Error creating user:', error);
+    
     throw error;
   }
 };
@@ -34,9 +34,9 @@ export const updateUser = async (userData: any) => {
 
   try {
     const updatedUser = await UserModel.findOneAndUpdate({ clerkUserId: userData.id }, updateData, { new: true });
-    console.log('User updated:', updatedUser);
+    
   } catch (error) {
-    console.error('Error updating user:', error);
+    
     throw error;
   }
 };
@@ -45,9 +45,9 @@ export const updateUser = async (userData: any) => {
 export const deleteUser = async (userData: any) => {
   try {
     const deletedUser = await UserModel.findOneAndDelete({ clerkUserId: userData.id });
-    console.log('User deleted:', deletedUser);
+    
   } catch (error) {
-    console.error('Error deleting user:', error);
+    
     throw error;
   }
 };

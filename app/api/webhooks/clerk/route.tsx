@@ -41,7 +41,7 @@ export async function POST(req: Request) {
       "svix-signature": svix_signature,
     }) as WebhookEvent;
   } catch (err) {
-    console.error('Error verifying webhook:', err);
+
     return new Response('Error occurred', {
       status: 400
     });
@@ -52,17 +52,17 @@ export async function POST(req: Request) {
 
   try {
     if (eventType === 'user.created') {
-      console.log('User created:', id);
+  
       await createUser(evt.data);
     } else if (eventType === 'user.deleted') {
-      console.log('User deleted:', id);
+  
       await deleteUser(evt.data);
     } else if (eventType === 'user.updated') {
-      console.log('User updated:', id);
+  
       await updateUser(evt.data);
     }
   } catch (error) {
-    console.error(`Error processing ${eventType}:`, error);
+
     return new Response('Error processing event', {
       status: 500
     });

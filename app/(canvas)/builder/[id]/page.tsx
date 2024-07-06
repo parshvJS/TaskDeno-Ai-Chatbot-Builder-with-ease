@@ -14,7 +14,7 @@ import SidebarContext from '@/context/RightSideBarContext';
 
 export default function App() {
   const { getPreviousData, project, isSyncLoading, setProject, setIsStoredInDb, storeChangesInDb } = useContext(projectContext);
-  const { isSidebarActive, setIsSidebarActive } = useContext(SidebarContext)
+  const { isSidebarActive, setIsSidebarActive, sidebar } = useContext(SidebarContext)
   const params = useParams<{ id: string }>();
 
   const reactFlowInstance = useReactFlow();
@@ -28,44 +28,51 @@ export default function App() {
   const [variables, setVariables] = useState([])
   const [aiPrompt, setAiPrompt] = useState([])
   const [aiModel, setAiModel] = useState("")
+
   const nodeTypes = useMemo(() => ({
     chatbotCommand: (props: any) => <ChatBotCom {...props} removeNode={removeNode} nodes={nodes} />
   }), [setNodes, project]);
 
+  // gets previous user data that user have created
   useEffect(() => {
     async function fetchData() {
       const data = await getPreviousData(params.id);
-      console.log(data, "get previous data")
+      console.log("page:: GetPreviousData", data);
+
       setNodes(data.nodes);
       setEdges(data.edges);
       setVariables(data.variables)
       setAiPrompt(data.aiPrompts)
       setAiModel(data.aiModel)
       // const currentNode = nodes.filter((node:object)=> (node.id !== 'Group-22Zl'))
-      // console.log("nodes",nodes,"currentNode",currentNode,"id",id)
+
     }
     fetchData();
     return () => {
       setProject({})
-      console.log("i am cleaning here");
+
     }
   }, [params.id])
 
-
-
+  // sync sidebar data to nodes
+  useEffect(() => {
+    const filteredNode = nodes.filter((node) => node.id !== sidebar.activeNodeId)
+    const changedNode = sidebar.currentNode;
+    const newNodes = [...filteredNode, changedNode]
+    console.log("Page::useEffect::sidebar changed so node changed", newNodes);
+    setNodes(newNodes)
+  }, [sidebar])
 
   async function syncChangesToContext() {
-    console.log("added to project ", project, nodes, edges);
 
-    console.log("added to project dfdf  ");
     setProject((prevProject: any) => ({
       ...prevProject,
       nodes: nodes,
-      edges: edges
+      edges: edges,
+      variables: variables,
+      aiPrompt: aiPrompt,
+      aiModel: aiModel
     }));
-
-    console.log("added to project successfull");
-
   }
 
   const addNode = useCallback((type: string, label: string, initialDatagram: object) => {
@@ -107,7 +114,6 @@ export default function App() {
     };
 
     setNodes((nds) => [...nds, newNode]);
-    console.log("Node added:", newNode);
   }, [reactFlowInstance, setNodes, setIsStoredInDb]);
 
 
@@ -115,15 +121,7 @@ export default function App() {
     setIsStoredInDb(false);
     setIsSidebarActive(false)
     setNodes((nds) => nds.filter((node) => node.id !== id));
-
-    console.log("Node removed:", id);
   }, [setProject, setIsStoredInDb]);
-
-
-  const onConnect = (params: any) => {
-    setEdges((eds) => addEdge(params, eds))
-
-  }
 
 
   // handleNodeChange
@@ -137,11 +135,9 @@ export default function App() {
     onEdgesChange(changes)
   }
 
-
-
-  useEffect(() => {
-    console.log("connectet", nodes, edges);
-  }, [edges])
+  const onConnect = (params: any) => {
+    setEdges((eds) => addEdge(params, eds))
+  }
 
 
   // JSX boundry
@@ -183,7 +179,10 @@ export default function App() {
             setVariables={setVariables}
           />
           {
-            isSidebarActive ? <RightSideBar /> : null
+            isSidebarActive && <RightSideBar
+              variables={variables}
+              setVariables={setVariables}
+            />
           }
         </div>
 

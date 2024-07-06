@@ -297,4 +297,28 @@ i. when nodes are created add initital values to it
 1. store some work flows as templates
 2. when user want to use template just create another chatbot in user account and store those nodes and edges as their initial value
 
-<!--  -->
+
+
+<!-- feature create node instructions -->
+
+1.sync :  nodetype , rightsidebar ,node
+2. rightsidebar -> context --> nodetype -> node
+3. 
+
+
+<!-- temp -->
+
+
+
+<!-- todo -->
+
+1. add functionality to add and manipulate node data
+   handle total 3 data units 
+
+2. store all data in proper format in database
+
+3. script tag creation 
+    - script tag embeding 
+   - create embed.js api and that fetches workflow create html with starter message and sent it as      response.
+ 
+4. create cluster bases architecture

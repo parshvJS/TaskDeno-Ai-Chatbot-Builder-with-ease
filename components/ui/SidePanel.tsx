@@ -93,7 +93,7 @@ const SidePanel = ({
 
   function deleteVariable(index: number) {
     setVariables((prevVariables: []) => prevVariables.filter((vari: string) => (vari != variables[index])));
-    console.log("deleted variabel");
+    
     form.reset()
   }
 
@@ -116,7 +116,7 @@ const SidePanel = ({
       // Update the nodes array
       const updatedNodes = nodes.map((node: any) => {
         if (node.data.variable === variables[activeVariableIndex]) {
-          console.log("found changed variable", node);
+          
 
           return {
             ...node,
@@ -141,7 +141,7 @@ const SidePanel = ({
 
 
   useEffect(() => {
-    console.log("Model", aiModel, "Pr", aiPrompt, "var", variables);
+    
 
   }, [aiModel, aiPrompt, variables])
   const redirectToHome = () => {
@@ -174,7 +174,7 @@ const SidePanel = ({
   }
 
   const showSidePanel = (index: number) => {
-    console.log("indes iz", index);
+    
 
     switch (index) {
       case 0:

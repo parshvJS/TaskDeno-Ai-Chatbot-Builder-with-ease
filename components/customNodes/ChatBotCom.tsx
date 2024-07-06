@@ -13,6 +13,7 @@ import { useContext, useEffect, useState } from 'react';
 import projectContext from '@/context/chatbotContext';
 import SidebarContext, { RightSideBarProvider } from '@/context/RightSideBarContext';
 import { Sidebar } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function ChatBotCom({
     id,
@@ -27,17 +28,20 @@ export default function ChatBotCom({
     const [currNode, setCurrNode] = useState({});
     const { getNode } = useReactFlow()
     const [awake, setAwake] = useState(false)
-
-    // useEffect(() => {
-
-    // }, [getNode, awake]);
+    useEffect(() => {
+        if (sidebar.activeNodeId == id) {
+            const currentNode = sidebar.currentNode;
+            console.log("nodeType::useEffect::sidebar changed so nodeType change", currentNode);
+            setCurrNode(currentNode);
+        }
+    }, [sidebar])
 
     useEffect(() => {
-        console.log("3rd change");
-
         const currentNode = getNode(id)
+        console.log("nodeType::useEffect::initital values setting", currentNode);
+
         setCurrNode(currentNode)
-    }, [isSidebarActive, awake, getNode, sidebar])
+    }, [])
 
     function handleRightSideBar() {
         setAwake(!awake)
@@ -57,7 +61,8 @@ export default function ChatBotCom({
                     <Handle type="target" position={Position.Top} id='b' />
                     <div
                         onClick={handleRightSideBar}
-                        className='p-2 w-[270px] h-[170px] bg-gray-100 border-2 border-dashed border-gray-300 rounded-md  hover:border-gray-400'>
+                        className={cn('p-2 w-[270px] h-[170px] bg-gray-100 border-2 border-dashed border-gray-300 rounded-md  hover:border-gray-400',
+                            { "border-black 2s linear infinite border-2": (sidebar.activeNodeId == id) })}>
                         {/* node name */}
                         <p className='font-medium text-12'>{currNode?.data?.nodeName}</p>
                         {/* <Input defaultValue={currNode?.data?.nodeName} className='bg-gray-100 border-none p-0 m-0 w-full h-fit focus:border-gray-200 focus:outline-none rounded-sm font-medium ' placeholder="Enter Unique Name" /> */}
@@ -80,11 +85,13 @@ export default function ChatBotCom({
                                         alt="bot"
                                     />
                             }
-                            <p className='font-medium text-12'>{currNode?.data?.message?.type || currNode?.data?.ai?.type || "AI"}</p>
+                            <p className='font-medium text-12'>Chatbot</p>
                         </div>
 
-                        <section className='flex flex-col w-full h-[30px] rounded-sm bg-white-1 my-2'>
-                            {/* {showUserBlock()} */}
+                        <section className='w-full h-[30px] rounded-sm bg-white-1 my-2 flex flex-col justify-center'>
+                            <p className='font-medium ml-6 text-14 capitalize'>
+                                {currNode?.data?.message?.type || currNode?.data?.ai?.type || "Select"}
+                            </p>
                         </section>
 
 
@@ -98,10 +105,12 @@ export default function ChatBotCom({
                                 height={18}
                                 alt="bot"
                             />
-                            <p className='font-medium text-12'>{currNode?.data?.user?.type || "User Input"}</p>
+                            <p className='font-medium text-12'>User</p>
                         </div>
-                        <section className='flex flex-col w-full h-[30px] rounded-sm bg-white-1 my-2'>
-                            {/* {showAiblock()} */}
+                        <section className='flex flex-col w-full h-[30px] rounded-sm bg-white-1 my-2 justify-center'>
+                            <p className='font-medium ml-6 text-14 capitalize'>
+                                {currNode?.data?.user?.type || "Select"}
+                            </p>
                         </section>
                     </div>
                     <Handle type="source" position={Position.Bottom} id="a" className='w-2 h-2 text-yellow-4' />
@@ -124,3 +133,22 @@ export default function ChatBotCom({
         </>
     );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // useEffect(() => {
+
+// // }, [getNode, awake]);
+
+

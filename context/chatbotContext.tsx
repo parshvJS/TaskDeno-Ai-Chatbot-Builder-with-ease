@@ -36,12 +36,12 @@ export const ProjectProvider = ({ children }: { children: any }) => {
     const [syncing, setSyncing] = useState(false);
 
     useEffect(() => {
-        console.log("i am project changed in context", project);
+        
         async function fetchData() {
-            console.log("changed project and storing in database", project);
+            
 
             if(project.project_id && project){
-                console.log("got id going to databas");
+                
                 
                 await storeChangesInDb();
             }
@@ -58,7 +58,7 @@ export const ProjectProvider = ({ children }: { children: any }) => {
     //             project_id: storedProjects[0],
     //         }));
     //     }
-    //     console.log("Initial load - Project:", project);
+    //     
     // }, []);
 
     // useEffect(() => {
@@ -71,12 +71,12 @@ export const ProjectProvider = ({ children }: { children: any }) => {
     //             localStorage.setItem("projects", JSON.stringify(updatedProjects));
     //         }
     //     }
-    //     console.log("Project ID updated - Project:", project);
+    //     
     // }, [project.project_id]);
 
     async function storeChangesInDb() {
         setSyncing(true);
-        console.log(project, "is getting context added");
+        
 
         try {
             const { data } = await axios.post('/api/syncData', {
@@ -89,7 +89,7 @@ export const ProjectProvider = ({ children }: { children: any }) => {
                     variant: "destructive"
                 });
             }
-            console.log("i am in context", data);
+            
 
             if (data.success === true) {
                 setIsStoredInDb(true);
@@ -121,10 +121,10 @@ export const ProjectProvider = ({ children }: { children: any }) => {
                 aiPrompts: data.aiPrompts,
             });
             setIsStoredInDb(true);
-            console.log("Data fetched from server - Project:", data);
+            
             return data
         } catch (error) {
-            console.error("Error fetching project data:", error);
+            
         } finally {
             setIsSyncLoading(false);
         }

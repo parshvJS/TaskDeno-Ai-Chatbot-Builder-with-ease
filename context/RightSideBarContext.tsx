@@ -36,10 +36,9 @@ export const RightSideBarProvider = ({ children }: { children: ReactNode }) => {
         setSidebar
     };
 
-    useEffect(()=>{
-        console.log("side bar changed by someone",sidebar);
-        
-    },[sidebar])
+    useEffect(() => {
+        console.log("RightSideBarContext::UseEffect::side bar changed by someone", sidebar);
+    }, [sidebar])
 
     return (
         <SidebarContext.Provider value={values}>

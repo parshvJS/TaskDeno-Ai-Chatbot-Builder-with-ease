@@ -6,7 +6,7 @@ export async function POST(req:Request){
 
     try {
         const {projectId} = await req.json();
-        console.log("projectId : ", projectId,typeof projectId);
+        
         const res = await Project.findById(projectId)
         if(!res) { 
             return Response.json({
@@ -15,7 +15,7 @@ export async function POST(req:Request){
                 message:"Can't fetch Data !"
             })
         }
-        console.log("refreshed Context : ",res );
+        
         
         return Response.json({
             success:true,
@@ -25,7 +25,7 @@ export async function POST(req:Request){
         })
         
     } catch (error) {
-        console.log(error);
+        
         return Response.json({
             success:false,
             statusCode:404,

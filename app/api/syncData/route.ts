@@ -5,9 +5,9 @@ export async function POST(req: Request) {
     await dbConnect();
 
     try {
-        const {project,projectId} = await req.json();
+        const { project, projectId } = await req.json();
 
-        if(!project || !projectId){
+        if (!project || !projectId) {
             return Response.json({
                 success: false,
                 statusCode: 400,
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
                 data: null
             })
         }
-        console.log("Syncing in backend ",project,projectId);
+        
         // {
         //     "project_id": "6682adf7f38e56848fed930f",
         //     "project_name": "nikunjsheth",
@@ -47,16 +47,16 @@ export async function POST(req: Request) {
         //     "variables": [],
         //     "aiPrompts": []
         // }
-        const projectData = await Project.findByIdAndUpdate(projectId, 
-            { 
-                nodes:project.nodes,
-                edges:project.edges,
-                variables:project.variable,
-                aiPrompts:project.aiPrompts
-
+        const projectData = await Project.findByIdAndUpdate(projectId,
+            {
+                nodes: project.nodes,
+                edges: project.edges,
+                variables: project.variables,
+                aiPrompts: project.aiPrompts,
+                aiModel: project.aiModel
             },
             { new: true });
-        if(!projectData){
+        if (!projectData) {
             return Response.json({
                 success: false,
                 statusCode: 404,
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
                 data: null
             })
         }
-        
+
         return Response.json({
             success: true,
             statusCode: 200,
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
         })
 
     } catch (error: any) {
-        console.log(error.message)
+        
         return Response.json({
             success: false,
             statusCode: 404,
