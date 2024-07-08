@@ -74,6 +74,9 @@ function RightSideBar({ variables, setVariables }: any) {
             // setChatbotDataType(chatBotDatatype.type)
             // setChatbotVariable(chatBotDatatype.variable)
         }
+        return () => {
+            setValue("")
+        }
     }, [sidebar.activeNodeId]);
 
     // set initital values for text related content 
@@ -82,15 +85,30 @@ function RightSideBar({ variables, setVariables }: any) {
             return;
         }
         if (chatbotDataType) {
-            console.log("i am side bar content changer", chatbotDataType);
-
+            console.log("i am side bar content changer", chatbotDataType, sidebar);
+            var sidebarMessage = sidebar.currentNode.data.message;
             switch (chatbotDataType) {
                 case "text":
                     console.log("switch case value::text");
-                    setTextareaContent(sidebar.currentNode.data.message.content)
+                    setTextareaContent(sidebarMessage.content)
+                    console.log("sett complted for textArea", sidebar.currentNode.data.message.content, "hhh");
+                    setChatbotImageUrl(sidebarMessage.content)
+                    break;
                 case "image":
                     console.log("switch case value::Image", sidebar);
-                    setChatbotImageUrl(sidebar.currentNode.data.message.content)
+                    const urlPattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/i;
+
+                    if (urlPattern.test(sidebarMessage.content)) {
+                        setChatbotImageUrl(sidebarMessage.content)
+                        setChatbotImageUrlValid(true)
+                    } else {
+                        setChatbotImageUrl("")
+                        setChatbotImageUrlValid(false)
+
+                        console.warn("Invalid image URL format");
+                    }
+                    // setChatbotImageUrlValid(true)
+                    break;
             }
         }
     }, [chatbotDataType, sidebar.activeNodeId])
@@ -152,15 +170,23 @@ function RightSideBar({ variables, setVariables }: any) {
         if (activeChatbotDatatype == "ai") {
             return;
         }
-        console.log("useEffect called");
-        let contentHolder: string;
+
+        console.log("useEffect called", textareaContent, chatbotDataType);
+        let contentHolder = "";
+        console.log("i am contentHolder 1", contentHolder);
+
         if (chatbotDataType) {
             // check chatbot datatype and set content 
             switch (chatbotDataType) {
                 case "text":
+                    console.log("wakre");
+
                     contentHolder = textareaContent
+                    console.log("i am contentHolder 2", contentHolder);
+                    break
                 case "image":
                     contentHolder = chatbotImageUrl
+                    break;
             }
         }
 
@@ -169,14 +195,16 @@ function RightSideBar({ variables, setVariables }: any) {
             switch (activeChatbot.type) {
                 case "text":
                     contentHolder = activeChatbot.content
+                    break;
                 case "image":
                     contentHolder = activeChatbot.content
                     setChatbotImageUrlValid(true)
+                    break;
             }
 
         }
-        console.log("i am contentHolder", contentHolder);
 
+        console.log("i am contentHolder 3", contentHolder);
         if (activeChatbotDatatype == "message") {
             setSidebar((prevSidebar) => ({
                 ...prevSidebar,
@@ -529,7 +557,7 @@ function RightSideBar({ variables, setVariables }: any) {
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-full p-0">
-                                                <Command className='w-full'>
+                                                <Command className='w-full' defaultValue={value || undefined} value={value || undefined}>
                                                     <ScrollArea className="h-fit w-[350px] rounded-md">
                                                         <CommandInput
                                                             placeholder="Type to Create or Search Variable..."
@@ -549,7 +577,7 @@ function RightSideBar({ variables, setVariables }: any) {
                                                             </Button>
                                                         </CommandEmpty>
                                                         <CommandGroup className='w-full'>
-                                                            <CommandList defaultValue={value}>
+                                                            <CommandList>
                                                                 {variables.map((variable) => (
                                                                     <CommandItem
                                                                         key={variable}
