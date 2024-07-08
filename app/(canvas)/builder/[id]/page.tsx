@@ -8,7 +8,6 @@ import ReactFlow, { useNodesState, useEdgesState, addEdge, Background, useReactF
 import 'reactflow/dist/style.css';
 import ChatBotCom from '@/components/customNodes/ChatBotCom';
 import { nanoid } from 'nanoid';
-import Logo from '@/components/Logo';
 import RightSideBar from '@/components/ui/RightSideBar';
 import SidebarContext from '@/context/RightSideBarContext';
 import { useToast } from '@/components/ui/use-toast';

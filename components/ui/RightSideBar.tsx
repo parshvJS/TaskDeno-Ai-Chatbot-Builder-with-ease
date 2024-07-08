@@ -34,12 +34,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
-
-
-const textModification = z.object({
-    min: z.number().min(1),
-    max: z.number().max(3000)
-})
+import { Textarea } from "@/components/ui/textarea"
 
 function RightSideBar({ variables, setVariables }: any) {
     const [open, setOpen] = useState(false)
@@ -50,6 +45,9 @@ function RightSideBar({ variables, setVariables }: any) {
     const [currentDataType, setCurrentDataType] = useState("")
     const [chatbotDataType, setChatbotDataType] = useState("")
     const [chatbotVariable, setChatbotVariable] = useState("")
+    const [variableDropdownOpen, setVariableDropdownOpen] = useState(false);
+    const [variableInputValue, setVariableInputValue] = useState("");
+    const [textareaContent, setTextareaContent] = useState("");
     const { toast } = useToast()
     const activeChatbot = sidebar?.currentNode?.data.message ? sidebar?.currentNode?.data.message : sidebar?.currentNode?.data.ai;
     const activeChatbotDatatype = sidebar?.currentNode?.data.message ? "message" : "ai";
@@ -68,13 +66,22 @@ function RightSideBar({ variables, setVariables }: any) {
             setValue(sidebar.currentNode.data.user.variable);
         }
         if (activeChatbot) {
-            const chatBotDatatype = sidebar.currentNode.data.message ? sidebar.currentNode.data.message : sidebar.currentNode.data.ai || null            
-            console.log("rightSidebar::setting initital chatbot data type", chatBotDatatype);
-            setChatbotDataType(chatBotDatatype.type)
+            const chatBotDatatype = sidebar.currentNode.data.message ? sidebar.currentNode.data.message : sidebar.currentNode.data.ai || null
             setChatbotVariable(chatBotDatatype.variable)
+            if (activeChatbotDatatype == "message") {
+                setChatbotDataType(sidebar.currentNode.data.message.type)
+                setTextareaContent(sidebar.currentNode.data.message.content)
+            }
+            // console.log("rightSidebar::setting initital chatbot data type", chatBotDatatype);
+            // setChatbotDataType(chatBotDatatype.type)
+            // setChatbotVariable(chatBotDatatype.variable)
         }
 
     }, [sidebar.activeNodeId]);
+
+    // set initital values for text related content 
+
+    
 
     // change name of the 
     const handleChange = (e) => {
@@ -124,7 +131,8 @@ function RightSideBar({ variables, setVariables }: any) {
                         },
                         message: {
                             type: chatbotDataType,
-                            variable: chatbotVariable
+                            variable: chatbotVariable,
+                            content: textareaContent
                         }
 
                     }
@@ -153,7 +161,7 @@ function RightSideBar({ variables, setVariables }: any) {
         }
 
 
-    }, [value, currentDataType, chatbotDataType, chatbotVariable])
+    }, [value, currentDataType, chatbotDataType, chatbotVariable, textareaContent])
 
     function handleAddVariable() {
         const isExist = variables.includes(inputValue)
@@ -174,15 +182,85 @@ function RightSideBar({ variables, setVariables }: any) {
         }
     }
 
+    const handleTextareaChange = (e) => {
+        const value = e.target.value;
+        setTextareaContent(value);
+
+        // Show dropdown when `{` is typed
+        if (value.endsWith("{")) {
+            setVariableDropdownOpen(true);
+        } else {
+            setVariableDropdownOpen(false);
+        }
+    };
+
+    const handleVariableSelect = (variable) => {
+        const newValue = textareaContent.replace(/\{$/, `{${variable}`);
+        setTextareaContent(newValue);
+        setVariableDropdownOpen(false);
+    };
+
+
     function showChatbotManips(datatype: string) {
+        if (activeChatbotDatatype == "ai") {
+            return;
+        }
         switch (datatype) {
             case "text":
                 return (
-                    <RightSideLabel
-                        label='Add Text To Show'
-                        isOptional={true}
-                        helpText='type to Show Message to user !'
-                    />
+                    <div className='mt-5 flex flex-col gap-2'>
+                        <RightSideLabel
+                            label='Add Text To Show'
+                            isOptional={false}
+                            helpText='type to Show Message to user !'
+                        />
+                        <div className='w-full'>
+                            <Popover open={variableDropdownOpen} onOpenChange={setVariableDropdownOpen}>
+                                <PopoverTrigger asChild>
+                                    <Textarea
+                                        value={textareaContent}
+                                        onChange={handleTextareaChange}
+                                        placeholder='Enter Your Text or use { To insert variables'
+                                    />
+                                </PopoverTrigger>
+                                <PopoverContent className="w-full p-0">
+                                    <ScrollArea className="h-fit w-[350px] rounded-md">
+                                        <Command className='w-full'>
+                                            <CommandInput
+                                                placeholder="Type to Create or Search Variable..."
+                                                className='w-full'
+                                                onValueChange={(val) => setVariableInputValue(val)}
+                                            />
+                                            <CommandEmpty>
+                                                No variables found.
+                                            </CommandEmpty>
+                                            <CommandGroup className='w-full'>
+                                                <CommandList>
+                                                    {variables.map((variable: string) => (
+                                                        <CommandItem
+                                                            key={variable}
+                                                            value={variable}
+                                                            onSelect={() => handleVariableSelect(variable)}
+                                                            className='hover:bg-gray-200'
+                                                        >
+                                                            <Check
+                                                                className={cn(
+                                                                    "mr-2 h-4 w-4",
+                                                                    variableInputValue === variable ? "opacity-100" : "opacity-0"
+                                                                )}
+                                                            />
+                                                            <p className='text-left w-full font-semibold text-black'>{variable}</p>
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandList>
+                                            </CommandGroup>
+                                        </Command>
+                                    </ScrollArea>
+
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+                    </div>
 
                 );
         }
@@ -285,6 +363,7 @@ function RightSideBar({ variables, setVariables }: any) {
                                                 </Command>
                                             </PopoverContent>
                                         </Popover>
+
                                     </div>
 
 
@@ -336,7 +415,7 @@ function RightSideBar({ variables, setVariables }: any) {
                                         </SelectContent>
                                     </Select>
 
-                                    {activeChatbot == "" && showChatbotManips(chatbotDataType)}
+                                    {showChatbotManips(chatbotDataType)}
 
                                 </div>
                             </TabsContent>
