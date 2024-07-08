@@ -30,9 +30,6 @@ import {
 } from "@/components/ui/select"
 import { giveResponse, sentMessage, UserInput } from '@/constants/constants';
 import Image from 'next/image';
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -48,6 +45,8 @@ function RightSideBar({ variables, setVariables }: any) {
     const [variableDropdownOpen, setVariableDropdownOpen] = useState(false);
     const [variableInputValue, setVariableInputValue] = useState("");
     const [textareaContent, setTextareaContent] = useState("");
+    const [chatbotImageUrl, setChatbotImageUrl] = useState("")
+    const [chatbotImageUrlValid, setChatbotImageUrlValid] = useState(false)
     const { toast } = useToast()
     const activeChatbot = sidebar?.currentNode?.data.message ? sidebar?.currentNode?.data.message : sidebar?.currentNode?.data.ai;
     const activeChatbotDatatype = sidebar?.currentNode?.data.message ? "message" : "ai";
@@ -70,18 +69,32 @@ function RightSideBar({ variables, setVariables }: any) {
             setChatbotVariable(chatBotDatatype.variable)
             if (activeChatbotDatatype == "message") {
                 setChatbotDataType(sidebar.currentNode.data.message.type)
-                setTextareaContent(sidebar.currentNode.data.message.content)
             }
             // console.log("rightSidebar::setting initital chatbot data type", chatBotDatatype);
             // setChatbotDataType(chatBotDatatype.type)
             // setChatbotVariable(chatBotDatatype.variable)
         }
-
     }, [sidebar.activeNodeId]);
 
     // set initital values for text related content 
+    useEffect(() => {
+        if (activeChatbotDatatype == "ai") {
+            return;
+        }
+        if (chatbotDataType) {
+            console.log("i am side bar content changer", chatbotDataType);
 
-    
+            switch (chatbotDataType) {
+                case "text":
+                    console.log("switch case value::text");
+                    setTextareaContent(sidebar.currentNode.data.message.content)
+                case "image":
+                    console.log("switch case value::Image", sidebar);
+                    setChatbotImageUrl(sidebar.currentNode.data.message.content)
+            }
+        }
+    }, [chatbotDataType, sidebar.activeNodeId])
+
 
     // change name of the 
     const handleChange = (e) => {
@@ -114,9 +127,55 @@ function RightSideBar({ variables, setVariables }: any) {
 
     }
 
+
+    function handleAddVariable() {
+        const isExist = variables.includes(inputValue)
+        if (isExist) {
+            toast({
+                title: "Can't add variable",
+                description: "Variable With Same Name Already Exist !",
+                variant: "destructive"
+            })
+        }
+        else {
+            const variable = inputValue.replace(" ", "_")
+            setVariables((prevVariable: [{ type: string }]) => [...prevVariable, variable])
+            toast({
+                title: "Variable Added !",
+                variant: "success"
+            })
+        }
+    }
+
     // when variable changes then this useEffect changes sidebar
     useEffect(() => {
+        if (activeChatbotDatatype == "ai") {
+            return;
+        }
         console.log("useEffect called");
+        let contentHolder: string;
+        if (chatbotDataType) {
+            // check chatbot datatype and set content 
+            switch (chatbotDataType) {
+                case "text":
+                    contentHolder = textareaContent
+                case "image":
+                    contentHolder = chatbotImageUrl
+            }
+        }
+
+        else {
+            console.log("i am backup here  ---------------------", activeChatbot, chatbotDataType);
+            switch (activeChatbot.type) {
+                case "text":
+                    contentHolder = activeChatbot.content
+                case "image":
+                    contentHolder = activeChatbot.content
+                    setChatbotImageUrlValid(true)
+            }
+
+        }
+        console.log("i am contentHolder", contentHolder);
 
         if (activeChatbotDatatype == "message") {
             setSidebar((prevSidebar) => ({
@@ -132,7 +191,7 @@ function RightSideBar({ variables, setVariables }: any) {
                         message: {
                             type: chatbotDataType,
                             variable: chatbotVariable,
-                            content: textareaContent
+                            content: contentHolder
                         }
 
                     }
@@ -161,26 +220,7 @@ function RightSideBar({ variables, setVariables }: any) {
         }
 
 
-    }, [value, currentDataType, chatbotDataType, chatbotVariable, textareaContent])
-
-    function handleAddVariable() {
-        const isExist = variables.includes(inputValue)
-        if (isExist) {
-            toast({
-                title: "Can't add variable",
-                description: "Variable With Same Name Already Exist !",
-                variant: "destructive"
-            })
-        }
-        else {
-            const variable = inputValue.replace(" ", "_")
-            setVariables((prevVariable: [{ type: string }]) => [...prevVariable, variable])
-            toast({
-                title: "Variable Added !",
-                variant: "success"
-            })
-        }
-    }
+    }, [value, currentDataType, chatbotDataType, chatbotVariable, textareaContent, chatbotImageUrl])
 
     const handleTextareaChange = (e) => {
         const value = e.target.value;
@@ -200,11 +240,27 @@ function RightSideBar({ variables, setVariables }: any) {
         setVariableDropdownOpen(false);
     };
 
+    const handleImageUrlChange = (e) => {
+        const value = e.target.value;
+        setChatbotImageUrl(value);
+        console.log("image is ", value);
+
+        const urlPattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/i;
+
+        if (urlPattern.test(value)) {
+            setChatbotImageUrlValid(true)
+        } else {
+            setChatbotImageUrlValid(false)
+
+            console.warn("Invalid image URL format");
+        }
+    };
 
     function showChatbotManips(datatype: string) {
         if (activeChatbotDatatype == "ai") {
             return;
         }
+
         switch (datatype) {
             case "text":
                 return (
@@ -218,6 +274,7 @@ function RightSideBar({ variables, setVariables }: any) {
                             <Popover open={variableDropdownOpen} onOpenChange={setVariableDropdownOpen}>
                                 <PopoverTrigger asChild>
                                     <Textarea
+                                        defaultValue={textareaContent}
                                         value={textareaContent}
                                         onChange={handleTextareaChange}
                                         placeholder='Enter Your Text or use { To insert variables'
@@ -261,8 +318,40 @@ function RightSideBar({ variables, setVariables }: any) {
                             </Popover>
                         </div>
                     </div>
-
                 );
+
+            case "image":
+                return (
+                    <div className='flex flex-col gap-2 mt-5'>
+                        <RightSideLabel
+                            label='Enter Image Url'
+                            isOptional={false}
+                            helpText='Enter Image url that need to be showed'
+                        />
+                        <Input
+                            defaultValue={textareaContent}
+                            value={chatbotImageUrl}
+                            onChange={handleImageUrlChange}
+                            placeholder='Add Image url you want to show'
+                        />
+                        {
+                            chatbotImageUrl && chatbotImageUrlValid ?
+                                <Image
+                                    src={chatbotImageUrl}
+                                    width={650}
+                                    height={150}
+                                    alt='userImage'
+                                    className='rounded-sm slim-border border-black'
+                                /> :
+                                <p className='font-semibold text-14'>Enter Image Url To See Preview</p>
+                        }
+                    </div>
+                )
+
+            case "default":
+                return (
+                    <div>dfsdf</div>
+                )
         }
     }
 
@@ -460,7 +549,7 @@ function RightSideBar({ variables, setVariables }: any) {
                                                             </Button>
                                                         </CommandEmpty>
                                                         <CommandGroup className='w-full'>
-                                                            <CommandList defaultValue={sidebar?.currentNode?.data?.user?.variable}>
+                                                            <CommandList defaultValue={value}>
                                                                 {variables.map((variable) => (
                                                                     <CommandItem
                                                                         key={variable}
@@ -493,7 +582,8 @@ function RightSideBar({ variables, setVariables }: any) {
                                             helpText='Variables hold User Response and can be used for next messages !'
                                         />
                                         <Select
-                                            value={sidebar?.currentNode?.data?.user?.type}
+                                            defaultValue={currentDataType}
+                                            value={currentDataType}
                                             onValueChange={(value: string) => setCurrentDataType(value)}>
                                             <SelectTrigger className="w-full ring-0 focus:ring-0 mt-4">
                                                 <SelectValue placeholder="Select Data Type" className='text-black font-semibold ring-0 focus:ring-0' />

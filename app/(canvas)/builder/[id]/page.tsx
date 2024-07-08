@@ -91,6 +91,11 @@ export default function App() {
         nodeName: uniqueName,
         isStaticMessage: false,
         user: initialDatagram,
+        ai: {
+          type: "text",
+          content: "",
+          variable: ""
+        }
       };
     } else if (type === 'message') {
       data = {
