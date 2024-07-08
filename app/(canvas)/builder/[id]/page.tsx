@@ -4,13 +4,14 @@ import SidePanel from '@/components/ui/SidePanel';
 import projectContext from '@/context/chatbotContext';
 import { LoaderCircle, LoaderPinwheel } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import ReactFlow, { useNodesState, useEdgesState, addEdge, Background, useReactFlow, Node, Edge, OnNodesChange, OnEdgesChange, Connection, EdgeChange, NodeChange, useNodes } from 'reactflow';
+import ReactFlow, { useNodesState, useEdgesState, addEdge, Background, useReactFlow, Node, Edge, OnNodesChange, OnEdgesChange, Connection, EdgeChange, NodeChange, useNodes, StraightEdge, StepEdge } from 'reactflow';
 import 'reactflow/dist/style.css';
 import ChatBotCom from '@/components/customNodes/ChatBotCom';
 import { nanoid } from 'nanoid';
 import Logo from '@/components/Logo';
 import RightSideBar from '@/components/ui/RightSideBar';
 import SidebarContext from '@/context/RightSideBarContext';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function App() {
   const { getPreviousData, project, isSyncLoading, setProject, setIsStoredInDb, storeChangesInDb } = useContext(projectContext);
@@ -28,6 +29,9 @@ export default function App() {
   const [variables, setVariables] = useState([])
   const [aiPrompt, setAiPrompt] = useState([])
   const [aiModel, setAiModel] = useState("")
+
+  // toast
+  const { toast } = useToast()
 
   const nodeTypes = useMemo(() => ({
     chatbotCommand: (props: any) => <ChatBotCom {...props} removeNode={removeNode} nodes={nodes} />
@@ -79,7 +83,10 @@ export default function App() {
     setIsStoredInDb(false);
     const uniqueName = `Group-${nanoid(4)}`;
     let data;
-
+    let emptyUser = {
+      type: "",
+      variable: ""
+    }
     if (type === 'user') {
       data = {
         nodeName: uniqueName,
@@ -91,12 +98,14 @@ export default function App() {
         nodeName: uniqueName,
         isStaticMessage: true,
         message: initialDatagram,
+        user: emptyUser
       };
     } else if (type === 'ai') {
       data = {
         nodeName: uniqueName,
         isStaticMessage: false,
         ai: initialDatagram,
+        user: emptyUser
       };
     }
 
@@ -112,6 +121,7 @@ export default function App() {
       position: position,
       data: data,
     };
+    console.log("Page::addNode::data is", data);
 
     setNodes((nds) => [...nds, newNode]);
   }, [reactFlowInstance, setNodes, setIsStoredInDb]);
@@ -134,20 +144,30 @@ export default function App() {
     setIsStoredInDb(false)
     onEdgesChange(changes)
   }
+  const onConnect = (params: Connection) => {
+    const { source, target } = params;
 
-  const onConnect = (params: any) => {
-    setEdges((eds) => addEdge(params, eds))
-  }
+    // Check if the target node already has an outgoing edge
+    if (nodes.find(node => node.id === source && edges.some(edge => edge.source === source))) {
+      toast({
+        title: "Can't connect this node",
+        description: "One node can only have one output,use conditions to create more that one output connections ! ",
+        variant: "destructive",
+      })
+      return;
+    }
+
+    // Add the edge if conditions are met
+    setEdges((prevEdges) => addEdge({ ...params, type: "smoothstep", animated: true, className: "border-2 border-gray-300" }, prevEdges));
+  };
 
 
   // JSX boundry
   if (isSyncLoading) {
     return (
       <div className='w-screen h-screen flex justify-center items-center flex-col'>
-
         <LoaderPinwheel width={30} height={30} className='animate-spin text-gray-600' />
         <p className='text-16  font-semibold text-gray-600'>Setting Up Builder!</p>
-
       </div>
     );
   }
@@ -163,6 +183,7 @@ export default function App() {
         onNodesChange={handleNodeChange}
         onEdgesChange={handleEdgeChange}
         onConnect={onConnect}
+        fitView
       >
         <Background />
         <div className='flex items-center w-full h-full'>

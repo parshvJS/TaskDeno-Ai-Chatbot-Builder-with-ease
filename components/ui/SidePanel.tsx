@@ -93,7 +93,7 @@ const SidePanel = ({
 
   function deleteVariable(index: number) {
     setVariables((prevVariables: []) => prevVariables.filter((vari: string) => (vari != variables[index])));
-    
+
     form.reset()
   }
 
@@ -116,7 +116,7 @@ const SidePanel = ({
       // Update the nodes array
       const updatedNodes = nodes.map((node: any) => {
         if (node.data.variable === variables[activeVariableIndex]) {
-          
+
 
           return {
             ...node,
@@ -141,7 +141,7 @@ const SidePanel = ({
 
 
   useEffect(() => {
-    
+
 
   }, [aiModel, aiPrompt, variables])
   const redirectToHome = () => {
@@ -174,7 +174,7 @@ const SidePanel = ({
   }
 
   const showSidePanel = (index: number) => {
-    
+
 
     switch (index) {
       case 0:
@@ -498,8 +498,8 @@ const SidePanel = ({
           </Button>
           <p className='font-medium text-16 capitalize'>{project.project_name || "AI Builder"}</p>
         </div>
-        <div className='w-full h-[80%] flex gap-2 zoom-in-75'>
-          <div className='flex flex-col gap-2 slim-border rounded-sm bg-white-1 w-[60px] h-[270px] p-1 justify-center items-center fade-in-20'>
+        <div className='w-full h-[80%] flex gap-2 zoom-in-75 '>
+          <div className='flex flex-col gap-2 slim-border rounded-sm bg-white-1 w-[50px] h-[270px] p-5  justify-center items-center fade-in-20'>
             {toggleBarItems.map((item, index) => {
               const isActive = index === activeState;
               return (

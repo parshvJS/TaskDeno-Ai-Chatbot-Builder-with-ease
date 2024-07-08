@@ -136,23 +136,23 @@ export const UserInput = [
             variable: ""
         }
     },
-    {
-        label: "Custom Form",
-        value: "custom",
-        imgUrl: "/icons/form.svg",
-        initialDatagram: {
-            type: "custom",
-            content: "",
-            form: [
-                {
-                    label: "Name",
-                    // type:["text","phone","number","email"],
-                    type: "Text",
-                    variable: ""
-                }
-            ]
-        }
-    }
+    // {
+    //     label: "Custom Form",
+    //     value: "custom",
+    //     imgUrl: "/icons/form.svg",
+    //     initialDatagram: {
+    //         type: "custom",
+    //         content: "",
+    //         form: [
+    //             {
+    //                 label: "Name",
+    //                 // type:["text","phone","number","email"],
+    //                 type: "Text",
+    //                 variable: ""
+    //             }
+    //         ]
+    //     }
+    // }
 ]
 
 

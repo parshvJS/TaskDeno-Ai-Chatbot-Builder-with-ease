@@ -305,15 +305,14 @@ i. when nodes are created add initital values to it
 2. rightsidebar -> context --> nodetype -> node
 3. 
 
-
-<!-- temp -->
-
-
-
 <!-- todo -->
 
 1. add functionality to add and manipulate node data
    handle total 3 data units 
+   -add initital data gram for nodes
+   -add data manipulating features
+   -store in database
+   -refine edge connectors and looping
 
 2. store all data in proper format in database
 
@@ -322,3 +321,38 @@ i. when nodes are created add initital values to it
    - create embed.js api and that fetches workflow create html with starter message and sent it as      response.
  
 4. create cluster bases architecture
+
+
+
+
+<!-- temp -->
+
+1. chatbot
+
+1.variable
+2.dt
+3.icon on node
+4.node type update
+
+<!-- temp 2 -->
+1.variable i. chatbot ii.user - value - chatbotValue
+2.datatype - chatbotdatatype
+3.
+
+<!-- TEMP 3 -->
+
+1. create chatbot manip (commit after each complete)
+-  set data field in state - chatbotData
+-  when chatbotData changes - useEffect calls and let data to sidebar - sidebar to nodes and page
+O.  image 
+    - ip : image url
+OO. text
+    -ip : text to show
+OOO. email
+    -ip : email address
+OOOO. number
+    -ip : number
+OOOOO. phone
+    -ip phone number
+
+
