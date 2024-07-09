@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'Home - Open PRO',
-  description: 'Page description',
+  title: 'TaskDeno | Home',
+  description: 'Build your ai chatbot with Task Deno',
 }
 
 import Hero from '@/components/hero'
@@ -13,12 +13,12 @@ import Header from '@/components/ui/header'
 export default function Home() {
   return (
     <>
-      <div className="flex flex-col min-h-screen overflow-hidden min-w-screen">
-        <Header/>
+      <div className="flex flex-col max-h-full overflow-hidden min-w-screen">
+        <Header />
         <Hero />
-        {/* <Features /> */}
+        <Features />
         <Zigzag />
-        <Testimonials />
+        {/* <Testimonials /> */}
         <Newsletter />
       </div>
     </>

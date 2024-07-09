@@ -55,27 +55,16 @@ function RightSideBar({ variables, setVariables }: any) {
 
     // set intital values for right side bar
     useEffect(() => {
-        console.log("RSB::useEffect::values are", activeChatbot);
-        if (sidebar.currentNode.data.user.variable
-            && sidebar.currentNode.data.user.type
-        ) {
-            console.log("right side bar :: useEffect:: changeing defualt value");
-
-            setCurrentDataType(sidebar.currentNode.data.user.type)
-            setValue(sidebar.currentNode.data.user.variable);
-        }
+        console.log("RSB::useEffect::values are", activeChatbot, sidebar);
+        var userSidebar = sidebar.currentNode.data.user;
+        userSidebar.type && setCurrentDataType(userSidebar.type)
+        userSidebar.variable && setValue(userSidebar.variable)
         if (activeChatbot) {
             const chatBotDatatype = sidebar.currentNode.data.message ? sidebar.currentNode.data.message : sidebar.currentNode.data.ai || null
             setChatbotVariable(chatBotDatatype.variable)
             if (activeChatbotDatatype == "message") {
                 setChatbotDataType(sidebar.currentNode.data.message.type)
             }
-            // console.log("rightSidebar::setting initital chatbot data type", chatBotDatatype);
-            // setChatbotDataType(chatBotDatatype.type)
-            // setChatbotVariable(chatBotDatatype.variable)
-        }
-        return () => {
-            setValue("")
         }
     }, [sidebar.activeNodeId]);
 
@@ -420,7 +409,7 @@ function RightSideBar({ variables, setVariables }: any) {
                                     <div className='mb-5'>
                                         {/* chatbot */}
                                         <RightSideLabel
-                                            label='Store User Response In Variable'
+                                            label='Store Response In Variable'
                                             isOptional={true}
                                             helpText='Variables hold User Response and can be used for next messages !'
                                         />
@@ -540,7 +529,7 @@ function RightSideBar({ variables, setVariables }: any) {
                                 <div className='flex flex-col gap-6 p-3'>
                                     <div>
                                         <RightSideLabel
-                                            label='Store User Response In Variable'
+                                            label='Store Response In Variable'
                                             isOptional={true}
                                             helpText='Variables hold User Response and can be used for next messages !'
                                         />
@@ -607,16 +596,16 @@ function RightSideBar({ variables, setVariables }: any) {
                                         <RightSideLabel
                                             label='Set Data Type'
                                             isOptional={false}
-                                            helpText='Variables hold User Response and can be used for next messages !'
+                                            helpText='Specify which type of user input you want !'
                                         />
                                         <Select
-                                            defaultValue={currentDataType}
-                                            value={currentDataType}
+                                            defaultValue={currentDataType || undefined}
+                                            value={currentDataType || undefined}
                                             onValueChange={(value: string) => setCurrentDataType(value)}>
                                             <SelectTrigger className="w-full ring-0 focus:ring-0 mt-4">
                                                 <SelectValue placeholder="Select Data Type" className='text-black font-semibold ring-0 focus:ring-0' />
                                             </SelectTrigger>
-                                            <SelectContent >
+                                            <SelectContent defaultValue={currentDataType}>
                                                 {
                                                     UserInput.map((input) => {
                                                         return <SelectItem

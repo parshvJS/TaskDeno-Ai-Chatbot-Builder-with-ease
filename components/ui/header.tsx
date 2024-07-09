@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import MobileMenu from './mobile-menu'
-import { useAuth } from '@clerk/nextjs'
+import { useAuth, UserButton, UserProfile } from '@clerk/nextjs'
 import { Loader } from 'lucide-react';
 import Logo from '../Logo';
 
@@ -14,7 +14,7 @@ export default function Header() {
           {/* Site branding */}
           <div className="shrink-0 mr-4">
             {/* Logo */}
-            <Logo/>
+            <Logo />
           </div>
 
           {/* Desktop navigation */}
@@ -29,10 +29,12 @@ export default function Header() {
                   (
                     isSignedIn ?
                       (
-                        <Link href="/mydenos" className="font-medium text-black transition-duration-200  px-5 py-3 flex items-center ease-in-out p-4 bg-yellow-400 hover:bg-yellow-300 hover:text-white-1">Dashboard</Link>
+                        <div className='flex gap-2 '>
+                          <Link href="/mydenos" className="font-medium text-black transition-duration-200  px-5 py-3 flex items-center ease-in-out p-4 bg-yellow-400 hover:bg-yellow-300 hover:text-gray-500 rounded-sm transition-all">Dashboard</Link>
+                        </div>
                       ) :
                       (
-                        <div className='flex gap-2 w-full justify-end items-center'> 
+                        <div className='flex gap-2 w-full justify-end items-center'>
                           <li>
                             <Link
                               href="/sign-in"

@@ -6,9 +6,9 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <main className="w-full h-full">
+    <main >
 
-      {/* <PageIllustration /> */}
+      <PageIllustration />
 
       {children}
 

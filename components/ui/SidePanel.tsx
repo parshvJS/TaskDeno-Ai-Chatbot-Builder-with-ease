@@ -70,6 +70,7 @@ const SidePanel = ({
       name: "",
     },
   })
+
   // shadcn form submit function
   function onSubmit(values: z.infer<typeof formSchema>) {
     const isExist = variables.includes(values.name)
@@ -116,8 +117,6 @@ const SidePanel = ({
       // Update the nodes array
       const updatedNodes = nodes.map((node: any) => {
         if (node.data.variable === variables[activeVariableIndex]) {
-
-
           return {
             ...node,
             data: {
@@ -506,7 +505,7 @@ const SidePanel = ({
                 <TooltipProvider delayDuration={10} key={index}>
                   <Tooltip>
                     <TooltipTrigger>
-                      <Button variant={"ghost"} size={"icon"} className={cn('w-[40px] h-[40px]', { "bg-gray-200": isActive })} onClick={() => { setIsSidebarActive(false); setActiveState(isActive ? -1 : index) }}>
+                      <Button variant={"ghost"} size={"icon"} className={cn('w-[40px] h-[40px]', { "bg-gray-200": isActive })} onClick={() => { setIsSidebarActive(true); setActiveState(isActive ? -1 : index) }}>
                         <Image
                           src={item.imgUrl}
                           width={20}
@@ -524,7 +523,7 @@ const SidePanel = ({
             })}
           </div>
 
-          {!isSidebarActive ? showSidePanel(activeState) : null}
+          {isSidebarActive ? showSidePanel(activeState) : null}
 
         </div>
       </Panel>

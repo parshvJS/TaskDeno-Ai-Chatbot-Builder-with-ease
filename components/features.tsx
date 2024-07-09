@@ -1,3 +1,5 @@
+import { LucideGitPullRequest } from "lucide-react";
+
 export default function Features() {
   return (
     <section>
@@ -6,49 +8,11 @@ export default function Features() {
 
           {/* Section header */}
           <div className="max-w-3xl mx-auto text-center pb-12 md:pb-20">
-            <h2 className="h2 mb-4">The majority our customers do not understand their workflows.</h2>
-            <p className="text-xl text-white">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <h2 className="h2 mb-4 capitalize">The majority of chatbot tools lack.</h2>
           </div>
 
           {/* Items */}
           <div className="max-w-sm mx-auto grid gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-16 items-start md:max-w-2xl lg:max-w-none" data-aos-id-blocks>
-
-            {/* 1st item */}
-            <div className="relative flex flex-col items-center" data-aos="fade-up" data-aos-anchor="[data-aos-id-blocks]">
-              <svg className="w-16 h-16 mb-4" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                <rect className="fill-current text-yellow-500" width="64" height="64" rx="32" />
-                <path className="stroke-current text-yellow-100" d="M30 39.313l-4.18 2.197L27 34.628l-5-4.874 6.91-1.004L32 22.49l3.09 6.26L42 29.754l-3 2.924" strokeLinecap="square" strokeWidth="2" fill="none" fillRule="evenodd" />
-                <path className="stroke-current text-yellow-300" d="M43 42h-9M43 37h-9" strokeLinecap="square" strokeWidth="2" />
-              </svg>
-              <h4 className="h4 mb-2">Instant Features</h4>
-              <p className="text-lg text-white-1text-center">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat.</p>
-            </div>
-
-            {/* 2nd item */}
-            <div className="relative flex flex-col items-center" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="[data-aos-id-blocks]">
-              <svg className="w-16 h-16 mb-4" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                <circle className="fill-current text-yellow-500" cx="32" cy="32" r="32" />
-                <path className="stroke-current text-yellow-100" strokeWidth="2" strokeLinecap="square" d="M21 23h22v18H21z" fill="none" fillRule="evenodd" />
-                <path className="stroke-current text-yellow-300" d="M26 28h12M26 32h12M26 36h5" strokeWidth="2" strokeLinecap="square" />
-              </svg>
-              <h4 className="h4 mb-2">Instant Features</h4>
-              <p className="text-lg text-white-1text-center">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat.</p>
-            </div>
-
-            {/* 3rd item */}
-            <div className="relative flex flex-col items-center" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="[data-aos-id-blocks]">
-              <svg className="w-16 h-16 mb-4" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                <rect className="fill-current text-yellow-500" width="64" height="64" rx="32" />
-                <g transform="translate(21 21)" strokeLinecap="square" strokeWidth="2" fill="none" fillRule="evenodd">
-                  <ellipse className="stroke-current text-yellow-300" cx="11" cy="11" rx="5.5" ry="11" />
-                  <path className="stroke-current text-yellow-100" d="M11 0v22M0 11h22" />
-                  <circle className="stroke-current text-yellow-100" cx="11" cy="11" r="11" />
-                </g>
-              </svg>
-              <h4 className="h4 mb-2">Instant Features</h4>
-              <p className="text-lg text-white-1text-center">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat.</p>
-            </div>
-
             {/* 4th item */}
             <div className="relative flex flex-col items-center" data-aos="fade-up" data-aos-delay="300" data-aos-anchor="[data-aos-id-blocks]">
               <svg className="w-16 h-16 mb-4" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
@@ -58,8 +22,8 @@ export default function Features() {
                   <circle className="stroke-current text-yellow-300" cx="13" cy="9" r="3" />
                 </g>
               </svg>
-              <h4 className="h4 mb-2">Instant Features</h4>
-              <p className="text-lg text-white-1text-center">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat.</p>
+              <h4 className="h4 mb-2">Own Your AI instance</h4>
+              <p className="text-lg text-black text-center">You Can Create Your Own AI <br /> Behaviour ,toon and feelings as per your product  </p>
             </div>
 
             {/* 5th item */}
@@ -71,8 +35,8 @@ export default function Features() {
                   <path className="stroke-current text-yellow-300" d="M22 30h4v12h-4z" />
                 </g>
               </svg>
-              <h4 className="h4 mb-2">Instant Features</h4>
-              <p className="text-lg text-white-1text-center">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat.</p>
+              <h4 className="h4 mb-2">Hightly Reliable</h4>
+              <p className="text-lg text-black text-center">Our System runs on Latest server technology that gives Very High Reliability</p>
             </div>
 
             {/* 6th item */}
@@ -85,8 +49,8 @@ export default function Features() {
                   <path className="stroke-current text-yellow-100" d="M8.86 1.18C3.8 1.988 0 5.6 0 10c0 5 4.9 9 11 9a10.55 10.55 0 003.1-.4L20 21l-.6-5.2a9.125 9.125 0 001.991-2.948" />
                 </g>
               </svg>
-              <h4 className="h4 mb-2">Instant Features</h4>
-              <p className="text-lg text-white-1text-center">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat.</p>
+              <h4 className="h4 mb-2">Full Handle</h4>
+              <p className="text-lg text-black text-center">Our Service Provides Full customizability in every aspect of AI Interaction</p>
             </div>
 
           </div>

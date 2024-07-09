@@ -9,19 +9,25 @@
 }
 
 html {
-  background-color: #101114;
+  background-color: #ffffff;
 }
+
+/* .gradient-text {
+  flood-color: #101114;
+  border-color: #101114;
+} */
 
 @layer utilities {
 
-  .slim-border{
+  .slim-border {
     @apply border-2 border-gray-200 rounded-md
   }
-  .slim-border-dark{
+
+  .slim-border-dark {
     @apply border-2 border-gray-400 rounded-md
   }
 
-  .text-page-header{
+  .text-page-header {
     @apply text-2xl font-bold space-x-1
   }
 

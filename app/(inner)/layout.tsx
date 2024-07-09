@@ -11,7 +11,7 @@ export default function RootLayout({
 }>) {
     return (
         <div className="relative flex flex-col w">
-            <main className="relative flex ">
+            <main className="relative flex">
                 <LeftSideBar
                     navArray={navItems}
                 />
@@ -22,7 +22,7 @@ export default function RootLayout({
                             <MobileNav />
                         </div>
                         <div className="flex flex-col h-screen ">
-                            <Toaster/>
+                            <Toaster />
                             {children}
                         </div>
                     </div>
