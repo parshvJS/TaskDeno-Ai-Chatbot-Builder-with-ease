@@ -15,7 +15,7 @@ export async function POST(req: Request) {
                 data: null
             })
         }
-        
+
         // {
         //     "project_id": "6682adf7f38e56848fed930f",
         //     "project_name": "nikunjsheth",
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
         })
 
     } catch (error: any) {
-        
+
         return Response.json({
             success: false,
             statusCode: 404,

@@ -34,7 +34,7 @@ export async function POST(req: Request) {
 
         const newProjectData = await Project.findByIdAndUpdate(projectId, {
             scriptTag: scriptTemplate,
-            scisScriptTagAvailable: true
+            isScriptTagAvailable: true
         }, { new: true })
 
         if (!newProjectData) {
@@ -45,7 +45,8 @@ export async function POST(req: Request) {
                 data: null
             })
         }
-
+        console.log("logging ",newProjectData);
+        
         return Response.json({
             success: true,
             statusCode: 200,

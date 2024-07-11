@@ -26,7 +26,7 @@ const DashdataContext = createContext(INITIAL_DASHBOARD_CONTEXT);
 
 export const DashdataProvider = ({ children }: { children: React.ReactNode }) => {
     const { toast } = useToast();
-    const { userId } = useAuth();
+    const { userId,isLoaded } = useAuth();
     const [dashdata, setDashdata] = useState(INITIAL_DASHBOARD_DATA);
     const [loading, setLoading] = useState(false);
     const [activeProjectId, setActiveProjectId] = useState("")
@@ -36,14 +36,20 @@ export const DashdataProvider = ({ children }: { children: React.ReactNode }) =>
 
             fetchData();
         }
-    }, [activeProjectId])
+    }, [activeProjectId,isLoaded])
 
     const fetchData = async () => {
         setLoading(true);
         try {
-            console.log("context:no project is found", activeProjectId, "sdfsd");
+            console.log("context:no project is found", activeProjectId,userId, "sdfsd");
 
-            const { data } = await axios.post('/api/getInnerDashboardData', { userId, activeProjectId });
+            if(isLoaded){
+                var { data } = await axios.post('/api/getInnerDashboardData', { userId, activeProjectId });
+
+            }
+            else{
+                return;
+            }
             console.log("i am dashboard Context" ,data);
 
             

@@ -9,7 +9,7 @@ export const INITIAL_PROJECT_DATA = {
     nodes: [],
     edges: [],
     aiPrompts: [],
-    aiModel:"GPT-3.5"
+    aiModel: "GPT-3.5"
 };
 
 export const INITIAL_PROJECT = {
@@ -27,7 +27,7 @@ export const INITIAL_PROJECT = {
 
 const projectContext = createContext(INITIAL_PROJECT);
 
-export const ProjectProvider = ({ children }: { children: any }) => {   
+export const ProjectProvider = ({ children }: { children: any }) => {
     const { toast } = useToast();
 
     const [project, setProject] = useState(INITIAL_PROJECT_DATA);
@@ -36,13 +36,13 @@ export const ProjectProvider = ({ children }: { children: any }) => {
     const [syncing, setSyncing] = useState(false);
 
     useEffect(() => {
-        
-        async function fetchData() {
-            
 
-            if(project.project_id && project){
-                
-                
+        async function fetchData() {
+
+
+            if (project.project_id && project) {
+
+
                 await storeChangesInDb();
             }
         } fetchData();
@@ -50,7 +50,7 @@ export const ProjectProvider = ({ children }: { children: any }) => {
 
     async function storeChangesInDb() {
         setSyncing(true);
-        
+
 
         try {
             const { data } = await axios.post('/api/syncData', {
@@ -63,7 +63,7 @@ export const ProjectProvider = ({ children }: { children: any }) => {
                     variant: "destructive"
                 });
             }
-            
+
 
             if (data.success === true) {
                 setIsStoredInDb(true);
@@ -95,10 +95,10 @@ export const ProjectProvider = ({ children }: { children: any }) => {
                 aiPrompts: data.aiPrompts,
             });
             setIsStoredInDb(true);
-            
+
             return data
         } catch (error) {
-            
+
         } finally {
             setIsSyncLoading(false);
         }

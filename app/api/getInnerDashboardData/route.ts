@@ -7,6 +7,8 @@ export async function POST(req: Request) {
 
     try {
         const { userId, activeProjectId } = await req.json();
+        console.log("i am data inner : ----------------------",userId,activeProjectId);
+        
         const projectData = await Project.findById(activeProjectId)
         if (!projectData) {
             return Response.json({
@@ -17,7 +19,7 @@ export async function POST(req: Request) {
             })
         }
         // security check
-        if (projectData.userId !== userId) {
+        if (projectData.userId != userId) {
             return Response.json({
                 success: true,
                 statusCode: 201,
@@ -26,6 +28,12 @@ export async function POST(req: Request) {
             })
         }
 
+        return Response.json({
+            success:true,
+            statusCode:200,
+            message:"Successfully found data!",
+            data:   projectData
+        })
 
     } catch (error: any) {
         return Response.json({
