@@ -16,6 +16,24 @@ html {
   flood-color: #101114;
   border-color: #101114;
 } */
+/* seprator */
+.website-divider-container-541003 {
+  overflow:hidden;
+  position: relative;
+  height: 100%;
+}
+
+.divider-img-541003
+{
+	position: absolute;
+	width: 214%;
+	height: 320px;
+	
+	transform: scale(1, 1);
+	bottom:0px;
+	left: 0px;
+	fill: rgb(255, 208, 0)
+}
 
 @layer utilities {
 

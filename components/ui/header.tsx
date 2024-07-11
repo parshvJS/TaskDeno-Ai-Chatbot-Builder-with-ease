@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import MobileMenu from './mobile-menu'
 import { useAuth, UserButton, UserProfile } from '@clerk/nextjs'
-import { Loader } from 'lucide-react';
+import { ArrowRight, Loader } from 'lucide-react';
 import Logo from '../Logo';
 
 export default function Header() {
@@ -30,7 +30,9 @@ export default function Header() {
                     isSignedIn ?
                       (
                         <div className='flex gap-2 '>
-                          <Link href="/mydenos" className="font-medium text-black transition-duration-200  px-5 py-3 flex items-center ease-in-out p-4 bg-yellow-400 hover:bg-yellow-300 hover:text-gray-500 rounded-sm transition-all">Dashboard</Link>
+                          <a className="btn text-white-1 bg-yellow-400 hover:bg-yellow-500 w-[120px] h-[40px] mb-4 sm:w-auto sm:mb-0 gap-2 flex" href="/sign-up" >
+                            Go To Dashboard
+                          </a>
                         </div>
                       ) :
                       (

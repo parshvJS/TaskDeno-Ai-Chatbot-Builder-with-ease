@@ -29,7 +29,7 @@ export default function Hero() {
             <h1 className="h1 mb-4 w-full capitalize text-transparent bg-clip-text bg-gradient-to-tl from-yellow-2 to-yellow-600" data-aos="fade-up">Join Ultimate journy Of User AI Interactions <br />Build Your AI Chatbot With Task Deno</h1>
             <div className="max-w-xs mx-auto sm:max-w-none sm:flex sm:justify-center">
               <div data-aos="fade-up" data-aos-delay="400" className='my-10 '>
-                <a className="btn text-white-1 bg-yellow-400 hover:bg-yellow-500 w-full mb-4 sm:w-auto sm:mb-0 gap-2 flex" href="#0" >
+                <a className="btn text-white-1 bg-yellow-400 hover:bg-yellow-500 w-full mb-4 sm:w-auto sm:mb-0 gap-2 flex" href="/sign-up" >
                   Start free trial
                   <ArrowRight color='#fff' />
 
@@ -42,7 +42,7 @@ export default function Hero() {
             width={1124}
             height={1024}
             alt='demo page'
-            className='w-full h-full border md:border-4 border-dashed border-yellow-6 rounded-2xl'
+            className='w-full h-full borderpn md:border-4 border-dashed border-yellow-6 rounded-2xl'
           />
         </div>
       </div>
