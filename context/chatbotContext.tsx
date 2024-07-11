@@ -27,7 +27,7 @@ export const INITIAL_PROJECT = {
 
 const projectContext = createContext(INITIAL_PROJECT);
 
-export const ProjectProvider = ({ children }: { children: any }) => {
+export const ProjectProvider = ({ children }: { children: any }) => {   
     const { toast } = useToast();
 
     const [project, setProject] = useState(INITIAL_PROJECT_DATA);
@@ -47,32 +47,6 @@ export const ProjectProvider = ({ children }: { children: any }) => {
             }
         } fetchData();
     }, [project])
-
-
-
-    // useEffect(() => {
-    //     const storedProjects = JSON.parse(localStorage.getItem("projects") || "[]");
-    //     if (storedProjects.length > 0) {
-    //         setProject((prevProject) => ({
-    //             ...prevProject,
-    //             project_id: storedProjects[0],
-    //         }));
-    //     }
-    //     
-    // }, []);
-
-    // useEffect(() => {
-    //     if (project.project_id && !localStorage.getItem("projects")) {
-    //         localStorage.setItem("projects", JSON.stringify([project.project_id]));
-    //     } else if (project.project_id) {
-    //         const storedProjects = JSON.parse(localStorage.getItem("projects") || "[]");
-    //         if (!storedProjects.includes(project.project_id)) {
-    //             const updatedProjects = [...storedProjects, project.project_id];
-    //             localStorage.setItem("projects", JSON.stringify(updatedProjects));
-    //         }
-    //     }
-    //     
-    // }, [project.project_id]);
 
     async function storeChangesInDb() {
         setSyncing(true);

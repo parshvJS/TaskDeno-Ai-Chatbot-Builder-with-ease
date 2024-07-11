@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { CirclePlus, Loader, Loader2, Loader2Icon, LoaderCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from 'react';
 import {
   Dialog,
@@ -47,8 +47,29 @@ const MyDeno = () => {
   const { project, setProject } = useContext(projectContext);
   const [loading, isLoading] = useState(false);
   const router = useRouter();
+  const params = useParams()
+  const uId = params.userId;
+  const id = params.id;
+  useEffect(() => {
+    async function isAllowed() {
+      if (!userId) {
+        router.push('/sign-up')
+        return;
+      }
+      if (userId !== uId) {
+        return (
+          <div className='w-screen h-screen bg-yellow-2'>
+            <p className='text-24 font-semibold'>You Dont Have Access To This Page</p>
+            <Link href={'/mydenos'} className='w-[230px] h-[80px] bg-yellow-5 '>
+              <p className='border-2 border-white-1 text-white-1'>Go To Dashboard</p>
+            </Link>
 
-
+          </div>
+        )
+      }
+    }
+    isAllowed();
+  }, [])
 
 
   const form = useForm<z.infer<typeof createProjectSchema>>({
@@ -76,12 +97,10 @@ const MyDeno = () => {
         project_name: values.name,
         project_id: res.data._id,
       }));
-      
 
-      // router.push(`/builder/${res.data.data._id}?nw=true`);
-      router.push(`/dashboard`);
+
     } catch (error: any) {
-      
+
       toast({
         title: "Can't create project",
         description: error.message.slice(0, 10),
@@ -90,7 +109,13 @@ const MyDeno = () => {
       isLoading(false);
     }
   }
+  useEffect(() => {
 
+    if (project._id) {
+      // router.push(`/builder/${res.data.data._id}?nw=true`);
+      router.push(`/dashboard/${project._id}/${userId}`);
+    }
+  }, [project])
   const { data: previousProjects, isLoading: projectLoading, error } = useUserProjects(userId);
 
 
@@ -221,7 +246,7 @@ const MyDeno = () => {
           ) :
             <div className='flex gap-4 w-full h-full mt-5 flex-wrap'>
               {previousProjects?.map((project: any, index: any) => (
-                <Link key={index} href={`/builder/${project._id}?nw=false`}>
+                <Link key={index} href={`/dashboard/${project._id}/${userId}`}>
                   <section className='flex flex-col justify-center items-center gap-5 cursor-pointer w-[240px] h-32 rounded-lg bg-gray-100 border-2 border-gray-200 hover:border-gray-400 transition-all'>
                     <div className='flex justify-center flex-col items-center gap-2'>
                       <Image

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { string } from "zod";
+import { boolean, string } from "zod";
 const projectSchema = new mongoose.Schema({
     userId: {
         type: String,
@@ -26,6 +26,33 @@ const projectSchema = new mongoose.Schema({
     aiModel: {
         type: String,
         default: "GPT-3.5"
+    },
+    scriptTag: {
+        type: String,
+    },
+    isScriptTagAvailable: {
+        type: Boolean,
+        default: false
+    },
+    colorTheme: {
+        type: String,
+        default: "#EEFF00"
+    },
+    marginBottom: {
+        type: Number,
+        default: 30
+    },
+    marginRight: {
+        type: Number,
+        default: 30
+    },
+    userChatbotName: {
+        type: String,
+        default: "Task Deno | Firola"
+    },
+    userChatbotImage: {
+        type: String,
+        default: "https://res.cloudinary.com/dwhmpzqzq/image/upload/v1720679740/a7wafzvm4qthwpoegmh1.png"
     }
 }, { timestamps: true })
 

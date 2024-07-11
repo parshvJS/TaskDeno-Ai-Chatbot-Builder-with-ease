@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input"
 import Image from 'next/image';
 import { useContext, useEffect, useState } from 'react';
-import SidebarContext, { RightSideBarProvider } from '@/context/RightSideBarContext';
+import SidebarContext from '@/context/RightSideBarContext';
 import { cn } from '@/lib/utils';
 
 export default function ChatBotCom({

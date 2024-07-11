@@ -320,7 +320,8 @@ i. when nodes are created add initital values to it
     - script tag embeding 
    - create embed.js api and that fetches workflow create html with starter message and sent it as      response.
  
-4. create cluster bases architecture
+4. create cluster bases architecture - performance
+   create static app
 
 
 
