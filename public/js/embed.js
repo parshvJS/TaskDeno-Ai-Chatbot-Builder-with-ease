@@ -6,7 +6,7 @@
         document.body.appendChild(chatbotContainer);
 
         const iframe = document.createElement('iframe');
-        iframe.src = `https://yourdomain.com/chatbot-ui?chatbotId=${chatbotId}`;
+        iframe.src = `localhost:8000/chatbot-ui?chatbotId=${chatbotId}`;
         iframe.style.width = '100%';
         iframe.style.height = '400px';
         iframe.style.border = 'none';
