@@ -231,3 +231,28 @@ export const quickMessage = [
         imgUrl: "/icons/btn.svg"
     }
 ]
+
+export const openAIModels = [
+    {
+        label: "GPT-4o",
+        value: "GPT-4o"
+    },
+    {
+        label: "GPT-4 Turbo",
+        value: "GPT-4 Turbo"
+    },
+    {
+        label: "GPT-4",
+        value: "GPT-4"
+    },
+    {
+        label: "GPT-3.5 Turbo",
+        value: "GPT-3.5 Turbo"
+    },
+    {
+        label: "GPT-3.5",
+        value: "GPT-3.5"
+    }
+]
+
+

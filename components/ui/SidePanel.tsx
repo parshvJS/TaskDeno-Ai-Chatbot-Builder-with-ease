@@ -3,10 +3,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Panel } from 'reactflow';
 import Logo from '../Logo';
 import projectContext from '@/context/chatbotContext';
-import { ArrowLeft, ArrowLeftSquare, Check, Divide, Dot, Flame, Loader, Pen, Plus, Save, ScanSearch, X } from 'lucide-react';
+import { ArrowBigDown, ArrowLeft, ArrowLeftSquare, Check, ChevronDown, Divide, Dot, Flame, Loader, Pen, Plus, Save, ScanSearch, X } from 'lucide-react';
 import { Button } from './button';
 import { useRouter } from 'next/navigation';
-import { giveResponse, sentMessage, toggleBarItems, UserInput } from '@/constants/constants';
+import { giveResponse, openAIModels, sentMessage, toggleBarItems, UserInput } from '@/constants/constants';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -37,7 +37,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -63,6 +70,7 @@ const SidePanel = ({
   const [activeState, setActiveState] = useState(0);
   const [activeVariableIndex, setActiveVariableIndex] = useState(-1)
   const { toast } = useToast();
+
   // shadcn form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -281,9 +289,79 @@ const SidePanel = ({
         );
 
       case 2:
-        return (<div>
-          sdfsdfsd
-        </div>)
+        return (
+          // create shadcn form that have ai model selection an ai prompt adding where user can add multiple ai prompt ,add dummy function where needed
+          <div className='w-full h-[80%] slim-border bg-white-1 p-2'>
+            <SideLabel
+              label='AI Model'
+              imgUrl='/icons/select.svg'
+              helpText='Select AI Model for the chatbot'
+            />
+            {/* add shadcn dropdown having different openai models in it 1.gpt-3.5 gpt-4o gpt-3 turbo*/}
+            <div className='w-full mb-5'>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <div className='flex gap-2 w-[300px] slim-border bg-gray-100 p-2 justify-between'>
+                    {/* text Select model with lucid react icon */}
+                    <p className='font-semibold'>{aiModel || "Select Model"}</p>
+                    <ChevronDown />
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className='w-[300px]'>
+                  <DropdownMenuLabel>Available AI Models</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {
+                    openAIModels.map((model, index) => (
+                      <DropdownMenuItem key={index} onSelect={() => setAiModel(model.value)}>
+                        {model.label}
+                      </DropdownMenuItem>
+                    ))
+                  }
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+            </div>
+
+
+
+
+
+            <SideLabel
+              label='AI Prompt'
+              imgUrl='/icons/bot.svg'
+              helpText='Add ai prompt list for the chatbot '
+            />
+            <div className='w-full h-[40%] mb-5 '>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit((values) => {
+                  setAiModel(values.name)
+                  form.reset()
+                })} className="w-full ">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <FormControl>
+                          <Input className='w-full slim-border' placeholder="gpt-3" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </form>
+              </Form>
+              <div className='w-full h-full mt-5'>
+                <Button
+                  type='submit'
+                  className='w-full bg-black hover:bg-gray-600 gap-2 text-white-1 font-semibold' >
+                  <Plus />
+                  Add Model
+                </Button>
+              </div>
+            </div>
+          </div>
+        )
       case 3:
         return (
           <ScrollArea className="w-full h-[80%]">

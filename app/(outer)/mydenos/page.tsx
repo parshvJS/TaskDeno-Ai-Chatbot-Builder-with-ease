@@ -91,11 +91,12 @@ const MyDeno = () => {
           title: "Can't create project",
         });
       }
+      console.log("response", res, "----------------");
 
-      setProject((prevProject) => ({
+      setProject((prevProject: any) => ({
         ...prevProject,
         project_name: values.name,
-        project_id: res.data._id,
+        project_id: res.data.data._id,
       }));
 
 
@@ -105,16 +106,19 @@ const MyDeno = () => {
         title: "Can't create project",
         description: error.message.slice(0, 10),
       });
-    } finally {
-      isLoading(false);
     }
   }
   useEffect(() => {
 
-    if (project._id) {
+    console.log("redirecting to builder", project, "nw=true 111");
+    if (project.project_id) {
+      console.log("redirecting to builder", project.project_id, "nw=true");
+
       // router.push(`/builder/${res.data.data._id}?nw=true`);
-      router.push(`/dashboard/${project._id}/${userId}`);
+      router.push(`/dashboard/${project.project_id}/${userId}`);
+      isLoading(false)
     }
+    isLoading(false)
   }, [project])
   const { data: previousProjects, isLoading: projectLoading, error } = useUserProjects(userId);
 
@@ -132,7 +136,6 @@ const MyDeno = () => {
     <div className='flex flex-col h-full w-full'>
       <section className='flex flex-col gap-4 w-fit mb-5'>
         <Label className='text-page-header'>My Denos</Label>
-
         <Dialog>
           <DialogTrigger>
             <section className='flex flex-col justify-center items-center gap-5 cursor-pointer bg-yellow-400 w-[240px] h-32 rounded-lg hover:bg-yellow-300 transition-all'>
@@ -236,10 +239,10 @@ const MyDeno = () => {
           previousProjects == 201 ? (
             <div className='flex flex-col  justify-center items-center'>
               <Image
-                src={'/images/creative.png'}
+                src={'/images/no-pro-illu.png'}
                 alt='ideas'
-                width={210}
-                height={210}
+                width={410}
+                height={310}
               />
               <h1 className='font-bold text-xl '>You Dont Have Any Chatbot Right Not</h1>
             </div>

@@ -1,10 +1,15 @@
 'use client'
+import SlimCard from '@/components/SlimCard';
+import { Label } from '@/components/ui/label';
 import DashdataContext, { DashdataProvider } from '@/context/dashboardContext';
 import { useAuth } from '@clerk/nextjs';
 import { LoaderPinwheel } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation'
 import React, { useContext, useEffect } from 'react'
+
+
 function page() {
   // context values 
   const { loading, activeProjectId, setActiveProjectId } = useContext(DashdataContext)
@@ -52,7 +57,41 @@ function page() {
     </div>
   }
   return (
-    <div>page</div>
+    <div className='flex flex-col h-full w-full p-4'>
+      <section className='flex flex-col gap-4 w-fit mb-5'>
+        <Label className='text-page-header'>Dashboard</Label>
+      </section>
+      <div className='w-full grid grid-rows-1 grid-cols-3 gap-3'>
+        <SlimCard pointer={true} className='w-full h-full flex-1 cursor-pointer flex justify-center items-center flex-col'>
+          <Image
+            src='/icons/builder-illu.svg'
+            width={220}
+            height={300}
+            alt="Go to builder"
+          />
+          <p className='text-18 font-semibold'>Go To Builder</p>
+        </SlimCard>
+        <SlimCard pointer={true} className='w-full h-full flex-1 cursor-pointer flex justify-center items-center flex-col'>
+          <Image
+            src='/icons/stats-illu.svg'
+            width={310}
+            height={300}
+            alt="Statistics"
+          />
+          <p className='text-18 font-semibold'>View Statistics</p>
+        </SlimCard>
+        <SlimCard pointer={true} className='w-full h-full flex-1 cursor-pointer flex justify-center items-center flex-col'>
+          <Image
+            src='/icons/lead-illu.svg'
+            width={310}
+            height={300}
+            alt="Lead management"
+          />
+          <p className='text-18 font-semibold'>Manage Leads</p>
+        </SlimCard>
+      </div>
+    </div>
+
   )
 }
 

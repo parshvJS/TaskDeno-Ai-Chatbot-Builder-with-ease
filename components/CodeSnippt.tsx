@@ -20,7 +20,7 @@ const CodeSnippet = ({ language, codeString }: any) => {
 
 
     return (
-        <div className="relative  text-white rounded-md p-4 my-4 w-full h-[250px]">
+        <div className="relative  text-white rounded-md p-4 my-4 w-[1224px] h-[150px]">
             <div className='w-full h-[40px] bg-yellow-200 rounded-t-md flex'>
                 <button
                     onClick={handleCopy}
@@ -42,14 +42,14 @@ const CodeSnippet = ({ language, codeString }: any) => {
             </div>
 
             <Highlight
-                theme={themes.duotoneLight}
+                theme={themes.duotoneDark}
                 code={codeString}
                 language={language}
             >
                 {({ className, style, tokens, getLineProps, getTokenProps }) => (
-                    <pre className={`${className} p-4 rounded-md mb-10'`} style={style}>
+                    <pre className={`${className} p-4 mb-10 w-full rounded-b-md`} style={style}>
                         {tokens.map((line, i) => (
-                            <div key={i} {...getLineProps({ line })}>
+                            <div key={i} {...getLineProps({ line })} className='w-fit'>
                                 {line.map((token, key) => (
                                     <span key={key} {...getTokenProps({ token })} />
                                 ))}

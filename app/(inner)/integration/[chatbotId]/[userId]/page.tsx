@@ -1,11 +1,13 @@
 'use client'
 import DashdataContext from '@/context/dashboardContext';
-import { Link, LoaderPinwheel } from 'lucide-react';
-import { useParams } from 'next/navigation'
-import React, { useContext, useEffect } from 'react'
-import { Highlight, themes } from "prism-react-renderer"
-import styles from 'styles.module.css'
+import { Link, Loader, LoaderPinwheel } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation'
+import React, { useContext, useEffect, useState } from 'react'
+
 import CodeSnippet from '@/components/CodeSnippt';
+import { Label } from '@/components/ui/label';
+import { useAuth } from '@clerk/nextjs';
+import { Button } from '@/components/ui/button';
 interface chatUserParams {
     chatbotId: string,
     userId: string
@@ -21,30 +23,25 @@ const GroceryItem: React.FC<GroceryItemProps> = ({ item }) => {
   );
 }   `
 function page() {
-    const { loading, activeProjectId, setActiveProjectId } = useContext(DashdataContext)
 
+    const {isScriptTagGenerating, dashdata, loading, activeProjectId, setActiveProjectId } = useContext(DashdataContext)
+    const [isUserAllowed, setIsUserAllowed] = useState(true)
+    const { userId } = useAuth()
     const params: chatUserParams = useParams();
-    const userId = params.userId;
+    const userIdParams = params.userId;
     const chatbotId = params.chatbotId;
+    const router = useRouter()
     // initial check that user can access the page or not
     useEffect(() => {
         async function isAllowed() {
-            console.log(userId, "is not allowing");
+            console.log(userId, userIdParams, userIdParams !== userId, "is not allowing");
 
-            if (!userId) {
+            if (!userIdParams) {
                 return;
             }
 
-            if (userId !== params.userId) {
-                return (
-                    <div className='w-screen h-screen bg-yellow-2'>
-                        <p className='text-24 font-semibold'>You Dont Have Access To This Page</p>
-                        <Link href={'/mydenos'} className='w-[230px] h-[80px] bg-yellow-5 '>
-                            <p className='border-2 border-white-1 text-white-1'>Go To Dashboard</p>
-                        </Link>
-
-                    </div>
-                )
+            if (userIdParams !== userId) {
+                setIsUserAllowed(false)
             }
 
         }
@@ -57,16 +54,61 @@ function page() {
 
     }, [userId, chatbotId])
 
-    // JSX boundry
-    if (loading) {
-        return <div className='w-screen h-screen flex justify-center items-center flex-col'>
-            <LoaderPinwheel width={30} height={30} className='animate-spin text-gray-600' />
-            <p className='text-16  font-semibold text-gray-600'>Starting Chatbot Engine!</p>
-        </div>
-    }
+    if (!isUserAllowed) {
+        return (
+            <div className='w-screen h-screen flex justify-center items-center'>
+                <p className='text-24 font-semibold'>You Dont Have Access To This Page</p>
 
+
+            </div>
+        )
+    }
     return (
-        <CodeSnippet language="tsx" codeString={codeBlock} />
+
+        <>
+            <div className='flex flex-col h-full w-full'>
+                <section className='flex flex-col gap-4 w-fit mb-5'>
+                    <Label className='text-page-header'>Integration To Webside</Label>
+                    <p className='font-semibold text-14 text-gray-500'>Guide To Add TaskDeno Chatbot To Your Website</p>
+
+                    <section>
+                        {/* step 1 */}
+                        <div className='w-full h-12 slim-border rounded-md text-center flex items-center p-2 gap-2'>
+                            <b>Step 1 : </b>
+                            <p className='font-medium'>Create Your Chatbot workflow</p>
+                        </div>
+
+                        <div className='text-16 font-semibold flex flex-col gap-2 ml-5 mt-5'>
+                            Go To Chatbot Builder And Create Own Chatbot <br />
+                            <Button onClick={() => router.push(`/builder/${chatbotId}/${userIdParams}`)} className='w-fit hover:bg-yellow-2' >Go To Builder</Button>
+                        </div>
+
+                        {/* step 2 */}
+                        <div>
+                            <div className='capitalize w-full h-12 slim-border rounded-md text-center flex items-center p-2 gap-2 mb-5 mt-5'>
+                                <b>Step 2 : </b>
+                                <p className='font-medium'>Copy The Chatbot script</p>
+                            </div>
+                            {
+                                isScriptTagGenerating? (
+                                    <div>
+                                        <Loader className='animate-spin' />
+                                    </div>
+                                )
+                                :
+                                <CodeSnippet language="tsx" codeString={dashdata.scriptTag} />
+                            }
+                        </div>
+                        {/* create step 3 saying "paste in any CMS or custom code of home page" */}
+                        <div className='w-full h-12 slim-border rounded-md text-center flex items-center p-2 gap-2'>
+                            <b>Step 3 : </b>
+                            <p className='font-medium'>Paste The Chatbot Script In Your Website</p>
+                        </div>
+
+                    </section>
+                </section>
+            </div>
+        </>
     )
 }
 

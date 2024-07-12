@@ -18,7 +18,7 @@ export default function RootLayout({
                 />
                 
                 <section className="flex  flex-col min-h-screen w-[90%] bg-[#F8F8F6]">
-                    <div className="mx-10 my-5 flex w-full max-w-5xl flex-col ">
+                    <div className="mx-10 my-5 flex w-full max-w-6xl flex-col ">
                         <div className="flex h-16 items-center justify-between md:hidden">
                             {/* <Image src="/icons/logo.svg" alt="logo" width={30} height={30} /> */}
                             <MobileNav />

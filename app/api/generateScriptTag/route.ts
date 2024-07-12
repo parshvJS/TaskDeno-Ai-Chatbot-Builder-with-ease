@@ -30,11 +30,12 @@ export async function POST(req: Request) {
             length: 16,
             useLetters: false
         })
-        const scriptTemplate = `<script async data-id="${uid}" id="chatling-embed-script" type="text/javascript" src="${process.env.httpDomainName}/js/embed.js"></script>`;
+        const scriptTemplate = `<script async data-id="${uid}" id="taskDeno-embed-script" type="text/javascript" src="${process.env.httpDomainName}/js/embed.js">\n</script>`;
 
         const newProjectData = await Project.findByIdAndUpdate(projectId, {
             scriptTag: scriptTemplate,
-            isScriptTagAvailable: true
+            isScriptTagAvailable: true,
+            embedId: uid
         }, { new: true })
 
         if (!newProjectData) {
@@ -45,8 +46,8 @@ export async function POST(req: Request) {
                 data: null
             })
         }
-        console.log("logging ",newProjectData);
-        
+        console.log("logging ", newProjectData);
+
         return Response.json({
             success: true,
             statusCode: 200,

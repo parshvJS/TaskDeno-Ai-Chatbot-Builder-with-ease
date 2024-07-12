@@ -7,9 +7,9 @@ export async function POST(req: Request) {
 
     try {
         const { userId, activeProjectId } = await req.json();
-        console.log("i am data inner : ----------------------",userId,activeProjectId);
-        
-        const projectData = await Project.findById(activeProjectId)
+        console.log("i am data inner : ----------------------", userId, activeProjectId);
+
+        const projectData = await Project.findById(activeProjectId).select("-nodes -egdes -aiPrompts")
         if (!projectData) {
             return Response.json({
                 success: false,
@@ -29,10 +29,10 @@ export async function POST(req: Request) {
         }
 
         return Response.json({
-            success:true,
-            statusCode:200,
-            message:"Successfully found data!",
-            data:   projectData
+            success: true,
+            statusCode: 200,
+            message: "Successfully found data!",
+            data: projectData
         })
 
     } catch (error: any) {

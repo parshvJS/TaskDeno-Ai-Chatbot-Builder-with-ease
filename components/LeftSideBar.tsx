@@ -26,8 +26,8 @@ const LeftSideBar = ({
     const router = useRouter();
     const { signOut } = useClerk();
     return (
-        <section className='left_sidebar transition-all'>
-            <nav className='flex flex-col gap-2 transition-all'>
+        <section className='left_sidebar transition-all sticky '>
+            <nav className='flex flex-col gap-2 transition-all '>
                 <Logo />
 
                 {/* nav items */}

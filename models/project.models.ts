@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { boolean, string } from "zod";
+import { boolean, number, string } from "zod";
 const projectSchema = new mongoose.Schema({
     userId: {
         type: String,
@@ -53,6 +53,9 @@ const projectSchema = new mongoose.Schema({
     userChatbotImage: {
         type: String,
         default: "https://res.cloudinary.com/dwhmpzqzq/image/upload/v1720679740/a7wafzvm4qthwpoegmh1.png"
+    },
+    embedId:{
+        type:Number
     }
 }, { timestamps: true })
 
