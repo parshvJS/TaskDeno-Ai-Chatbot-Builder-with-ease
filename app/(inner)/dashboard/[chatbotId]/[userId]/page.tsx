@@ -62,15 +62,17 @@ function page() {
         <Label className='text-page-header'>Dashboard</Label>
       </section>
       <div className='w-full grid grid-rows-1 grid-cols-3 gap-3'>
-        <SlimCard pointer={true} className='w-full h-full flex-1 cursor-pointer flex justify-center items-center flex-col'>
-          <Image
-            src='/icons/builder-illu.svg'
-            width={220}
-            height={300}
-            alt="Go to builder"
-          />
-          <p className='text-18 font-semibold'>Go To Builder</p>
-        </SlimCard>
+        <div onClick={() => router.push(`/builder/${activeProjectId}/${userId}`)}>
+          <SlimCard pointer={true} className='w-full h-full flex-1 cursor-pointer flex justify-center items-center flex-col'>
+            <Image
+              src='/icons/builder-illu.svg'
+              width={220}
+              height={300}
+              alt="Go to builder"
+            />
+            <p className='text-18 font-semibold'>Go To Builder</p>
+          </SlimCard>
+        </div>
         <SlimCard pointer={true} className='w-full h-full flex-1 cursor-pointer flex justify-center items-center flex-col'>
           <Image
             src='/icons/stats-illu.svg'

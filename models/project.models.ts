@@ -11,7 +11,15 @@ const projectSchema = new mongoose.Schema({
     },
     nodes: {
         type: [],
-
+        default: [{
+            id: 'start101',
+            type: 'startNode',
+            data: { label: 'Start' },
+            position: {
+                x: 518,
+                y: 246
+            },
+        }]
     },
     edges: {
         type: [],
@@ -54,8 +62,8 @@ const projectSchema = new mongoose.Schema({
         type: String,
         default: "https://res.cloudinary.com/dwhmpzqzq/image/upload/v1720679740/a7wafzvm4qthwpoegmh1.png"
     },
-    embedId:{
-        type:Number
+    embedId: {
+        type: Number
     }
 }, { timestamps: true })
 

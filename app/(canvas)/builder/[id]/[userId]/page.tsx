@@ -11,6 +11,7 @@ import { nanoid } from 'nanoid';
 import RightSideBar from '@/components/ui/RightSideBar';
 import SidebarContext from '@/context/RightSideBarContext';
 import { useToast } from '@/components/ui/use-toast';
+import { StarterNode } from '@/components/customNodes/StarterNode';
 
 export default function App() {
   const { getPreviousData, project, isSyncLoading, setProject, setIsStoredInDb, storeChangesInDb } = useContext(projectContext);
@@ -33,7 +34,8 @@ export default function App() {
   const { toast } = useToast()
 
   const nodeTypes = useMemo(() => ({
-    chatbotCommand: (props: any) => <ChatBotCom {...props} removeNode={removeNode} nodes={nodes} />
+    chatbotCommand: (props: any) => <ChatBotCom {...props} removeNode={removeNode} nodes={nodes} />,
+    startNode: (props: any) => <StarterNode {...props} />
   }), [setNodes, project]);
 
   // gets previous user data that user have created
@@ -66,14 +68,25 @@ export default function App() {
     setNodes(newNodes)
   }, [sidebar])
 
+  // 
+
   async function syncChangesToContext() {
+    const tempTest = {
+      nodes: nodes,
+      edges: edges,
+      variables: variables,
+      aiPrompt: aiPrompt,
+      aiModel: aiModel
+    }
+
+    console.log("Page::syncChangesToContext::data is", tempTest);
 
     setProject((prevProject: any) => ({
       ...prevProject,
       nodes: nodes,
       edges: edges,
       variables: variables,
-      aiPrompt: aiPrompt,
+      aiPrompts: aiPrompt,
       aiModel: aiModel
     }));
   }

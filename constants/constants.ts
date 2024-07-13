@@ -68,11 +68,11 @@ export const outerNavItems = [
 export const toggleBarItems = [
 
     {
-        label: "Start",
+        label: "Status & Start",
         imgUrl: "/icons/run.svg"
     },
     {
-        label: "items",
+        label: "Building Blocks",
         imgUrl: "/icons/block.svg"
     },
     {
@@ -80,13 +80,9 @@ export const toggleBarItems = [
         imgUrl: "/icons/bot.svg"
     },
     {
-        label: "Variables",
+        label: "Variables ",
         imgUrl: "/icons/var.svg"
     },
-    {
-        label: "Setting",
-        imgUrl: "/icons/bolt.svg"
-    }
 ]
 
 // text 

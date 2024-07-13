@@ -33,6 +33,34 @@ html {
   left: 0px;
   fill: rgb(255, 208, 0)
 }
+/* Ensure this part remains unchanged */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 1.5s ease-out forwards; /* Adjusted for a smoother, longer animation */
+}
+
+/* Adjusted delays for a smoother sequence */
+.delay-150 {
+  animation-delay: 0.15s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+.delay-450 {
+  animation-delay: 0.45s;
+}
 
 @layer utilities {
 

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Check, ChevronsUpDown, Plus, X } from 'lucide-react';
+import { Check, ChevronsUpDown, Plus, Variable, X } from 'lucide-react';
 import { Panel } from 'reactflow';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from './input';
@@ -47,6 +47,7 @@ function RightSideBar({ variables, setVariables }: any) {
     const [textareaContent, setTextareaContent] = useState("");
     const [chatbotImageUrl, setChatbotImageUrl] = useState("")
     const [chatbotImageUrlValid, setChatbotImageUrlValid] = useState(false)
+    const [aiContentPrompt, setAiContentPrompt] = useState("")
     const { toast } = useToast()
     const activeChatbot = sidebar?.currentNode?.data.message ? sidebar?.currentNode?.data.message : sidebar?.currentNode?.data.ai;
     const activeChatbotDatatype = sidebar?.currentNode?.data.message ? "message" : "ai";
@@ -71,6 +72,8 @@ function RightSideBar({ variables, setVariables }: any) {
     // set initital values for text related content 
     useEffect(() => {
         if (activeChatbotDatatype == "ai") {
+            console.log("ai took over world");
+
             return;
         }
         if (chatbotDataType) {
@@ -157,6 +160,26 @@ function RightSideBar({ variables, setVariables }: any) {
     // when variable changes then this useEffect changes sidebar
     useEffect(() => {
         if (activeChatbotDatatype == "ai") {
+            console.log("i am ai taking over world");
+            setSidebar((prevSidebar) => ({
+                ...prevSidebar,
+                currentNode: {
+                    ...prevSidebar.currentNode,
+                    data: {
+                        ...prevSidebar.currentNode.data,
+                        user: {
+                            type: currentDataType,
+                            variable: value,
+                        },
+                        ai: {
+                            type: chatbotDataType,
+                            content: aiContentPrompt,
+                            Variable: chatbotVariable
+                        }
+
+                    }
+                }
+            }));
             return;
         }
 
@@ -275,7 +298,21 @@ function RightSideBar({ variables, setVariables }: any) {
 
     function showChatbotManips(datatype: string) {
         if (activeChatbotDatatype == "ai") {
-            return;
+            return (
+                <div className='mt-5 flex flex-col gap-2'>
+                    <RightSideLabel
+                        label='Add Text To Show'
+                        isOptional={false}
+                        helpText='type to Show Message to user !'
+                    />
+                    <Textarea
+                        defaultValue={aiContentPrompt}
+                        value={aiContentPrompt}
+                        onChange={(e) => setAiContentPrompt(e.target.value)}
+                        placeholder='Enter Your Text or use { To insert variables'
+                    />
+                </div>
+            )
         }
 
         switch (datatype) {
@@ -310,6 +347,7 @@ function RightSideBar({ variables, setVariables }: any) {
                                             </CommandEmpty>
                                             <CommandGroup className='w-full'>
                                                 <CommandList>
+
                                                     {variables.map((variable: string) => (
                                                         <CommandItem
                                                             key={variable}
@@ -521,10 +559,13 @@ function RightSideBar({ variables, setVariables }: any) {
                                         </SelectContent>
                                     </Select>
 
-                                    {showChatbotManips(chatbotDataType)}
+                                    {showChatbotManips(chatbotDataType, "message")}
 
                                 </div>
                             </TabsContent>
+
+
+
                             <TabsContent value="user">
                                 <div className='flex flex-col gap-6 p-3'>
                                     <div>

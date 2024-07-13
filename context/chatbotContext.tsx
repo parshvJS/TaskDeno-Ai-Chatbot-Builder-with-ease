@@ -53,6 +53,8 @@ export const ProjectProvider = ({ children }: { children: any }) => {
 
 
         try {
+            console.log("project is going to db", project);
+
             const { data } = await axios.post('/api/syncData', {
                 project: project,
                 projectId: project.project_id

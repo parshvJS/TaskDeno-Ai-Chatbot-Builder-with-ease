@@ -1,5 +1,6 @@
 import { dbConnect } from "@/lib/dbConnect";
 import Project from "@/models/project.models";
+import { log } from "console";
 
 export async function POST(req: Request) {
     await dbConnect();
@@ -47,6 +48,7 @@ export async function POST(req: Request) {
         //     "variables": [],
         //     "aiPrompts": []
         // }
+        log("project is going to db in api", project);
         const projectData = await Project.findByIdAndUpdate(projectId,
             {
                 nodes: project.nodes,
