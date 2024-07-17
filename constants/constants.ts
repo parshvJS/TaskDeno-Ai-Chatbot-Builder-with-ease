@@ -80,7 +80,7 @@ export const toggleBarItems = [
         imgUrl: "/icons/bot.svg"
     },
     {
-        label: "Variables ",
+        label: "Variables",
         imgUrl: "/icons/var.svg"
     },
 ]

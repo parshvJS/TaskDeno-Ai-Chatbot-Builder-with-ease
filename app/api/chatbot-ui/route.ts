@@ -17,7 +17,7 @@ export async function GET(request: Request) {
                 headers: { 'Content-Type': 'application/json' }
             });
         }
-        
+
         const project = await Project.find({
             embedId: chatbotId
         })

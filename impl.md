@@ -373,3 +373,14 @@ script -> embed.js -> chatbotui iframe -> ui
 
 1.create root workflow of sending iframes and api call works
 2.create componenet functionality
+
+
+<!-- appearence variables -->
+
+1. chatbot open button logo
+2. chatbot home logo
+3. color theme
+4. margin b and r
+5. chatbot name
+6. rounded themes 
+7. width of panel

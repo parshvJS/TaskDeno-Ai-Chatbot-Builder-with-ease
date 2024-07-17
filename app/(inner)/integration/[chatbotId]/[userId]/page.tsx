@@ -52,14 +52,12 @@ function page() {
             isAllowed();
         }
 
-    }, [userId, chatbotId])
+    }, [userId, chatbotId,userIdParams])
 
     if (!isUserAllowed) {
         return (
             <div className='w-screen h-screen flex justify-center items-center'>
                 <p className='text-24 font-semibold'>You Dont Have Access To This Page</p>
-
-
             </div>
         )
     }

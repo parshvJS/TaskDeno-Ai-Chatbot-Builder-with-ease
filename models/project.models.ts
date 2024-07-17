@@ -42,26 +42,6 @@ const projectSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    colorTheme: {
-        type: String,
-        default: "#EEFF00"
-    },
-    marginBottom: {
-        type: Number,
-        default: 30
-    },
-    marginRight: {
-        type: Number,
-        default: 30
-    },
-    userChatbotName: {
-        type: String,
-        default: "Task Deno | Firola"
-    },
-    userChatbotImage: {
-        type: String,
-        default: "https://res.cloudinary.com/dwhmpzqzq/image/upload/v1720679740/a7wafzvm4qthwpoegmh1.png"
-    },
     embedId: {
         type: Number
     }
