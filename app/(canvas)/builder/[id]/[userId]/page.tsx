@@ -22,7 +22,19 @@ export default function App() {
 
 
   // State to manage nodes and edges
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([
+    {
+      id: "start101",
+      type: "startNode",
+      data: {
+          label: "Start"
+      },
+      position: {
+          x: 518,
+          y: 246
+      }
+  }
+  ]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
 
   //cache data for project that will be stored
@@ -146,9 +158,12 @@ export default function App() {
 
   const removeNode = useCallback((id: string) => {
     setIsStoredInDb(false);
-    setIsSidebarActive(false)
+    setIsSidebarActive(false);
+    // Remove the node by filtering out the node with the matching id
     setNodes((nds) => nds.filter((node) => node.id !== id));
-  }, [setProject, setIsStoredInDb]);
+    // Remove any edges connected to the node
+    setEdges((eds) => eds.filter((edge) => edge.source !== id && edge.target !== id));
+  }, [setIsStoredInDb, setIsSidebarActive, setNodes, setEdges]);
 
 
   // handleNodeChange
@@ -159,22 +174,22 @@ export default function App() {
   // handleEdgeChange
   function handleEdgeChange<OnEdgesChange>(changes: EdgeChange[]) {
     setIsStoredInDb(false)
+    console.log("edge is being deleted", changes);
+
     onEdgesChange(changes)
   }
-  const onConnect = (params: Connection) => {
-    const { source, target } = params;
+  const onConnect = (params) => {
+    const { source } = params;
 
-    // Check if the target node already has an outgoing edge
-    if (nodes.find(node => node.id === source && edges.some(edge => edge.source === source))) {
+    const sourceHasOutgoingEdge = edges.some(edge => edge.source === source);
+    if (sourceHasOutgoingEdge) {
       toast({
-        title: "Can't connect this node",
-        description: "One node can only have one output,use conditions to create more that one output connections ! ",
-        variant: "destructive",
-      })
+        title: "Cannot add edge",
+        description: "This node already has an output. Nodes can only have one output edge.",
+        variant: "destructive"
+      });
       return;
     }
-
-    // Add the edge if conditions are met
     setEdges((prevEdges) => addEdge({ ...params, type: "smoothstep", animated: true, className: "border-2 border-gray-300" }, prevEdges));
   };
 
@@ -188,8 +203,6 @@ export default function App() {
       </div>
     );
   }
-
-
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>

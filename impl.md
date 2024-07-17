@@ -357,3 +357,19 @@ OOOOO. phone
     -ip phone number
 
 
+
+
+<!-- how chatbot will work -->
+
+script -> embed.js -> chatbotui iframe -> ui
+
+<!-- components -->
+
+1. user inputs 
+2. ai api call and sent that response
+3. static message sending 
+
+<!-- todos  -->
+
+1.create root workflow of sending iframes and api call works
+2.create componenet functionality

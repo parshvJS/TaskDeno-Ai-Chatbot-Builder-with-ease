@@ -21,7 +21,7 @@ const chatBotInstance = new mongoose.Schema({
     hitsToAi: {
         type: Number,
         default: 0
-    }
+    },
 })
 
 const ChatbotInstance = mongoose.models.ChatbotInstance || mongoose.model("ChatbotInstance", chatBotInstance);

@@ -257,7 +257,7 @@ const MyDeno = () => {
                         width={22}
                         height={22}
                         alt="create new workflow"
-                        className='rounded-full bg-gray-400 w-[30px] h-[30px] p-1'
+                        className='rounded-full bg-yellow-400 w-[30px] h-[30px] p-1'
                       />
                       <p className='text-black-1 font-bold text-16'>
                         {project?.name || "AI chatbot"}

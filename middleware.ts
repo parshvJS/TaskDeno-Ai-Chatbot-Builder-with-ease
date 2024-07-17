@@ -12,6 +12,7 @@ const isPublicRoute = createRouteMatcher([
   '/api/getInnerDashboardData',
   '/api/generateScriptTag',
   '/api/chatbot-ui',
+  '/api/chatbot-ui/(.*)',
 ])
 
 export default clerkMiddleware((auth, req) => {

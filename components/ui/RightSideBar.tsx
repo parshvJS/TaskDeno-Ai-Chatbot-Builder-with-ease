@@ -47,7 +47,10 @@ function RightSideBar({ variables, setVariables }: any) {
     const [textareaContent, setTextareaContent] = useState("");
     const [chatbotImageUrl, setChatbotImageUrl] = useState("")
     const [chatbotImageUrlValid, setChatbotImageUrlValid] = useState(false)
+    // tab ai response
     const [aiContentPrompt, setAiContentPrompt] = useState("")
+    const [aiVariable, setAiVariable] = useState("")
+    const [aiDataType, setAiDataType] = useState("")
     const { toast } = useToast()
     const activeChatbot = sidebar?.currentNode?.data.message ? sidebar?.currentNode?.data.message : sidebar?.currentNode?.data.ai;
     const activeChatbotDatatype = sidebar?.currentNode?.data.message ? "message" : "ai";
@@ -60,19 +63,27 @@ function RightSideBar({ variables, setVariables }: any) {
         var userSidebar = sidebar.currentNode.data.user;
         userSidebar.type && setCurrentDataType(userSidebar.type)
         userSidebar.variable && setValue(userSidebar.variable)
-        if (activeChatbot) {
+        if (activeChatbotDatatype == "message") {
             const chatBotDatatype = sidebar.currentNode.data.message ? sidebar.currentNode.data.message : sidebar.currentNode.data.ai || null
             setChatbotVariable(chatBotDatatype.variable)
             if (activeChatbotDatatype == "message") {
                 setChatbotDataType(sidebar.currentNode.data.message.type)
             }
         }
+        else if (activeChatbotDatatype == "ai") {
+            // use ai states
+            const aiDatatype = sidebar.currentNode.data.ai ? sidebar.currentNode.data.ai : null
+            setAiVariable(aiDatatype.Variable)
+            setAiDataType(aiDatatype.type)
+            setAiContentPrompt(aiDatatype.content)
+
+        }
     }, [sidebar.activeNodeId]);
 
     // set initital values for text related content 
     useEffect(() => {
         if (activeChatbotDatatype == "ai") {
-            console.log("ai took over world");
+            console.log("ai took over world : content,var,dt", aiContentPrompt, aiVariable, aiDataType);
 
             return;
         }
@@ -106,7 +117,7 @@ function RightSideBar({ variables, setVariables }: any) {
     }, [chatbotDataType, sidebar.activeNodeId])
 
 
-    // change name of the 
+    // change name of the node
     const handleChange = (e) => {
         const newName = e.target.value;
         setSidebar((prevSidebar) => ({
@@ -123,18 +134,21 @@ function RightSideBar({ variables, setVariables }: any) {
 
     // changes variable to state
     function handleVariableChange(currentValue: string, location: string) {
-        if (location == "chatbot") {
-            console.log("rightSideBar::chatbot data updated", currentValue, chatbotVariable);
+        console.log("Location received in handleVariableChange:", location, currentValue); // Add this line
 
-            setChatbotVariable(currentValue === chatbotVariable ? "" : currentValue)
+        if (location == "ai") {
+            console.log("AI block executing", currentValue, aiVariable);
+            setAiVariable(currentValue === aiVariable ? "" : currentValue);
             setOpen(false);
-        }
-        else {
-            console.log("rightSideBar::user data updated");
+        } else if (location == "chatbot") {
+            console.log("Chatbot block executing", currentValue, chatbotVariable);
+            setChatbotVariable(currentValue === chatbotVariable ? "" : currentValue);
+            setOpen(false);
+        } else {
+            console.log("Else block executing");
             setValue(currentValue === value ? "" : currentValue);
             setOpen(false);
         }
-
     }
 
 
@@ -160,7 +174,7 @@ function RightSideBar({ variables, setVariables }: any) {
     // when variable changes then this useEffect changes sidebar
     useEffect(() => {
         if (activeChatbotDatatype == "ai") {
-            console.log("i am ai taking over world");
+            console.log("i am ai taking over world", aiVariable, aiDataType, aiContentPrompt);
             setSidebar((prevSidebar) => ({
                 ...prevSidebar,
                 currentNode: {
@@ -172,9 +186,9 @@ function RightSideBar({ variables, setVariables }: any) {
                             variable: value,
                         },
                         ai: {
-                            type: chatbotDataType,
+                            type: aiDataType,
                             content: aiContentPrompt,
-                            Variable: chatbotVariable
+                            Variable: aiVariable
                         }
 
                     }
@@ -260,7 +274,7 @@ function RightSideBar({ variables, setVariables }: any) {
         }
 
 
-    }, [value, currentDataType, chatbotDataType, chatbotVariable, textareaContent, chatbotImageUrl])
+    }, [value, currentDataType, chatbotDataType, chatbotVariable, textareaContent, chatbotImageUrl, aiContentPrompt, aiVariable, aiDataType]);
 
     const handleTextareaChange = (e) => {
         const value = e.target.value;
@@ -296,7 +310,7 @@ function RightSideBar({ variables, setVariables }: any) {
         }
     };
 
-    function showChatbotManips(datatype: string) {
+    function showChatbotManips(datatype: string, location: string) {
         if (activeChatbotDatatype == "ai") {
             return (
                 <div className='mt-5 flex flex-col gap-2'>
@@ -309,7 +323,7 @@ function RightSideBar({ variables, setVariables }: any) {
                         defaultValue={aiContentPrompt}
                         value={aiContentPrompt}
                         onChange={(e) => setAiContentPrompt(e.target.value)}
-                        placeholder='Enter Your Text or use { To insert variables'
+                        placeholder='Enter custom prompt for this insturctions'
                     />
                 </div>
             )
@@ -443,15 +457,15 @@ function RightSideBar({ variables, setVariables }: any) {
                                 <TabsTrigger value="user" className='w-1/2'>User</TabsTrigger>
                             </TabsList>
                             <TabsContent value="chatbot">
-                                <div className='p-3'>
-                                    <div className='mb-5'>
-                                        {/* chatbot */}
+
+                                {activeChatbotDatatype == "ai" ?
+                                    <div className='p-3'>
                                         <RightSideLabel
                                             label='Store Response In Variable'
                                             isOptional={true}
                                             helpText='Variables hold User Response and can be used for next messages !'
                                         />
-                                        <Popover open={open} onOpenChange={setOpen}>
+                                        <Popover open={open} onOpenChange={setOpen} >
                                             <PopoverTrigger asChild>
                                                 <Button
                                                     variant="outline"
@@ -459,7 +473,7 @@ function RightSideBar({ variables, setVariables }: any) {
                                                     aria-expanded={open}
                                                     className="w-full justify-between mt-3"
                                                 >
-                                                    {chatbotVariable || "Create Or Select variable..."}
+                                                    {aiVariable || "Create Or Select variable..."}
                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                 </Button>
                                             </PopoverTrigger>
@@ -484,12 +498,12 @@ function RightSideBar({ variables, setVariables }: any) {
                                                             </Button>
                                                         </CommandEmpty>
                                                         <CommandGroup className='w-full'>
-                                                            <CommandList defaultValue={activeChatbot ? activeChatbot.variable : undefined}>
+                                                            <CommandList defaultValue={aiVariable ? aiVariable : undefined}>
                                                                 {variables.map((variable) => (
                                                                     <CommandItem
                                                                         key={variable}
                                                                         value={variable}
-                                                                        onSelect={(value: string) => handleVariableChange(value, "chatbot")}
+                                                                        onSelect={(value: string) => handleVariableChange(value, "ai")}
                                                                         className='hover:bg-gray-200'
                                                                     >
                                                                         <Check
@@ -508,24 +522,22 @@ function RightSideBar({ variables, setVariables }: any) {
                                             </PopoverContent>
                                         </Popover>
 
-                                    </div>
+                                        <div className='mt-5'>
+                                            <RightSideLabel
+                                                label='Add Data Type Of AI'
+                                                isOptional={true}
+                                                helpText='Which Type of data should AI respond'
+                                            />
+                                            <Select
+                                                defaultValue={aiDataType}
+                                                value={aiDataType}
+                                                onValueChange={(value: string) => setAiDataType(value)}>
+                                                <SelectTrigger className="w-full ring-0 focus:ring-0 mt-4">
+                                                    <SelectValue placeholder="Select Data Type" className='text-black font-semibold ring-0 focus:ring-0' />
+                                                </SelectTrigger>
+                                                <SelectContent >
 
-
-                                    <RightSideLabel
-                                        label='Set Data Type'
-                                        isOptional={false}
-                                        helpText='Variables hold User Response and can be used for next messages !'
-                                    />
-                                    <Select
-                                        value={chatbotDataType}
-                                        onValueChange={(value: string) => setChatbotDataType(value)}>
-                                        <SelectTrigger className="w-full ring-0 focus:ring-0 mt-4">
-                                            <SelectValue placeholder="Select Data Type" className='text-black font-semibold ring-0 focus:ring-0' />
-                                        </SelectTrigger>
-                                        <SelectContent >
-                                            {
-                                                sidebar.currentNode.data.message ?
-                                                    (sentMessage.map((input) => {
+                                                    {giveResponse.map((input) => {
                                                         return <SelectItem
                                                             value={input.value}
                                                         >
@@ -539,8 +551,98 @@ function RightSideBar({ variables, setVariables }: any) {
                                                                 <p>{input.label}</p>
                                                             </div>
                                                         </SelectItem>
-                                                    })) : (
-                                                        giveResponse.map((input) => {
+                                                    })
+                                                    }
+                                                </SelectContent>
+                                            </Select>
+
+                                            
+                                        </div>
+
+
+                                    </div> : <div className='p-3'>                         {/* segrigation is here*/}
+                                        <div className='mb-5'>
+                                            {/* chatbot */}
+                                            <RightSideLabel
+                                                label='Store Response In Variable'
+                                                isOptional={true}
+                                                helpText='Variables hold User Response and can be used for next messages !'
+                                            />
+                                            <Popover open={open} onOpenChange={setOpen}>
+                                                <PopoverTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        role="combobox"
+                                                        aria-expanded={open}
+                                                        className="w-full justify-between mt-3"
+                                                    >
+                                                        {chatbotVariable || "Create Or Select variable..."}
+                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-full p-0">
+                                                    <Command className='w-full'>
+                                                        <ScrollArea className="h-fit w-[350px] rounded-md">
+                                                            <CommandInput
+                                                                placeholder="Type to Create or Search Variable..."
+                                                                className='w-full'
+                                                                onValueChange={(val) => setInputValue(val)}
+                                                            />
+                                                            <CommandEmpty>
+                                                                <Button
+                                                                    onClick={handleAddVariable}
+                                                                    className='bg-gray-200 hover:bg-gray-300 '
+                                                                >
+                                                                    <div className='flex justify-center items-center gap-2'>
+
+                                                                        <Plus width={16} height={16} />
+                                                                        <p>{`Create variable ${inputValue}`}</p>
+                                                                    </div>
+                                                                </Button>
+                                                            </CommandEmpty>
+                                                            <CommandGroup className='w-full'>
+                                                                <CommandList defaultValue={activeChatbot ? activeChatbot.variable : undefined}>
+                                                                    {variables.map((variable) => (
+                                                                        <CommandItem
+                                                                            key={variable}
+                                                                            value={variable}
+                                                                            onSelect={(value: string) => handleVariableChange(value, "chatbot")}
+                                                                            className='hover:bg-gray-200'
+                                                                        >
+                                                                            <Check
+                                                                                className={cn(
+                                                                                    "mr-2 h-4 w-4",
+                                                                                    chatbotVariable === variable ? "opacity-100" : "opacity-0"
+                                                                                )}
+                                                                            />
+                                                                            <p className='text-left w-full font-semibold text-black'>{variable}</p>
+                                                                        </CommandItem>
+                                                                    ))}
+                                                                </CommandList>
+                                                            </CommandGroup>
+                                                        </ScrollArea>
+                                                    </Command>
+                                                </PopoverContent>
+                                            </Popover>
+
+                                        </div>
+
+
+                                        <RightSideLabel
+                                            label='Set Data Type'
+                                            isOptional={false}
+                                            helpText='Variables hold User Response and can be used for next messages !'
+                                        />
+                                        <Select
+                                            value={chatbotDataType}
+                                            onValueChange={(value: string) => setChatbotDataType(value)}>
+                                            <SelectTrigger className="w-full ring-0 focus:ring-0 mt-4">
+                                                <SelectValue placeholder="Select Data Type" className='text-black font-semibold ring-0 focus:ring-0' />
+                                            </SelectTrigger>
+                                            <SelectContent >
+                                                {
+                                                    sidebar.currentNode.data.message ?
+                                                        (sentMessage.map((input) => {
                                                             return <SelectItem
                                                                 value={input.value}
                                                             >
@@ -554,14 +656,31 @@ function RightSideBar({ variables, setVariables }: any) {
                                                                     <p>{input.label}</p>
                                                                 </div>
                                                             </SelectItem>
-                                                        }))
-                                            }
-                                        </SelectContent>
-                                    </Select>
+                                                        })) : (
+                                                            giveResponse.map((input) => {
+                                                                return <SelectItem
+                                                                    value={input.value}
+                                                                >
+                                                                    <div className='flex gap-2'>
+                                                                        <Image
+                                                                            src={input.imgUrl}
+                                                                            width={15}
+                                                                            height={15}
+                                                                            alt={input.value}
+                                                                        />
+                                                                        <p>{input.label}</p>
+                                                                    </div>
+                                                                </SelectItem>
+                                                            }))
+                                                }
+                                            </SelectContent>
+                                        </Select>
 
-                                    {showChatbotManips(chatbotDataType, "message")}
+                                        {showChatbotManips(chatbotDataType, "message")}
 
-                                </div>
+                                    </div>
+                                }
+
                             </TabsContent>
 
 

@@ -11,13 +11,13 @@ import React, { useContext, useEffect } from 'react'
 
 
 function page() {
-  // context values 
+
+  // context values
   const { loading, activeProjectId, setActiveProjectId } = useContext(DashdataContext)
   const params: { chatbotId: string, userId: string } = useParams()
   const { userId, isLoaded } = useAuth();
   const chatbotId = params.chatbotId || params.chatbotId[0];
   const router = useRouter()
-
 
   useEffect(() => {
     async function isAllowed() {
@@ -56,6 +56,7 @@ function page() {
       <p className='text-16  font-semibold text-gray-600'>Starting Chatbot Engine!</p>
     </div>
   }
+
   return (
     <div className='flex flex-col h-full w-full p-4'>
       <section className='flex flex-col gap-4 w-fit mb-5'>

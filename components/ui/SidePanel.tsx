@@ -1,6 +1,6 @@
 'use client'
 import React, { useContext, useEffect, useState } from 'react';
-import { Panel } from 'reactflow';
+import { Panel, Position } from 'reactflow';
 import Logo from '../Logo';
 import projectContext from '@/context/chatbotContext';
 import { ArrowBigDown, ArrowLeft, ArrowLeftSquare, Check, ChevronDown, Divide, Dot, Flame, Loader, Pen, Plus, Save, ScanSearch, X } from 'lucide-react';
@@ -71,6 +71,7 @@ const SidePanel = ({
   const [activeState, setActiveState] = useState(0);
   const [activeVariableIndex, setActiveVariableIndex] = useState(-1)
   const [changingAiPrompt, setChangingAiPrompt] = useState("")
+  const [isSaveEduOpen, setIsSaveEduOpen] = useState(true)
   const { toast } = useToast();
 
   // shadcn form
@@ -629,6 +630,22 @@ const SidePanel = ({
 
           {!isSidebarActive ? showSidePanel(activeState) : null}
 
+        </div>
+      </Panel>
+
+      <Panel position='bottom-left' className={`w-[500px] h-[100px] bg-yellow-100 rounded-md border-yellow-5 border-2 relative ${isSaveEduOpen ? "block" : "hidden"}`}>
+        {/* X icon positioned at top right */}
+        <div onClick={() => setIsSaveEduOpen(false)} className='absolute top-0 right-0 p-2 cursor-pointer hover:bg-yellow-6 rounded-bl-md'>
+          <X className='text-yellow-5 hover:text-yellow-1' />
+        </div>
+        <div className='flex justify-between items-center p-2'>
+          {/* Flex container for image and text */}
+          <div className='flex items-center space-x-4 w-full'>
+            {/* Text on the right */}
+            <p className="text-sm text-gray-600 font-medium py-5 px-3">
+  Please note: Always save your changes before leaving the <br />page to ensure they are applied.
+</p>
+          </div>
         </div>
       </Panel>
     </div>
