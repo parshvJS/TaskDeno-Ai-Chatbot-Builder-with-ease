@@ -2,6 +2,7 @@ import { chatbotGenerator } from "@/chat-template/ChatbotUi";
 import { apiError } from "@/lib/apiError";
 import { apiResponse } from "@/lib/apiResponse";
 import { dbConnect } from "@/lib/dbConnect";
+import ChatbotUi from "@/models/chatbotUi.models";
 import Project from "@/models/project.models";
 
 export async function GET(request: Request) {
@@ -17,13 +18,15 @@ export async function GET(request: Request) {
                 headers: { 'Content-Type': 'application/json' }
             });
         }
-
         const project = await Project.find({
             embedId: chatbotId
         })
+        const chatbotui = await ChatbotUi.find({
+            projectId: project[0]._id
+        })
         console.log(project, "Project id");
 
-        if (!project) {
+        if (!project || !chatbotui) {
             return Response.json(new apiError(404, "Project Is Deleted Or Not exist!"), {
                 status: 404,
                 headers: { 'Content-Type': 'application/json' }
@@ -31,8 +34,7 @@ export async function GET(request: Request) {
         }
 
 
-        const { htmlContents } = chatbotGenerator(project[0]);
-        console.log(htmlContents, "sss-----------------------------------");
+        const { htmlContents } = chatbotGenerator(chatbotui[0]);
 
         return new Response(htmlContents.htmlContents, {
             headers: {

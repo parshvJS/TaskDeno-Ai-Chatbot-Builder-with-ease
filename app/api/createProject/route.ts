@@ -1,6 +1,7 @@
 import { apiError } from "@/lib/apiError";
 import { apiResponse } from "@/lib/apiResponse";
 import { dbConnect } from "@/lib/dbConnect";
+import ChatbotUi from "@/models/chatbotUi.models";
 import Project from "@/models/project.models";
 
 // when user want to create new chatbot this api will establish new project 
@@ -23,7 +24,12 @@ export async function POST(request: Request) {
         });
         const res = await newProject.save();
 
-        if (!res) {
+        const newChatbotUi = new ChatbotUi({
+            projectId: res._id
+        });
+        const chatbotUiRes = await newChatbotUi.save();
+
+        if (!res || !chatbotUiRes) {
             return Response.json(new apiError(400, "Project not created"), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' }

@@ -5,11 +5,20 @@ export function chatbotGenerator(project: any) {
         colorTheme,
         marginBottom,
         marginRight,
-        userChatbotName,
-        userChatbotImage } = project;
+        roundedTheme,
+        panelWidth,
+        chatbotName,
+        chatbotLargeLogo,
+        chatbotSmallLogo,
+        welcomeText,
+        faq,
+        contact
+    } = project;
+    console.log(project, colorTheme, "is here in catbotui -------------------------");
+
     const lighterShades = generateLighterShades(colorTheme, 3);
     const [color1, color2, color3] = lighterShades;
-    const htmlContents = getHtmlContent(colorTheme, color1, color2, color3, marginBottom, marginRight, userChatbotName, userChatbotImage);
+    const htmlContents = getHtmlContent(colorTheme, color1, color2, color3, marginBottom, marginRight, chatbotName, chatbotLargeLogo);
     return { htmlContents }
 }
 

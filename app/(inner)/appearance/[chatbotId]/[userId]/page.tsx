@@ -6,9 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ReactChatbotUi from '@/chat-template/ReactChatbotUi';
 
 function page() {
-
-
-
   return (
     <div className='flex flex-col h-[96%] w-full'>
       {/* <section className='flex flex-col gap-4 w-fit mb-5'>
@@ -28,7 +25,7 @@ function page() {
               <TabsTrigger value="element" className='text-black' >UI Elements</TabsTrigger>
               <TabsTrigger value="styling" className='text-black'>Styling Theming</TabsTrigger>
             </TabsList>
-            <TabsContent value="element" >Make changes to your account here.</TabsContent>
+            <TabsContent value="element">Make changes to your account here.</TabsContent>
             <TabsContent value="styling">
 
 
@@ -38,21 +35,34 @@ function page() {
 
         </div>
         <div className='w-[50%] h-full bg-gray-100 p-4'>
-          <section className='flex flex-col gap-4 w-fit mb-5'>
+          <section className='flex flex-col gap-4 w-fit mb-2'>
             <Label className='text-18 '>Preview Design</Label>
           </section>
-          <div className='w-full h-[95%] '>
+          <div className='w-full h-full'>
             <ReactChatbotUi
               project={{
                 panelWidth: 400,
                 starterMessage: 'Welcome to Task Deno | Filora',
-                colorTheme: '#eeff00',
+                colorTheme: '#441EEC',
                 marginBottom: 30,
                 marginRight: 30,
                 userChatbotName: 'Task Deno | Filora',
-                userChatbotImage: 'https://placehold.co/600x400',
-                userChatbotLogo: 'https://placehold.co/70x70',
-                borderRadius: 10
+                userChatbotImage: 'https://dstal.com.au/wp-content/uploads/2021/09/logoipsum-768x360.png',
+                userChatbotLogo: 'https://img.icons8.com/?size=100&id=7859&format=png&color=000000',
+                borderRadius: 10,
+                welcomeText: 'Hello! What Is Your Question?',
+                faq: [
+                  {
+                    question: 'Where can I contact you?',
+                    previewAnswer: 'You can contact us through the following channels:',
+                    wholeAnswer: '<p>You can contact us through the following channels:</p><ul><li><b>Email:</b> find in footer</li><li><b>Phone:</b> find in footer</li><li><b>Live Chat:</b> Visit our website and click on the live chat button</li></ul>'
+                  }
+                ],
+                contact: {
+                  email: 'find in footer',
+                  phone: 'find in footer',
+                  liveChat: 'Visit our website and click on the live chat button'
+                }
               }}
             />
           </div>

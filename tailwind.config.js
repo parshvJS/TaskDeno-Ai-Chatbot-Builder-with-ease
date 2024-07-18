@@ -39,9 +39,6 @@ module.exports = {
         gray: {
           1: "#71788B",
         },
-        borderRadius: {
-          'lg': '14px', // Custom value for rounded-lg
-        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

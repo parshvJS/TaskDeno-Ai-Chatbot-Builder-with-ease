@@ -33,12 +33,14 @@ html {
   left: 0px;
   fill: rgb(255, 208, 0)
 }
+
 /* Ensure this part remains unchanged */
 @keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translate3d(0, 100%, 0);
   }
+
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0);
@@ -46,7 +48,8 @@ html {
 }
 
 .animate-fadeInUp {
-  animation: fadeInUp 1.5s ease-out forwards; /* Adjusted for a smoother, longer animation */
+  animation: fadeInUp 1.5s ease-out forwards;
+  /* Adjusted for a smoother, longer animation */
 }
 
 /* Adjusted delays for a smoother sequence */
@@ -63,7 +66,7 @@ html {
 }
 
 @layer utilities {
-
+  
   .slim-border {
     @apply border-2 border-gray-200 rounded-md
   }
@@ -133,7 +136,7 @@ html {
   }
 
   .text-24 {
-    @apply text-[24px] leading-normal;
+    @apply text-[24px] leading-[25px];
   }
 
   .text-32 {
