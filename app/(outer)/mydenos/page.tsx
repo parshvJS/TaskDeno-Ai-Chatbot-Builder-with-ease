@@ -46,6 +46,7 @@ const MyDeno = () => {
   const { userId } = useAuth();
   const { project, setProject } = useContext(projectContext);
   const [loading, isLoading] = useState(false);
+  const [activeEditingMode, setActiveEditingMode] = useState(-1)
   const router = useRouter();
   const params = useParams()
   const uId = params.userId;
@@ -172,16 +173,17 @@ const MyDeno = () => {
                           <FormControl>
                             <section className='flex gap-4 w-full h-full mt-5'>
                               <div
+                                onClick={() => setActiveEditingMode(0)}
                                 className={cn(
-                                  'flex flex-col justify-center items-center h-[240px] w-1/2 rounded-lg hover:bg-yellow-100 transition-all',
+                                  `flex flex-col justify-center items-center h-[240px] w-1/2 rounded-lg hover:bg-yellow-100 transition-all ${activeEditingMode == 0 && "bg-yellow-4 hover:bg-yellow-4"}`,
                                 )}
                               >
-                                <div className='flex gap-2 flex-col justify-center items-center cursor-pointer'>
+                                <div className='flex gap-2 flex-col justify-center items-center cursor-pointer '>
                                   <div>
                                     <Image
-                                      src={'/images/scratch.png'}
-                                      width={120}
-                                      height={120}
+                                      src={'/images/empty-illu.svg'}
+                                      width={150}
+                                      height={150}
                                       alt='using scratch'
                                     />
                                     <p className='text-16 font-medium text-black text-center'>
@@ -190,12 +192,16 @@ const MyDeno = () => {
                                   </div>
                                 </div>
                               </div>
-                              <div className='flex flex-col justify-center items-center h-[240px] w-1/2 rounded-lg hover:bg-yellow-100 transition-all'>
+                              <div
+                                onClick={() => setActiveEditingMode(1)}
+                                className={cn(
+                                  `flex flex-col justify-center items-center h-[240px] w-1/2 rounded-lg hover:bg-yellow-100 transition-all ${activeEditingMode == 1 && "bg-yellow-4 hover:bg-yellow-4"}`,
+                                )}>
                                 <div className='flex gap-2 flex-col justify-center items-center cursor-pointer'>
                                   <Image
-                                    src={'/images/useTemplate.png'}
-                                    width={120}
-                                    height={120}
+                                    src={'/images/useTemplate.svg'}
+                                    width={150}
+                                    height={150}
                                     alt='using Template'
                                   />
                                   <p className='text-16 font-medium text-black text-center'>

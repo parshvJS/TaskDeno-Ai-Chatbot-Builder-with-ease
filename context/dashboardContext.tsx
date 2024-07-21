@@ -7,10 +7,6 @@ const INITIAL_DASHBOARD_DATA = {
     isUserAuth: false,
     scriptTag: "",
     isScriptTagAvailable: false,
-    marginBottom: 30,
-    marginRight: 30,
-    userChatbotName: "Task Deno | Firola",
-    userChatbotImage: "https://res.cloudinary.com/dwhmpzqzq/image/upload/v1720679740/a7wafzvm4qthwpoegmh1.png",
 };
 
 const INITIAL_DASHBOARD_CONTEXT = {
@@ -71,10 +67,6 @@ export const DashdataProvider = ({ children }: { children: React.ReactNode }) =>
             }
             console.log(data.data, "is here ----------------====");
             setDashdata({
-                marginBottom: data?.data?.marginBottom || 30,
-                marginRight: data?.data?.marginRight || 30,
-                userChatbotName: data?.data?.userChatbotName || "Task Deno | Firola",
-                userChatbotImage: data?.data?.userChatbotImage || "https://res.cloudinary.com/dwhmpzqzq/image/upload/v1720679740/a7wafzvm4qthwpoegmh1.png",
                 isUserAuth: data.isUserAuth,
                 scriptTag: data?.data?.scriptTag || "",
                 isScriptTagAvailable: data?.data?.isScriptTagAvailable || false,

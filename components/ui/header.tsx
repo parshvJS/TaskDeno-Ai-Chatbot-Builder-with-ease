@@ -30,9 +30,9 @@ export default function Header() {
                     isSignedIn ?
                       (
                         <div className='flex gap-2 '>
-                          <a className="btn text-white-1 bg-yellow-400 hover:bg-yellow-500 w-[120px] h-[40px] mb-4 sm:w-auto sm:mb-0 gap-2 flex" href="/sign-up" >
+                          <Link className="btn text-white-1 bg-yellow-400 hover:bg-yellow-500 w-[120px] h-[40px] mb-4 sm:w-auto sm:mb-0 gap-2 flex" href="/mydenos" >
                             Go To Dashboard
-                          </a>
+                          </Link>
                         </div>
                       ) :
                       (

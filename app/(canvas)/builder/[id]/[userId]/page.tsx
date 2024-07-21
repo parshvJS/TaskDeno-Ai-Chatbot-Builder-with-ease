@@ -62,7 +62,6 @@ export default function App() {
       setAiPrompt(data.aiPrompts)
       setAiModel(data.aiModel)
       // const currentNode = nodes.filter((node:object)=> (node.id !== 'Group-22Zl'))
-
     }
     fetchData();
     return () => {

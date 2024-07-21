@@ -1,13 +1,269 @@
+'use client'
 import { Label } from '@/components/ui/label';
-import { useAuth } from '@clerk/nextjs';
 import { useParams } from 'next/navigation';
-import React from 'react'
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ReactChatbotUi from '@/chat-template/ReactChatbotUi';
+import { Axis3D, ChevronDown, ChevronUp, CloudUpload, LoaderPinwheel, Pencil } from 'lucide-react';
+import axios from 'axios';
+import { useToast } from '@/components/ui/use-toast';
+import { defaultFaq } from '@/constants/constants';
+import Image from 'next/image';
+import { FileWithPath, useDropzone } from 'react-dropzone';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
 
 function page() {
+
+  const { toast } = useToast()
+  const [isPageLoading, setIsPageLoading] = useState(true)
+
+  const params: { chatbotId: string, userId: string } = useParams()
+  const projectIdParams = params.chatbotId || params.chatbotId[0];
+  const defaultLargeUrl = "http://res.cloudinary.com/dkl9wgs72/image/upload/v1721543254/uefxj30fqes4uasuldzv.png";
+  const defaultSmallUrl = "https://img.icons8.com/?size=100&id=7859&format=png&color=FFFFFF";
+  // user controllable data
+  const [marginBottom, setMarginBottom] = useState(30);
+  const [marginRight, setMarginRight] = useState(30);
+  const [chatbotName, setChatbotName] = useState("Task Deno | Filora")
+  const [roundedTheme, setRoundedTheme] = useState(5)
+  const [panelWidth, setPanelWidth] = useState(400)
+  const [chatbotLargeLogo, setChatbotLargeLogo] = useState("http://res.cloudinary.com/dkl9wgs72/image/upload/v1721543254/uefxj30fqes4uasuldzv.png")
+  const [chatbotSmallLogo, setChatbotSmallLogo] = useState("https://img.icons8.com/?size=100&id=7859&format=png&color=EEFF00")
+  const [colorTheme, setColorTheme] = useState("#eeff00");
+  const [welcomeText, setWelcomeText] = useState("Hello, How can I help you today?")
+  const [faq, setFaq] = useState(defaultFaq)
+  const [largeImageLoading, setLargeImageLoading] = useState(false)
+  const [smallImageLoading, setSmallImageLoading] = useState(false)
+  const [isSaveLoading, setIsSaveLoading] = useState(false)
+  {/* 1. faq 2.isShowSection 2.isShowQuestion 3.currentQuestion 4. currentPreviewAnswer 5.currentWholeAnswer 
+                                                                  1.currentHeader   2. currentPreview 3.
+                      */}
+  // faq
+  const [isPrevFaqShowing, setPrevFaqShowing] = useState(false)
+  const [isShowingSection, setIsShowingSection] = useState(false);
+  const [isShowingQuestion, setIsShowingQuestion] = useState(false);
+  // section state
+  const [activeSection, setActiveSection] = useState(-1)
+  const [currentHeader, setCurrentHeader] = useState("")
+  const [currentPreview, setCurrentPreview] = useState("")
+  //question state
+  const [currentQuestion, setCurrentQuestion] = useState("")
+  const [currentPreviewAnswer, setCurrentPreviewAnswer] = useState("")
+  const [currentWholeAnswer, setCurrentWholeAnswer] = useState("")
+
+  // upload large logo
+  const onLargeFileUpload = useCallback(async (acceptedFiles: FileWithPath[]) => {
+    setLargeImageLoading(true)
+    const file = acceptedFiles[0] || acceptedFiles;
+    const form = new FormData();
+    form.append('file', file);
+    const res = await axios.post('/api/upload-image', form)
+    const url = res.data.data;
+    setChatbotLargeLogo(url!);
+    setLargeImageLoading(false)
+  }, []);
+
+  // upload small logo
+  const onSmallFileUpload = useCallback(async (acceptedFiles: FileWithPath[]) => {
+    setSmallImageLoading(true)
+    const file = acceptedFiles[0] || acceptedFiles;
+    const form = new FormData();
+    form.append('file', file);
+    const res = await axios.post('/api/upload-image', form)
+    const url = res.data.data;
+    setChatbotSmallLogo(url!);
+    setSmallImageLoading(false)
+  }, []);
+
+  const {
+    getRootProps: getLargeFileRootProps,
+    getInputProps: getLargeFileInputProps,
+    isDragActive: isLargeFileDragActive,
+  } = useDropzone({ onDrop: onLargeFileUpload });
+
+  const {
+    getRootProps: getSmallFileRootProps,
+    getInputProps: getSmallFileInputProps,
+    isDragActive: isSmallFileDragActive,
+  } = useDropzone({ onDrop: onSmallFileUpload });
+
+  //set previous value on load
+  useEffect(() => {
+    async function fetchPreviousStyle() {
+      try {
+        if (!projectIdParams) {
+          return;
+        }
+
+        const res = await axios.post('/api/getPreviousChatbotUi', {
+          projectId: projectIdParams
+        })
+
+        if (res.data.statuscode > 200) {
+          return;
+        }
+
+        const cookedRes = res.data?.data;
+
+        // setting values
+        setMarginBottom(cookedRes.marginBottom)
+        setMarginRight(cookedRes.marginRight)
+        setChatbotName(cookedRes.chatbotName)
+        setRoundedTheme(cookedRes.roundedTheme)
+        setPanelWidth(cookedRes.panelWidth)
+        setChatbotLargeLogo(cookedRes.chatbotLargeLogo)
+        setChatbotSmallLogo(cookedRes.chatbotSmallLogo)
+        setColorTheme(cookedRes.colorTheme)
+        setWelcomeText(cookedRes.welcomeText)
+        setFaq(cookedRes.faq)
+      } catch (error: any) {
+        toast({
+          title: "Can't Load Your Data!",
+          description: error.message,
+          variant: "destructive"
+        })
+      } finally {
+        setIsPageLoading(false)
+      }
+    }
+    fetchPreviousStyle()
+  }, [projectIdParams])
+
+  async function handleSave(e: any) {
+    e.preventDefault()
+    try {
+      setIsSaveLoading(true)
+      const res = await axios.post('/api/saveChatbotUiChanges', {
+        projectId: projectIdParams,
+        marginBottom,
+        marginRight,
+        chatbotName,
+        roundedTheme,
+        panelWidth,
+        chatbotLargeLogo,
+        chatbotSmallLogo,
+        colorTheme,
+        welcomeText,
+        faq
+      })
+
+      if (res.data.statuscode > 200) {
+        toast({
+          title: "Can't Save Your Data!",
+          description: res.data.message,
+          variant: "destructive"
+        })
+        return;
+      }
+
+      toast({
+        title: "Data Saved Successfully!",
+        description: "Your data has been saved successfully.",
+        variant: "success"
+      })
+
+    } catch (error: any) {
+      toast({
+        title: "Can't Save Your Data!",
+        description: error.message,
+        variant: "destructive"
+      })
+    } finally {
+      setIsSaveLoading(false)
+    }
+  }
+
+
+
+  // forms 
+  const contentSchema = z.object({
+    chatbotName: z.string().min(3, "Name must be atleast 3 characters long").max(20, "Name must be atmost 20 characters long"),
+    welcomeText: z.string().min(3, "Welcome text must be atleast 3 characters long").max(35, "Welcome text must be atmost 35 characters long")
+  })
+  const contentForm = useForm<z.infer<typeof contentSchema>>({
+    resolver: zodResolver(contentSchema),
+    defaultValues: {
+      chatbotName: "Task Deno | Filora",
+      welcomeText: "Hello, How can I help you today?"
+    },
+  })
+
+  useEffect(() => {
+    // Step 1: Clone the FAQ array
+    const updatedFaq = [...faq];
+  
+    // Step 2: Update the specific section directly
+    if (updatedFaq[activeSection]) {
+      updatedFaq[activeSection].header = currentHeader;
+      updatedFaq[activeSection].preview = currentPreview;
+    }
+  
+    // Step 3: Set the updated array to state
+    setFaq(updatedFaq);
+  }, [currentHeader, currentPreview]);
+
+  // js boundry
+  if (isPageLoading) {
+    return <div className='flex flex-col h-[96%] w-full'>
+      {/* <section className='flex flex-col gap-4 w-fit mb-5'>
+        <Label className='text-page-header'>Customize Appearence & Theme</Label>
+      </section> */}
+
+      <section className='w-full h-full flex rounded-md slim-border'>
+        <div className='w-[50%] h-full p-5'>
+
+          <div className=' w-full h-full flex justify-center items-center flex-col'>
+            <LoaderPinwheel width={30} height={30} className='animate-spin text-gray-600' />
+            <p className='text-16  font-semibold text-gray-600'>Mounting Styles that Converts!</p>
+          </div>
+        </div>
+        <div className='w-[50%] h-full bg-gray-100 p-4'>
+          <div className='w-full h-full flex justify-center items-center flex-col'>
+            <LoaderPinwheel width={30} height={30} className='animate-spin text-gray-600' />
+            <p className='text-16  font-semibold text-gray-600'>Managing Chatbot Beauty!</p>
+          </div>
+        </div>
+
+      </section>
+    </div>
+  }
+
+
+
   return (
-    <div className='flex flex-col h-[96%] w-full'>
+    <div className='flex flex-col h-[96%] w-full' >
       {/* <section className='flex flex-col gap-4 w-fit mb-5'>
         <Label className='text-page-header'>Customize Appearence & Theme</Label>
       </section> */}
@@ -15,19 +271,302 @@ function page() {
       <section className='w-full h-full flex rounded-md slim-border'>
         <div className='w-[50%] h-full p-5'>
           <section className='flex flex-col gap-4 w-fit mb-5'>
-            <Label className='text-18 '>Customize Chatbot Looks</Label>
+            <Label className='text-18 '>Customize Chatbot Appearence To Users</Label>
           </section>
 
 
-          {/* tabs */}
-          <Tabs defaultValue="element" className="w-[400px]">
-            <TabsList className='bg-yellow-3' >
-              <TabsTrigger value="element" className='text-black' >UI Elements</TabsTrigger>
-              <TabsTrigger value="styling" className='text-black'>Styling Theming</TabsTrigger>
+          <Tabs defaultValue="brand">
+            <TabsList className='bg-yellow-4 w-[215px]' >
+              <TabsTrigger value="brand" className='text-black'>Branding</TabsTrigger>
+              <TabsTrigger value="size" className='text-black'>Size</TabsTrigger>
+              <TabsTrigger value="content" className='text-black'>Content</TabsTrigger>
             </TabsList>
-            <TabsContent value="element">Make changes to your account here.</TabsContent>
-            <TabsContent value="styling">
 
+
+            <TabsContent value="brand" className='mt-5 flex flex-col gap-2 justify-between' >
+              <div className='w-full flex gap-2'>
+                <div className='w-1/2 flex flex-col gap-2'>
+                  <p className='font-semibold text-16 ' >Upload Large Logo</p>
+                  <div {...getLargeFileRootProps()} className="dropzone">
+                    <input {...getLargeFileInputProps()} accept='image/*' />
+                    {
+                      isLargeFileDragActive ?
+                        <div className='w-full h-48 bg-gray-200 rounded-md flex flex-col justify-center items-center border-2 border-dashed border-gray-1'>
+                          <div className='flex justify-center items-center bg-gray-300 p-3 rounded-full'>
+                            <CloudUpload />
+                          </div>
+                          <p className='font-semibold text-16'>Drag File Till Here ...</p>
+                        </div> :
+
+                        largeImageLoading ? <div className='w-full h-48 bg-gray-200 rounded-md flex flex-col justify-center items-center border-2 border-dashed border-yellow-6 '>
+                          <div className='flex justify-center items-center bg-gray-300 p-3 rounded-full'>
+                            <CloudUpload />
+                          </div>
+                          <p className='font-semibold text-16'>Uploading...</p>
+                        </div> : <div className='w-full h-48 bg-gray-200 rounded-md flex flex-col justify-center items-center gap-4'>
+                          <div className='flex justify-center items-center bg-gray-500 p-3 rounded-full'>
+                            <CloudUpload />
+                          </div>
+                          <p className='font-semibold text-14 text-gray-1'>Drag Or Upload Large Logo Of Your Brand</p>
+                        </div>
+
+
+                    }
+                  </div>
+                </div>
+
+
+                <div className='w-1/2 flex flex-col gap-2'>
+                  <p className='font-semibold text-16 ' >Upload Small Logo</p>
+                  <div {...getSmallFileRootProps()} className="dropzone">
+                    <input {...getSmallFileInputProps()} accept='image/*' />
+                    {
+                      isSmallFileDragActive ?
+                        <div className='w-full h-48 bg-gray-200 rounded-md flex flex-col justify-center items-center border-2 border-dashed border-gray-1'>
+                          <div className='flex justify-center items-center bg-gray-300 p-3 rounded-full'>
+                            <CloudUpload />
+                          </div>
+                          <p className='font-semibold text-16'>Drag File Till Here ...</p>
+                        </div> :
+
+                        smallImageLoading ? <div className='w-full h-48 bg-gray-200 rounded-md flex flex-col justify-center items-center border-2 border-dashed border-yellow-6 '>
+                          <div className='flex justify-center items-center bg-gray-300 p-3 rounded-full'>
+                            <CloudUpload />
+                          </div>
+                          <p className='font-semibold text-16'>Uploading...</p>
+                        </div> : <div className='w-full h-48 bg-gray-200 rounded-md flex flex-col justify-center items-center gap-4'>
+                          <div className='flex justify-center items-center bg-gray-500 p-3 rounded-full'>
+                            <CloudUpload />
+                          </div>
+                          <p className='font-semibold text-14 text-gray-1'>Drag Or Upload Small Logo Of Your Brand</p>
+                        </div>
+
+
+                    }
+                  </div>
+                </div>
+              </div>
+
+
+              {
+                (chatbotLargeLogo != defaultLargeUrl || chatbotSmallLogo != defaultSmallUrl) &&
+                (chatbotLargeLogo && chatbotSmallLogo) &&
+                <div className='w-full flex gap-2'>
+                  <div className='w-1/2 rounded-md'>
+                    <p className='font-semibold text-16'>Current Large Logo</p>
+                    <Image src={chatbotLargeLogo} width={100} height={100} alt='logo large' className='min-w-full bg-gray-300 p-2 max-h-[100px] rounded-md' />
+                  </div>
+                  <div className='w-1/2 rounded-md'>
+                    <p className='font-semibold text-16'>Current Small Logo</p>
+                    <Image src={chatbotSmallLogo} width={100} height={100} alt='logo small' className='bg-gray-300 p-4 min-w-fit max-h-[100px] rounded-md' />
+                  </div>
+                </div>
+              }
+
+              <div className='flex gap-2'>
+                <p className='font-semibold text-16'>Select Color Theme</p>
+                <input
+                  type="color"
+                  value={colorTheme}
+                  onChange={(e) => setColorTheme(e.target.value)}
+                />
+
+              </div>
+              <Button onClick={handleSave} className='text-black hover:bg-yellow-2'>
+                {
+                  isSaveLoading ? <div className='flex gap-2'>
+                    <LoaderPinwheel width={20} height={20} className='animate-spin text-black' />
+                    <p>Saving Changes</p>
+                  </div> : <p>Save</p>
+                }
+              </Button>
+            </TabsContent>
+            <TabsContent value="size">
+              {/* margin,panel width,rounded, */}
+
+              <div className='flex gap-2 flex-col'>
+                <p className='font-semibold text-16'>Margin Bottom</p>
+                <input
+                  min={30}
+                  max={80}
+                  type="number"
+                  value={marginBottom}
+                  onChange={(e) => setMarginBottom(parseInt(e.target.value))}
+                  className='border-2 border-gray-400 p-2 rounded-md'
+                />
+              </div>
+              <div className='flex gap-2 flex-col mt-5'>
+                <p className='font-semibold text-16'>Margin Bottom</p>
+                <input
+                  min={30}
+                  max={120}
+                  type="number"
+                  value={marginRight}
+                  onChange={(e) => setMarginRight(parseInt(e.target.value))}
+                  className='border-2 border-gray-400 p-2 rounded-md'
+                />
+              </div>
+              <div className='flex gap-2 flex-col mt-5'>
+                <p className='font-semibold text-16'>Panel Width</p>
+                <input
+                  min={400}
+                  max={800}
+                  type="number"
+                  value={panelWidth}
+                  onChange={(e) => setPanelWidth(parseInt(e.target.value))}
+                  className='border-2 border-gray-400 p-2 rounded-md'
+                />
+              </div>
+              <div className='flex gap-2 flex-col mt-5'>
+                <p className='font-semibold text-16'>Button Circular </p>
+                <input
+                  max={30}
+                  type="number"
+                  value={roundedTheme}
+                  onChange={(e) => setRoundedTheme(parseInt(e.target.value))}
+                  className='border-2 border-gray-400 p-2 rounded-md'
+                />
+              </div>
+            </TabsContent>
+            <TabsContent value="content" className='flex flex-col gap-3'>
+              <Label className='text-14 mt-4'>Chatbot Name</Label>
+              <Input
+                label="Chatbot Name"
+                placeholder="Enter Chatbot Name"
+                {...contentForm.register("chatbotName")}
+                error={contentForm.formState.errors.chatbotName?.message}
+                value={chatbotName}
+                onChange={(e) => setChatbotName(e.target.value)}
+              />
+              {/* welcome text */}
+              {/* adding mordern label */}
+              <Label className='text-14 mt-4'>Welcome Text</Label>
+              <Input
+                label="Welcome Text"
+                placeholder="Enter Welcome Text"
+                {...contentForm.register("welcomeText")}
+                error={contentForm.formState.errors.welcomeText?.message}
+                value={welcomeText}
+                onChange={(e) => setWelcomeText(e.target.value)}
+              />
+              <Label className='text-14 mt-4'>Edit Frequenctly Asked Question</Label>
+
+              <Sheet >
+                <SheetTrigger>
+                  <div className='border border-gray-300 hover:bg-gray-300 p-2 rounded-md transition-all text-14 '>
+                    Add FAQs
+                  </div>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Add Frequencly Asked Question</SheetTitle>
+                    <SheetDescription>
+
+
+                      <div className="w-full">
+                        <Button
+                          onClick={() => setPrevFaqShowing(!isPrevFaqShowing)}
+                          variant={"ghost"}
+                          className='bg-gray-300 w-full flex justify-between items-center p-2'
+                        >
+                          Expand Faq's
+                          {isPrevFaqShowing ? <ChevronUp /> : <ChevronDown />}
+                        </Button>
+
+                        {isPrevFaqShowing && (
+                          <ScrollArea className='w-full h-full flex flex-col gap-4'>
+                            {faq.map((section, index) => (
+                              <div
+                                key={index}
+                                className={`w-full h-fit rounded-md border border-gray-300 p-2 mt-2 transition-transform duration-500 ease-out transform ${isPrevFaqShowing ? `translate-y-${index * 10}` : 'translate-y-0'
+                                  }`}
+                                style={{ transitionDelay: `${index * 100}ms` }}
+                              >
+                                <div className='font-semibold flex flex-col gap-2 text-black'>
+                                  <p>{section.header}</p>
+                                  <p>{section.preview}</p>
+                                  <div className='flex gap-2 w-full justify-between'>
+                                    <p className='font-thin text-gray-500'>{section.qna.length} Articles</p>
+                                    <Sheet>
+                                      <SheetTrigger>
+                                        <div className='rounded-md hover:bg-gray-300 p-2 px-1' onClick={() => setActiveSection(index)}>
+                                          Edit Sections & QA
+                                        </div>
+                                      </SheetTrigger>
+                                      <SheetContent>
+                                        <Label className='font-semibold text-14'>Change Header</Label>
+                                        <Input
+                                          defaultValue={faq[activeSection]?.header}
+                                          onChange={(e) => setCurrentHeader(e.target.value)} />
+                                        <Label className='font-semibold text-14'>Change Preview</Label>
+                                        <Input
+                                          
+                                          defaultValue={faq[activeSection]?.preview}
+                                          onChange={(e) => setCurrentPreview(e.target.value)} />
+                                        <Label className='font-semibold text-14'>Section Questions</Label>
+                                        {
+                                          faq[activeSection]?.qna?.map((qa) => {
+                                            return (
+                                              <div className='flex flex-col gap-2 mt-2 rounded-md border-2 border-gray-1 p-2'>
+                                                <p>{qa.question}</p>
+                                                <p>{qa.previewAnswer}</p>
+
+                                                <Dialog>
+                                                  <DialogTrigger>
+                                                    <button className=' hover:bg-gray-300 rounded-md text-black flex justify-center items-center gap-2 w-fit p-1'>
+                                                      <Pencil width={15} height={15} />
+                                                      Edit
+                                                    </button>
+                                                  </DialogTrigger>
+                                                  <DialogContent>
+                                                    <DialogHeader>
+                                                      <DialogTitle>Are you absolutely sure?</DialogTitle>
+                                                      <DialogDescription>
+                                                        This action cannot be undone. This will permanently delete your account
+                                                        and remove your data from our servers.
+                                                      </DialogDescription>
+                                                    </DialogHeader>
+                                                  </DialogContent>
+                                                </Dialog>
+
+                                              </div>
+                                            )
+                                          })}
+
+                                      </SheetContent>
+                                    </Sheet>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </ScrollArea>
+                        )}
+                      </div>
+
+
+
+
+                      {/* add new section - add new question   */}
+                      {/* 1. section cant be empty  2. section must have 1 question in it */}
+                      {/* ds : 
+                        [
+                          {
+                            id:1,
+                            header:"sfsd",
+                            preview:"sdfsdf",
+                            questions:[
+                              question:
+                              preview:
+                              wholeAnswer:
+                              ]
+                          }
+                        ]
+                      */}
+
+                    </SheetDescription>
+                  </SheetHeader>
+                </SheetContent>
+              </Sheet>
 
             </TabsContent>
           </Tabs>
@@ -39,30 +578,20 @@ function page() {
             <Label className='text-18 '>Preview Design</Label>
           </section>
           <div className='w-full h-full'>
+
             <ReactChatbotUi
               project={{
-                panelWidth: 400,
-                starterMessage: 'Welcome to Task Deno | Filora',
-                colorTheme: '#441EEC',
-                marginBottom: 30,
-                marginRight: 30,
-                userChatbotName: 'Task Deno | Filora',
-                userChatbotImage: 'https://dstal.com.au/wp-content/uploads/2021/09/logoipsum-768x360.png',
-                userChatbotLogo: 'https://img.icons8.com/?size=100&id=7859&format=png&color=000000',
-                borderRadius: 10,
-                welcomeText: 'Hello! What Is Your Question?',
-                faq: [
-                  {
-                    question: 'Where can I contact you?',
-                    previewAnswer: 'You can contact us through the following channels:',
-                    wholeAnswer: '<p>You can contact us through the following channels:</p><ul><li><b>Email:</b> find in footer</li><li><b>Phone:</b> find in footer</li><li><b>Live Chat:</b> Visit our website and click on the live chat button</li></ul>'
-                  }
-                ],
-                contact: {
-                  email: 'find in footer',
-                  phone: 'find in footer',
-                  liveChat: 'Visit our website and click on the live chat button'
-                }
+                panelWidth: panelWidth || 400,
+                starterMessage: welcomeText || "Hello, How can I help you today?",
+                colorTheme: colorTheme || "#eeff00",
+                marginBottom: marginBottom || 30,
+                marginRight: marginRight || 30,
+                userChatbotName: chatbotName || "Task Deno | Filora",
+                userChatbotImage: chatbotLargeLogo || "http://res.cloudinary.com/dkl9wgs72/image/upload/v1721543254/uefxj30fqes4uasuldzv.png",
+                userChatbotLogo: chatbotSmallLogo || "https://img.icons8.com/?size=100&id=7859&format=png&color=FFFFFF",
+                borderRadius: roundedTheme || 10,
+                welcomeText: welcomeText || "Hello, How can I help you today?",
+                faq: faq || defaultFaq,
               }}
             />
           </div>

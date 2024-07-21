@@ -6,7 +6,15 @@ export const INITIAL_PROJECT_DATA = {
     project_id: "",
     project_name: "",
     variables: [],
-    nodes: [],
+    nodes: [{
+        id: 'start101',
+        type: 'startNode',
+        data: { label: 'Start' },
+        position: {
+            x: 518,
+            y: 246
+        },
+    }],
     edges: [],
     aiPrompts: [],
     aiModel: "GPT-3.5"

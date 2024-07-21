@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { boolean, number, string } from "zod";
+
 const projectSchema = new mongoose.Schema({
     userId: {
         type: String,
@@ -10,26 +11,34 @@ const projectSchema = new mongoose.Schema({
         required: true
     },
     nodes: {
-        type: [],
-        default: [{
-            id: 'start101',
-            type: 'startNode',
-            data: { label: 'Start' },
-            position: {
-                x: 518,
-                y: 246
-            },
-        }]
+        type: {
+            type: Array,
+            default: function (){
+                return () => [{
+                    id: 'start101',
+                    type: 'startNode',
+                    data: { label: 'Start' },
+                    position: {
+                        x: 518,
+                        y: 246
+                    },
+                }]
+            }
+        }
     },
     edges: {
-        type: [],
+        type: Array,
+        default: []
     },
     variables: {
-        type: [],
-        default: ['user_name', 'user_location', 'user_contact_no']
+        type: {
+            type: Array,
+            default: () => ['user_name', 'user_location', 'user_contact_no']
+        }
     },
     aiPrompts: {
-        type: [],
+        type: Array,
+        default: []
     },
     aiModel: {
         type: String,
@@ -45,8 +54,8 @@ const projectSchema = new mongoose.Schema({
     embedId: {
         type: Number
     }
-}, { timestamps: true })
+}, { timestamps: true });
 
 const Project = mongoose.models.Project || mongoose.model("Project", projectSchema);
 
-export default Project
+export default Project;

@@ -1,3 +1,4 @@
+import { defaultFaq } from '@/constants/constants';
 import mongoose from 'mongoose'
 
 // // 1. chatbot open button logo
@@ -36,39 +37,24 @@ const chatbotCustomUi = new mongoose.Schema({
     },
     chatbotLargeLogo: {
         type: String,
-        default: "https://placehold.co/600x400"
+        default: "https://dstal.com.au/wp-content/uploads/2021/09/logoipsum-768x360.png"
     },
     chatbotSmallLogo: {
         type: String,
-        default: "https://placehold.co/200x200"
+        default: "https://img.icons8.com/?size=100&id=7859&format=png&color=FFFFFF"
     },
     colorTheme: {
         type: String,
         default: "#eeff00"
     },
+
     welcomText: {
         type: String,
-        default: "Hello, I am your assistant. How can I help you today?"
+        default: "Hello! How can I help you today?"
     },
     faq: {
         type: [],
-        default: [
-            {
-                question: "Where can I contact you?",
-                previewAnswer: "You can contact us through the following channels:",
-                wholeAnswer: "<p>You can contact us through the following channels:</p><ul><li><b>Email:</b> find in footer</li><li><b>Phone:</b> find in footer</li><li><b>Live Chat:</b> Visit our website and click on the live chat button</li></ul>"
-            },
-            {
-                question: "What are your working hours?",
-                previewAnswer: "Our working hours are as follows:",
-                wholeAnswer: "<p>Our working hours are as follows:</p><ul><li><b>Monday - Friday:</b> 9:00 AM - 5:00 PM</li><li><b>Saturday:</b> 9:00 AM - 1:00 PM</li><li><b>Sunday:</b> Closed</li></ul>"
-            },
-            {
-                question: "Do you offer refunds?",
-                previewAnswer: "Yes, we offer refunds under the following conditions:",
-                wholeAnswer: "<p>Yes, we offer refunds under the following conditions:</p><ul><li><b>Unused Services:</b> Refunds are available for unused services within 30 days of purchase.</li><li><b>Product Defects:</b> Refunds are available for products with defects within 14 days of purchase.</li><li><b>Change of Mind:</b> Refunds are not available for change of mind.</li></ul>"
-            }
-        ]
+        default: defaultFaq
     },
     contact: {
         type: [],
