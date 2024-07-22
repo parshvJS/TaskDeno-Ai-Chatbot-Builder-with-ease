@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ReactChatbotUi from '@/chat-template/ReactChatbotUi';
-import { Axis3D, ChevronDown, ChevronUp, CloudUpload, LoaderPinwheel, Pencil } from 'lucide-react';
+import { Axis3D, ChevronDown, ChevronUp, CloudUpload, LoaderPinwheel, Pencil, Trash2 } from 'lucide-react';
 import axios from 'axios';
 import { useToast } from '@/components/ui/use-toast';
 import { defaultFaq } from '@/constants/constants';
@@ -42,6 +42,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { set } from 'mongoose';
 
 
 function page() {
@@ -67,6 +68,7 @@ function page() {
   const [largeImageLoading, setLargeImageLoading] = useState(false)
   const [smallImageLoading, setSmallImageLoading] = useState(false)
   const [isSaveLoading, setIsSaveLoading] = useState(false)
+  const [open, setOpen] = useState(false)
   {/* 1. faq 2.isShowSection 2.isShowQuestion 3.currentQuestion 4. currentPreviewAnswer 5.currentWholeAnswer 
                                                                   1.currentHeader   2. currentPreview 3.
                       */}
@@ -82,6 +84,8 @@ function page() {
   const [currentQuestion, setCurrentQuestion] = useState("")
   const [currentPreviewAnswer, setCurrentPreviewAnswer] = useState("")
   const [currentWholeAnswer, setCurrentWholeAnswer] = useState("")
+  const [currentQna, setCurrentQna] = useState(-1)
+  const [currentDelQna, setCurrentDelQna] = useState(-1)
 
   // upload large logo
   const onLargeFileUpload = useCallback(async (acceptedFiles: FileWithPath[]) => {
@@ -223,17 +227,153 @@ function page() {
   useEffect(() => {
     // Step 1: Clone the FAQ array
     const updatedFaq = [...faq];
-  
+
     // Step 2: Update the specific section directly
     if (updatedFaq[activeSection]) {
       updatedFaq[activeSection].header = currentHeader;
       updatedFaq[activeSection].preview = currentPreview;
     }
-  
+
     // Step 3: Set the updated array to state
     setFaq(updatedFaq);
   }, [currentHeader, currentPreview]);
 
+  useEffect(() => {
+    setCurrentQuestion(faq[activeSection]?.qna[currentQna]?.question)
+    setCurrentPreviewAnswer(faq[activeSection]?.qna[currentQna]?.previewAnswer)
+    setCurrentWholeAnswer(faq[activeSection]?.qna[currentQna]?.wholeAnswer)
+
+  }, [currentQna])
+
+  useEffect(() => {
+
+    if (currentQna > -1) {
+      // Step 1: Clone the FAQ array
+      const updatedFaq = [...faq];
+
+      // Step 2: Update the specific question directly
+      if (updatedFaq[activeSection]?.qna[currentQna]) {
+        updatedFaq[activeSection].qna[currentQna].question = currentQuestion;
+        updatedFaq[activeSection].qna[currentQna].previewAnswer = currentPreviewAnswer;
+        updatedFaq[activeSection].qna[currentQna].wholeAnswer = currentWholeAnswer;
+      }
+
+      // Step 3: Set the updated array to state
+      setFaq(updatedFaq);
+    }
+  }, [currentQuestion, currentPreviewAnswer, currentWholeAnswer])
+
+  function handleAddSection(e) {
+    e.preventDefault()
+    if (currentHeader.length < 1 || currentPreview.length < 1) {
+      toast({
+        title: "Can't Add Section!",
+        description: "All fields are required to add a section.",
+        variant: "destructive"
+      })
+      return;
+    }
+    // Step 1: Clone the FAQ array
+    const updatedFaq = [...faq];
+
+    // Step 2: Update the specific section directly
+    updatedFaq.push({
+      header: currentHeader,
+      preview: currentPreview,
+      qna: []
+    })
+
+    // Step 3: Set the updated array to state
+    setFaq(updatedFaq);
+    setIsShowingSection(false)
+    // Step 4: Clear the input fields
+    setCurrentHeader("");
+    setCurrentPreview("");
+    toast({
+      title: "Section Added",
+      description: "The section has been successfully added.",
+      variant: "success"
+    });
+  }
+
+  function handleDeleteSection(e) {
+    e.preventDefault()
+    // Step 1: Clone the FAQ array
+    const updatedFaq = [...faq];
+
+    // Step 2: Update the specific section directly
+    updatedFaq.splice(activeSection, 1)
+
+    // Step 3: Set the updated array to state
+    setFaq(updatedFaq);
+    // Step 4: Clear the input fields
+    setCurrentHeader("");
+    setCurrentPreview("");
+    toast({
+      title: "Section Deleted",
+      description: "The section has been successfully deleted.",
+      variant: "success"
+    });
+  }
+
+  function addNewQuestion(e) {
+    e.preventDefault()
+    if (currentQuestion.length < 1 || currentPreviewAnswer.length < 1 || currentWholeAnswer.length < 1) {
+      toast({
+        title: "Can't Add Question!",
+        description: "All fields are required to add a question.",
+        variant: "destructive"
+      })
+      return;
+    }
+    // Step 1: Clone the FAQ array
+    const updatedFaq = [...faq];
+
+    // Step 2: Update the specific question directly
+    if (updatedFaq[activeSection]) {
+      updatedFaq[activeSection].qna.push({
+        question: currentQuestion,
+        previewAnswer: currentPreviewAnswer,
+        wholeAnswer: currentWholeAnswer
+      })
+    }
+
+    // Step 3: Set the updated array to state
+    setFaq(updatedFaq);
+    setIsShowingQuestion(false)
+    // Step 4: Clear the input fields
+    setCurrentQuestion("");
+    setCurrentPreviewAnswer("");
+    setCurrentWholeAnswer("");
+    toast({
+      title: "Question Added",
+      description: "The question has been successfully added.",
+      variant: "success"
+    });
+  }
+
+  function handleDeleteQuestion(e) {
+    e.preventDefault()
+    // Step 1: Clone the FAQ array
+    const updatedFaq = [...faq];
+
+    // Step 2: Update the specific question directly
+    if (updatedFaq[activeSection]) {
+      updatedFaq[activeSection].qna.splice(currentDelQna, 1)
+    }
+
+    // Step 3: Set the updated array to state
+    setFaq(updatedFaq);
+    // Step 4: Clear the input fields
+    setCurrentQuestion("");
+    setCurrentPreviewAnswer("");
+    setCurrentWholeAnswer("");
+    toast({
+      title: "Question Deleted",
+      description: "The question has been successfully deleted.",
+      variant: "success"
+    });
+  }
   // js boundry
   if (isPageLoading) {
     return <div className='flex flex-col h-[96%] w-full'>
@@ -381,6 +521,7 @@ function page() {
                 }
               </Button>
             </TabsContent>
+
             <TabsContent value="size">
               {/* margin,panel width,rounded, */}
 
@@ -428,6 +569,7 @@ function page() {
                 />
               </div>
             </TabsContent>
+
             <TabsContent value="content" className='flex flex-col gap-3'>
               <Label className='text-14 mt-4'>Chatbot Name</Label>
               <Input
@@ -460,8 +602,34 @@ function page() {
                 <SheetContent>
                   <SheetHeader>
                     <SheetTitle>Add Frequencly Asked Question</SheetTitle>
-                    <SheetDescription>
+                    <SheetDescription className='w-full flex flex-col gap-5'>
 
+                      <div className='w-full'>
+                        {/* add new section */}
+                        <Button
+                          onClick={() => setIsShowingSection(!isShowingSection)}
+                          variant={"ghost"}
+                          className='bg-gray-300 w-full flex justify-between items-center p-2'
+                        >
+                          Add New FAQ Section
+                        </Button>
+                        {
+                          isShowingSection && <div className='my-5 flex gap-2 flex-col p-3 bg-gray-100 border-2 border-gray-300 rounded-md'>
+                            <Label className='font-semibold text-14'>Add New Section</Label>
+                            <Input
+                              value={currentHeader}
+                              onChange={(e) => setCurrentHeader(e.target.value)}
+                            />
+                            <Label className='font-semibold text-14'>Add Preview</Label>
+                            <Input
+                              value={currentPreview}
+                              onChange={(e) => setCurrentPreview(e.target.value)}
+                            />
+                            <Button onClick={handleAddSection} variant={"ghost"} className='w-full bg-gray-400 text-black'>Save Section</Button>
+                          </div>
+                        }
+
+                      </div>
 
                       <div className="w-full">
                         <Button
@@ -487,6 +655,28 @@ function page() {
                                   <p>{section.preview}</p>
                                   <div className='flex gap-2 w-full justify-between'>
                                     <p className='font-thin text-gray-500'>{section.qna.length} Articles</p>
+                                    <Dialog>
+                                      <DialogTrigger>
+                                        {/* delete button */}
+                                        <button className='text-black hover:text-white-1 p-2 rounded-md flex gap-2 items-center hover:bg-red-400'>
+                                          <Trash2 width={15} height={15} />
+                                          Delete
+                                        </button>
+                                      </DialogTrigger>
+                                      <DialogContent>
+                                        <DialogHeader>
+                                          <DialogTitle>Are you absolutely sure?</DialogTitle>
+                                          <DialogDescription>
+                                            After deleting this section you can't recover it back.
+                                            <Button onClick={handleDeleteSection} variant={"destructive"} className='flex justify-center items-center gap-2 p-1'>
+                                              <Trash2 width={15} height={15} />
+                                              Delete
+                                            </Button>
+                                          </DialogDescription>
+                                        </DialogHeader>
+                                      </DialogContent>
+                                    </Dialog>
+
                                     <Sheet>
                                       <SheetTrigger>
                                         <div className='rounded-md hover:bg-gray-300 p-2 px-1' onClick={() => setActiveSection(index)}>
@@ -494,40 +684,104 @@ function page() {
                                         </div>
                                       </SheetTrigger>
                                       <SheetContent>
+                                        <Button onClick={() => setIsShowingQuestion(!isShowingQuestion)} variant={"ghost"} className='my-3 w-full bg-gray-300 text-black'>
+                                          Add New Question
+                                        </Button>
+                                        {
+                                          isShowingQuestion && <div className='my-5 flex gap-2 flex-col p-3 bg-gray-100 border-2 border-gray-300 rounded-md'>
+                                            <Label className='font-semibold text-14'>Add New Question</Label>
+                                            <Input
+                                              value={currentQuestion}
+                                              onChange={(e) => setCurrentQuestion(e.target.value)}
+                                            />
+                                            <Label className='font-semibold text-14'>Add Preview Answer</Label>
+                                            <Input
+                                              value={currentPreviewAnswer}
+                                              onChange={(e) => setCurrentPreviewAnswer(e.target.value)}
+                                            />
+                                            <Label className='font-semibold text-14'>Add Whole Answer</Label>
+                                            <Input
+                                              value={currentWholeAnswer}
+                                              onChange={(e) => setCurrentWholeAnswer(e.target.value)}
+                                            />
+                                            <Button onClick={addNewQuestion} variant={"ghost"} className='w-full bg-gray-400 text-black'>Save Question</Button>
+                                          </div>
+                                        }
                                         <Label className='font-semibold text-14'>Change Header</Label>
                                         <Input
                                           defaultValue={faq[activeSection]?.header}
                                           onChange={(e) => setCurrentHeader(e.target.value)} />
                                         <Label className='font-semibold text-14'>Change Preview</Label>
                                         <Input
-                                          
                                           defaultValue={faq[activeSection]?.preview}
                                           onChange={(e) => setCurrentPreview(e.target.value)} />
                                         <Label className='font-semibold text-14'>Section Questions</Label>
                                         {
-                                          faq[activeSection]?.qna?.map((qa) => {
+                                          faq[activeSection]?.qna?.map((qa, index) => {
                                             return (
                                               <div className='flex flex-col gap-2 mt-2 rounded-md border-2 border-gray-1 p-2'>
-                                                <p>{qa.question}</p>
-                                                <p>{qa.previewAnswer}</p>
+                                                <p className='font-semibold text-black'>{qa.question}</p>
+                                                <p className='text-gray-1 font-medium'>{qa.previewAnswer}</p>
 
-                                                <Dialog>
-                                                  <DialogTrigger>
-                                                    <button className=' hover:bg-gray-300 rounded-md text-black flex justify-center items-center gap-2 w-fit p-1'>
-                                                      <Pencil width={15} height={15} />
-                                                      Edit
-                                                    </button>
-                                                  </DialogTrigger>
-                                                  <DialogContent>
-                                                    <DialogHeader>
-                                                      <DialogTitle>Are you absolutely sure?</DialogTitle>
-                                                      <DialogDescription>
-                                                        This action cannot be undone. This will permanently delete your account
-                                                        and remove your data from our servers.
-                                                      </DialogDescription>
-                                                    </DialogHeader>
-                                                  </DialogContent>
-                                                </Dialog>
+                                                <div className='flex gap-2'>
+                                                  <Dialog open={open} onOpenChange={setOpen}>
+                                                    <DialogTrigger>
+                                                      <button onClick={() => setCurrentQna(index)} className='hover:bg-gray-300 rounded-md text-black flex justify-center items-center gap-2 w-fit p-1'>
+                                                        <Pencil width={15} height={15} />
+                                                        Edit
+                                                      </button>
+                                                    </DialogTrigger>
+                                                    <DialogContent>
+                                                      <DialogHeader>
+                                                        <DialogTitle>Edit Question</DialogTitle>
+                                                        <DialogDescription className='flex flex-col gap-3'>
+                                                          <Label>Question</Label>
+                                                          <Input
+                                                            defaultValue={faq[activeSection]?.qna[currentQna]?.question}
+                                                            value={currentQuestion}
+                                                            onChange={(e) => setCurrentQuestion(e.target.value)}
+                                                          />
+                                                          <Label>Preview Answer</Label>
+                                                          <Input
+                                                            defaultValue={faq[activeSection]?.qna[currentQna]?.previewAnswer}
+                                                            value={currentPreviewAnswer}
+                                                            onChange={(e) => setCurrentPreviewAnswer(e.target.value)}
+                                                          />
+                                                          <Label>Whole Answer</Label>
+                                                          <Input
+                                                            defaultValue={faq[activeSection]?.qna[currentQna]?.wholeAnswer}
+                                                            value={currentWholeAnswer}
+                                                            onChange={(e) => setCurrentWholeAnswer(e.target.value)}
+                                                          />
+                                                          <Button variant={"ghost"} className='bg-gray-400 text-black' onClick={() => setOpen(false)}>Save Question</Button>
+                                                        </DialogDescription>
+                                                      </DialogHeader>
+                                                    </DialogContent>
+                                                  </Dialog>
+
+                                                  {/* delete */}
+
+                                                  <Dialog>
+                                                    <DialogTrigger>
+                                                      <button onClick={() => setCurrentDelQna(index)} className='text-red-600 hover:bg-gray-300 rounded- flex justify-center items-center gap-2 w-fit p-1'>
+                                                        <Trash2 width={15} height={15} />
+                                                        Delete
+                                                      </button>
+                                                    </DialogTrigger>
+                                                    <DialogContent>
+                                                      <DialogHeader>
+                                                        <DialogTitle>Are you absolutely sure?</DialogTitle>
+                                                        <DialogDescription>
+                                                          After deleting this question you can't recover it back.
+                                                          <Button onClick={handleDeleteQuestion} variant={"destructive"} className='flex justify-center items-center gap-2 p-1'>
+                                                            <Trash2 width={15} height={15} />
+                                                            Delete
+                                                          </Button>
+                                                        </DialogDescription>
+                                                      </DialogHeader>
+                                                    </DialogContent>
+                                                  </Dialog>
+                                                </div>
 
                                               </div>
                                             )
