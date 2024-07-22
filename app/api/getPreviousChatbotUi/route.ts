@@ -17,7 +17,8 @@ export async function POST(req: Request) {
         if (!res) {
             return Response.json(new apiResponse(403, null, "Can't fetch Data !"))
         }
-
+        console.log("i am chatbotUi", cookedRes,"-----------------------");
+        
         return Response.json(new apiResponse(200, cookedRes, "successfully found data !"))
 
 

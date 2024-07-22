@@ -9,9 +9,9 @@ export async function POST(req: Request) {
         // const {
         //     panelWidth,
         //     starterMessage,
-        //     colorTheme,
+        //     
+        //     marginRight,colorTheme,
         //     marginBottom,
-        //     marginRight,
         //     userChatbotName,
         //     userChatbotImage,
         //     userChatbotLogo,
@@ -20,6 +20,8 @@ export async function POST(req: Request) {
         //     faq,
         //     contact
         // } = chatbotUi;
+        console.log("i am chatbotUi", chatbotUi);
+        
         
         const chatbotUiData = await ChatbotUi.findOneAndUpdate({ projectId: chatbotUi.projectId }, chatbotUi, {new: true, upsert: true});
         return Response.json(new apiResponse(200,true,"Chatbot UI changes saved successfully"));

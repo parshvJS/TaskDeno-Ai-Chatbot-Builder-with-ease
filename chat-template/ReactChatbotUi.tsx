@@ -93,9 +93,9 @@ function ReactChatbotUi(project: any) {
                         }}
                     >
                         <section className='flex flex-col gap-3'>
-                            <div className="w-40 h-24 overflow-hidden">
+                            <div className=" max-h-[65px]">
 
-                                <Image src={userChatbotImage} width={100} height={100} alt='logo large' className='min-w-fit p-2 max-h-[100px] rounded-md' />
+                                <img src={userChatbotImage} alt='logo large' className='w-fit h-fit max-h-[65px]' style={{maxHeight:"65px"}}  />
 
                             </div>
 

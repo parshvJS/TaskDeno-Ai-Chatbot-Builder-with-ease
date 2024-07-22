@@ -69,6 +69,8 @@ function page() {
   const [smallImageLoading, setSmallImageLoading] = useState(false)
   const [isSaveLoading, setIsSaveLoading] = useState(false)
   const [open, setOpen] = useState(false)
+  const [isSecOpen, setIsSecOpen] = useState(false)
+  const [isDeleteQueOpen, setIsDeleteQueOpen] = useState(false)
   {/* 1. faq 2.isShowSection 2.isShowQuestion 3.currentQuestion 4. currentPreviewAnswer 5.currentWholeAnswer 
                                                                   1.currentHeader   2. currentPreview 3.
                       */}
@@ -86,6 +88,7 @@ function page() {
   const [currentWholeAnswer, setCurrentWholeAnswer] = useState("")
   const [currentQna, setCurrentQna] = useState(-1)
   const [currentDelQna, setCurrentDelQna] = useState(-1)
+  const [currentDelSec, setCurrentDelSec] = useState(-1)
 
   // upload large logo
   const onLargeFileUpload = useCallback(async (acceptedFiles: FileWithPath[]) => {
@@ -140,6 +143,7 @@ function page() {
         }
 
         const cookedRes = res.data?.data;
+        console.log(cookedRes, "is lollllllllllllllllllllllll");
 
         // setting values
         setMarginBottom(cookedRes.marginBottom)
@@ -150,8 +154,9 @@ function page() {
         setChatbotLargeLogo(cookedRes.chatbotLargeLogo)
         setChatbotSmallLogo(cookedRes.chatbotSmallLogo)
         setColorTheme(cookedRes.colorTheme)
-        setWelcomeText(cookedRes.welcomeText)
+        setWelcomeText(cookedRes.welcomText)
         setFaq(cookedRes.faq)
+
       } catch (error: any) {
         toast({
           title: "Can't Load Your Data!",
@@ -163,12 +168,23 @@ function page() {
       }
     }
     fetchPreviousStyle()
-  }, [projectIdParams])
+  }, [])
 
   async function handleSave(e: any) {
     e.preventDefault()
     try {
       setIsSaveLoading(true)
+      console.log(marginBottom,
+        marginRight,
+        chatbotName,
+        roundedTheme,
+        panelWidth,
+        chatbotLargeLogo,
+        chatbotSmallLogo,
+        colorTheme,
+        welcomeText,
+        faq, "ius herekkfjldkfjsldkfjsdlkfjslfjsdlfks");
+
       const res = await axios.post('/api/saveChatbotUiChanges', {
         projectId: projectIdParams,
         marginBottom,
@@ -179,7 +195,7 @@ function page() {
         chatbotLargeLogo,
         chatbotSmallLogo,
         colorTheme,
-        welcomeText,
+        welcomText: welcomeText,
         faq
       })
 
@@ -197,7 +213,7 @@ function page() {
         description: "Your data has been saved successfully.",
         variant: "success"
       })
-
+      console.log(res.data);
     } catch (error: any) {
       toast({
         title: "Can't Save Your Data!",
@@ -302,7 +318,7 @@ function page() {
     const updatedFaq = [...faq];
 
     // Step 2: Update the specific section directly
-    updatedFaq.splice(activeSection, 1)
+    updatedFaq.splice(currentDelSec, 1)
 
     // Step 3: Set the updated array to state
     setFaq(updatedFaq);
@@ -314,6 +330,7 @@ function page() {
       description: "The section has been successfully deleted.",
       variant: "success"
     });
+    setIsSecOpen(!isSecOpen)
   }
 
   function addNewQuestion(e) {
@@ -373,6 +390,7 @@ function page() {
       description: "The question has been successfully deleted.",
       variant: "success"
     });
+    setIsDeleteQueOpen(!isDeleteQueOpen)
   }
   // js boundry
   if (isPageLoading) {
@@ -537,7 +555,7 @@ function page() {
                 />
               </div>
               <div className='flex gap-2 flex-col mt-5'>
-                <p className='font-semibold text-16'>Margin Bottom</p>
+                <p className='font-semibold text-16'>Margin Right</p>
                 <input
                   min={30}
                   max={120}
@@ -568,15 +586,21 @@ function page() {
                   className='border-2 border-gray-400 p-2 rounded-md'
                 />
               </div>
+              <Button onClick={handleSave} className='text-black hover:bg-yellow-2 w-full mt-3'>
+                {
+                  isSaveLoading ? <div className='flex gap-2'>
+                    <LoaderPinwheel width={20} height={20} className='animate-spin text-black' />
+                    <p>Saving Changes</p>
+                  </div> : <p>Save</p>
+                }
+              </Button>
             </TabsContent>
 
             <TabsContent value="content" className='flex flex-col gap-3'>
               <Label className='text-14 mt-4'>Chatbot Name</Label>
               <Input
-                label="Chatbot Name"
                 placeholder="Enter Chatbot Name"
-                {...contentForm.register("chatbotName")}
-                error={contentForm.formState.errors.chatbotName?.message}
+                defaultValue={chatbotName}
                 value={chatbotName}
                 onChange={(e) => setChatbotName(e.target.value)}
               />
@@ -584,10 +608,8 @@ function page() {
               {/* adding mordern label */}
               <Label className='text-14 mt-4'>Welcome Text</Label>
               <Input
-                label="Welcome Text"
                 placeholder="Enter Welcome Text"
-                {...contentForm.register("welcomeText")}
-                error={contentForm.formState.errors.welcomeText?.message}
+                defaultValue={welcomeText}
                 value={welcomeText}
                 onChange={(e) => setWelcomeText(e.target.value)}
               />
@@ -655,10 +677,12 @@ function page() {
                                   <p>{section.preview}</p>
                                   <div className='flex gap-2 w-full justify-between'>
                                     <p className='font-thin text-gray-500'>{section.qna.length} Articles</p>
-                                    <Dialog>
+                                    <Dialog open={isSecOpen} onOpenChange={setIsSecOpen}>
                                       <DialogTrigger>
                                         {/* delete button */}
-                                        <button className='text-black hover:text-white-1 p-2 rounded-md flex gap-2 items-center hover:bg-red-400'>
+                                        <button
+                                          onClick={() => setCurrentDelSec(index)}
+                                          className='text-black hover:text-white-1 p-2 rounded-md flex gap-2 items-center hover:bg-red-400'>
                                           <Trash2 width={15} height={15} />
                                           Delete
                                         </button>
@@ -666,8 +690,9 @@ function page() {
                                       <DialogContent>
                                         <DialogHeader>
                                           <DialogTitle>Are you absolutely sure?</DialogTitle>
-                                          <DialogDescription>
-                                            After deleting this section you can't recover it back.
+                                          <DialogDescription className='flex flex-col gap-2'>
+                                            <p className='mt-5'>After Deleting You Question Wouldn't appear on chatbot</p>
+                                            <p className='mt-2'>All Related Data will be deleted</p>
                                             <Button onClick={handleDeleteSection} variant={"destructive"} className='flex justify-center items-center gap-2 p-1'>
                                               <Trash2 width={15} height={15} />
                                               Delete
@@ -733,7 +758,7 @@ function page() {
                                                     </DialogTrigger>
                                                     <DialogContent>
                                                       <DialogHeader>
-                                                        <DialogTitle>Edit Question</DialogTitle>
+                                                        <DialogTitle>Are you absolutely sure?</DialogTitle>
                                                         <DialogDescription className='flex flex-col gap-3'>
                                                           <Label>Question</Label>
                                                           <Input
@@ -760,8 +785,7 @@ function page() {
                                                   </Dialog>
 
                                                   {/* delete */}
-
-                                                  <Dialog>
+                                                  <Dialog open={isDeleteQueOpen} onOpenChange={setIsDeleteQueOpen}>
                                                     <DialogTrigger>
                                                       <button onClick={() => setCurrentDelQna(index)} className='text-red-600 hover:bg-gray-300 rounded- flex justify-center items-center gap-2 w-fit p-1'>
                                                         <Trash2 width={15} height={15} />
@@ -769,10 +793,11 @@ function page() {
                                                       </button>
                                                     </DialogTrigger>
                                                     <DialogContent>
-                                                      <DialogHeader>
+                                                      <DialogHeader className='flex gap-2 h-full'>
                                                         <DialogTitle>Are you absolutely sure?</DialogTitle>
-                                                        <DialogDescription>
-                                                          After deleting this question you can't recover it back.
+                                                        <DialogDescription className='flex flex-col gap-2'>
+                                                          <p className='mt-5'>After Deleting You Question Wouldn't appear on chatbot</p>
+                                                          <p className='mt-2'>All Related Data will be deleted</p>
                                                           <Button onClick={handleDeleteQuestion} variant={"destructive"} className='flex justify-center items-center gap-2 p-1'>
                                                             <Trash2 width={15} height={15} />
                                                             Delete
@@ -795,6 +820,7 @@ function page() {
                             ))}
                           </ScrollArea>
                         )}
+
                       </div>
 
 
@@ -821,7 +847,14 @@ function page() {
                   </SheetHeader>
                 </SheetContent>
               </Sheet>
-
+              <Button onClick={handleSave} className='text-black hover:bg-yellow-2 w-full mt-3'>
+                {
+                  isSaveLoading ? <div className='flex gap-2'>
+                    <LoaderPinwheel width={20} height={20} className='animate-spin text-black' />
+                    <p>Saving Changes</p>
+                  </div> : <p>Save</p>
+                }
+              </Button>
             </TabsContent>
           </Tabs>
 
