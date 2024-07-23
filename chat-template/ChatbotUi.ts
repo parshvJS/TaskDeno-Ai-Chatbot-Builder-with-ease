@@ -138,9 +138,9 @@ function getHtmlContent(colorTheme: string, color1: string, color2: string, colo
             gap: 10px;
             font-weight: 400;
             font-size: 14px;
-            width: 100%;
+            width: 100%;    
         }
-
+    
         .strt-btn {
             cursor: pointer;
             background: ${color3};

@@ -44,13 +44,8 @@ export const ProjectProvider = ({ children }: { children: any }) => {
     const [syncing, setSyncing] = useState(false);
 
     useEffect(() => {
-
         async function fetchData() {
-
-
             if (project.project_id && project) {
-
-
                 await storeChangesInDb();
             }
         } fetchData();
@@ -103,6 +98,7 @@ export const ProjectProvider = ({ children }: { children: any }) => {
                 edges: data.edges,
                 variables: data.variables,
                 aiPrompts: data.aiPrompts,
+                aiModel: data.aiModel
             });
             setIsStoredInDb(true);
 

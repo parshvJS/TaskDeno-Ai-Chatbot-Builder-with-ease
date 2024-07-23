@@ -369,7 +369,7 @@ function page() {
     });
   }
 
-  function handleDeleteQuestion(e) {
+  function handleDeleteQuestion(e: any) {
     e.preventDefault()
     // Step 1: Clone the FAQ array
     const updatedFaq = [...faq];
@@ -433,13 +433,68 @@ function page() {
           </section>
 
 
-          <Tabs defaultValue="brand">
+          <Tabs defaultValue="size">
             <TabsList className='bg-yellow-4 w-[215px]' >
-              <TabsTrigger value="brand" className='text-black'>Branding</TabsTrigger>
               <TabsTrigger value="size" className='text-black'>Size</TabsTrigger>
+              <TabsTrigger value="brand" className='text-black'>Branding</TabsTrigger>
               <TabsTrigger value="content" className='text-black'>Content</TabsTrigger>
             </TabsList>
 
+            <TabsContent value="size">
+              {/* margin,panel width,rounded, */}
+
+              <div className='flex gap-2 flex-col'>
+                <p className='font-semibold text-16'>Margin Bottom</p>
+                <input
+                  min={30}
+                  max={80}
+                  type="number"
+                  value={marginBottom}
+                  onChange={(e) => setMarginBottom(parseInt(e.target.value))}
+                  className='border-2 border-gray-400 p-2 rounded-md'
+                />
+              </div>
+              <div className='flex gap-2 flex-col mt-5'>
+                <p className='font-semibold text-16'>Margin Right</p>
+                <input
+                  min={30}
+                  max={120}
+                  type="number"
+                  value={marginRight}
+                  onChange={(e) => setMarginRight(parseInt(e.target.value))}
+                  className='border-2 border-gray-400 p-2 rounded-md'
+                />
+              </div>
+              <div className='flex gap-2 flex-col mt-5'>
+                <p className='font-semibold text-16'>Panel Width</p>
+                <input
+                  min={400}
+                  max={800}
+                  type="number"
+                  value={panelWidth}
+                  onChange={(e) => setPanelWidth(parseInt(e.target.value))}
+                  className='border-2 border-gray-400 p-2 rounded-md'
+                />
+              </div>
+              <div className='flex gap-2 flex-col mt-5'>
+                <p className='font-semibold text-16'>Button Circular </p>
+                <input
+                  max={30}
+                  type="number"
+                  value={roundedTheme}
+                  onChange={(e) => setRoundedTheme(parseInt(e.target.value))}
+                  className='border-2 border-gray-400 p-2 rounded-md'
+                />
+              </div>
+              <Button onClick={handleSave} className='text-black hover:bg-yellow-2 w-full mt-3'>
+                {
+                  isSaveLoading ? <div className='flex gap-2'>
+                    <LoaderPinwheel width={20} height={20} className='animate-spin text-black' />
+                    <p>Saving Changes</p>
+                  </div> : <p>Save</p>
+                }
+              </Button>
+            </TabsContent>
 
             <TabsContent value="brand" className='mt-5 flex flex-col gap-2 justify-between' >
               <div className='w-full flex gap-2'>
@@ -531,62 +586,6 @@ function page() {
 
               </div>
               <Button onClick={handleSave} className='text-black hover:bg-yellow-2'>
-                {
-                  isSaveLoading ? <div className='flex gap-2'>
-                    <LoaderPinwheel width={20} height={20} className='animate-spin text-black' />
-                    <p>Saving Changes</p>
-                  </div> : <p>Save</p>
-                }
-              </Button>
-            </TabsContent>
-
-            <TabsContent value="size">
-              {/* margin,panel width,rounded, */}
-
-              <div className='flex gap-2 flex-col'>
-                <p className='font-semibold text-16'>Margin Bottom</p>
-                <input
-                  min={30}
-                  max={80}
-                  type="number"
-                  value={marginBottom}
-                  onChange={(e) => setMarginBottom(parseInt(e.target.value))}
-                  className='border-2 border-gray-400 p-2 rounded-md'
-                />
-              </div>
-              <div className='flex gap-2 flex-col mt-5'>
-                <p className='font-semibold text-16'>Margin Right</p>
-                <input
-                  min={30}
-                  max={120}
-                  type="number"
-                  value={marginRight}
-                  onChange={(e) => setMarginRight(parseInt(e.target.value))}
-                  className='border-2 border-gray-400 p-2 rounded-md'
-                />
-              </div>
-              <div className='flex gap-2 flex-col mt-5'>
-                <p className='font-semibold text-16'>Panel Width</p>
-                <input
-                  min={400}
-                  max={800}
-                  type="number"
-                  value={panelWidth}
-                  onChange={(e) => setPanelWidth(parseInt(e.target.value))}
-                  className='border-2 border-gray-400 p-2 rounded-md'
-                />
-              </div>
-              <div className='flex gap-2 flex-col mt-5'>
-                <p className='font-semibold text-16'>Button Circular </p>
-                <input
-                  max={30}
-                  type="number"
-                  value={roundedTheme}
-                  onChange={(e) => setRoundedTheme(parseInt(e.target.value))}
-                  className='border-2 border-gray-400 p-2 rounded-md'
-                />
-              </div>
-              <Button onClick={handleSave} className='text-black hover:bg-yellow-2 w-full mt-3'>
                 {
                   isSaveLoading ? <div className='flex gap-2'>
                     <LoaderPinwheel width={20} height={20} className='animate-spin text-black' />

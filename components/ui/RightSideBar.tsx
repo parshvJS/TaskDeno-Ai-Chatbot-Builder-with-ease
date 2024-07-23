@@ -73,6 +73,8 @@ function RightSideBar({ variables, setVariables }: any) {
         else if (activeChatbotDatatype == "ai") {
             // use ai states
             const aiDatatype = sidebar.currentNode.data.ai ? sidebar.currentNode.data.ai : null
+            console.log(aiDataType,"is my-----------------");
+            
             setAiVariable(aiDatatype.Variable)
             setAiDataType(aiDatatype.type)
             setAiContentPrompt(aiDatatype.content)
@@ -555,6 +557,7 @@ function RightSideBar({ variables, setVariables }: any) {
                                                     }
                                                 </SelectContent>
                                             </Select>
+                                            
 
                                             
                                         </div>

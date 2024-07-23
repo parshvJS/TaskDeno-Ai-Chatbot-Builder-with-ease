@@ -136,7 +136,6 @@ const MyDeno = () => {
   return (
     <div className='flex flex-col h-full w-full'>
       <section className='flex flex-col gap-4 w-fit mb-5'>
-        <Label className='text-page-header'>My Denos</Label>
         <Dialog>
           <DialogTrigger>
             <section className='flex flex-col justify-center items-center gap-5 cursor-pointer bg-yellow-400 w-[240px] h-32 rounded-lg hover:bg-yellow-300 transition-all'>
@@ -235,7 +234,6 @@ const MyDeno = () => {
 
       <Separator />
       <section className='mt-5 flex flex-col'>
-        <Label className='text-page-header'>Your Projects</Label>
 
         {projectLoading ? (
           <div className='flex justify-center items-center h-[240px]'>

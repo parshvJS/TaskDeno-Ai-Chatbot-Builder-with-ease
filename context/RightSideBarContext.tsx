@@ -23,7 +23,7 @@ export const INITITAL_SIDEBAR: SidebarContextType = {
 };
 
 // Create the context
-const SidebarContext = createContext<SidebarContextType>(INITITAL_SIDEBAR);
+const  SidebarContext = createContext<SidebarContextType>(INITITAL_SIDEBAR);
 
 export const RightSideBarProvider = ({ children }: { children: ReactNode }) => {
     const [isSidebarActive, setIsSidebarActive] = useState(false);

@@ -177,6 +177,7 @@ export default function App() {
 
     onEdgesChange(changes)
   }
+  
   const onConnect = (params) => {
     const { source } = params;
 
