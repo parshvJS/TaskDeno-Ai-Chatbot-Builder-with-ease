@@ -384,3 +384,41 @@ script -> embed.js -> chatbotui iframe -> ui
 5. chatbot name
 6. rounded themes 
 7. width of panel
+
+
+
+
+<!-- chatbot response  -->
+if response it last then flag nextEnd : true
+
+datagram : 
+i.  Message : {
+    currNodeIndex:number,
+    nextInputDatatype:dt,
+    message:string,
+    isNextEnd:bool
+}
+
+ii. user input : {
+    id:string,
+    embedId:string,
+    message:dt value,
+    currNodeIndex:number
+}
+
+1. establish socket connection - datagram : 
+2. emit - initital text to user - 
+3. create database entry -> all initital values will be setted
+4. user sent some response - 
+5. retieve that data - use socket.curreNodeIndex + 1 to locate next node
+6. if message : 
+    take node.message and io.to(socket.id).emit(node.message);
+7. if ai:
+    - establish langchain config
+    - initialize global prompt 
+    - use node prompt and answer 
+    - take ans for next prompt
+    io.to(socket.id).emit(aiResponse.message)
+
+
+    
