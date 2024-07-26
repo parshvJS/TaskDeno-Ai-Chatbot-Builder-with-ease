@@ -27,13 +27,13 @@ export default function App() {
       id: "start101",
       type: "startNode",
       data: {
-          label: "Start"
+        label: "Start"
       },
       position: {
-          x: 518,
-          y: 246
+        x: 518,
+        y: 246
       }
-  }
+    }
   ]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
 
@@ -177,7 +177,7 @@ export default function App() {
 
     onEdgesChange(changes)
   }
-  
+
   const onConnect = (params) => {
     const { source } = params;
 

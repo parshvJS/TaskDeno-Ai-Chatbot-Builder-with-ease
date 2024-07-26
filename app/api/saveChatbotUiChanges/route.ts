@@ -1,6 +1,6 @@
 import { apiResponse } from "@/lib/apiResponse";
 import { dbConnect } from "@/lib/dbConnect";
-import ChatbotUi from "@/models/chatbotUi.models";
+import { ChatbotUi } from 'taskdeno-mongoose-model';
 
 export async function POST(req: Request) {
     await dbConnect();

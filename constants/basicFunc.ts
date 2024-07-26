@@ -1,8 +1,8 @@
-import UserModel from "@/models/user/user.model";
+import {User} from "taskdeno-mongoose-model";
 
 // Create a new user
 export const createUser = async (userData: any) => {
-  const newUser = new UserModel({
+  const newUser = new User({
     id: userData.id,
     email: userData.email_addresses[0].email_address,
     firstName: userData.first_name,

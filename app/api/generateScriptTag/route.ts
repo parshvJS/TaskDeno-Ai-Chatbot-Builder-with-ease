@@ -1,5 +1,5 @@
 import { dbConnect } from "@/lib/dbConnect";
-import Project from "@/models/project.models";
+import { Project} from 'taskdeno-mongoose-model';
 import generateUniqueId from "generate-unique-id";
 // take uid ,project id
 export async function POST(req: Request) {

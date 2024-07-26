@@ -2,8 +2,8 @@ import { chatbotGenerator } from "@/chat-template/ChatbotUi";
 import { apiError } from "@/lib/apiError";
 import { apiResponse } from "@/lib/apiResponse";
 import { dbConnect } from "@/lib/dbConnect";
-import ChatbotUi from "@/models/chatbotUi.models";
-import Project from "@/models/project.models";
+import { ChatbotUi } from 'taskdeno-mongoose-model';
+import { Project} from 'taskdeno-mongoose-model';
 
 export async function GET(request: Request) {
     await dbConnect();
@@ -11,7 +11,7 @@ export async function GET(request: Request) {
 
         const { searchParams } = new URL(request.url);
         const chatbotId = searchParams.get("chatbotId")
-        console.log(chatbotId, "chatbotId");
+        console.log(chatbotId, "chatbotId ssd");
         if (!chatbotId) {
             return Response.json(new apiError(400, "Provide Relevant Information!"), {
                 status: 400,

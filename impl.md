@@ -395,7 +395,12 @@ datagram :
 i.  Message : {
     currNodeIndex:number,
     nextInputDatatype:dt,
-    message:string,
+    messageType:[text,image]
+    message:{
+        nextUserInputType: nodeUser.type,
+        type: 'image',
+        content: nodeData.message.content
+    }
     isNextEnd:bool
 }
 
@@ -421,4 +426,7 @@ ii. user input : {
     io.to(socket.id).emit(aiResponse.message)
 
 
-    
+<!-- todo -->
+
+1.create initital cahtbot
+2.use it for our usage

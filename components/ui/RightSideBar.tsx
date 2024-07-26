@@ -32,6 +32,7 @@ import { giveResponse, sentMessage, UserInput } from '@/constants/constants';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { Label } from './label';
 
 function RightSideBar({ variables, setVariables }: any) {
     const [open, setOpen] = useState(false)
@@ -73,8 +74,8 @@ function RightSideBar({ variables, setVariables }: any) {
         else if (activeChatbotDatatype == "ai") {
             // use ai states
             const aiDatatype = sidebar.currentNode.data.ai ? sidebar.currentNode.data.ai : null
-            console.log(aiDataType,"is my-----------------");
-            
+            console.log(aiDataType, "is my-----------------");
+
             setAiVariable(aiDatatype.Variable)
             setAiDataType(aiDatatype.type)
             setAiContentPrompt(aiDatatype.content)
@@ -295,6 +296,11 @@ function RightSideBar({ variables, setVariables }: any) {
         setTextareaContent(newValue);
         setVariableDropdownOpen(false);
     };
+    const handleAiPromtSelect = (variable) => {
+        const newValue = aiContentPrompt.replace(/\{$/, `{${variable}`);
+        setAiContentPrompt(newValue);
+        setVariableDropdownOpen(false);
+    };
 
     const handleImageUrlChange = (e) => {
         const value = e.target.value;
@@ -418,7 +424,60 @@ function RightSideBar({ variables, setVariables }: any) {
                         }
                     </div>
                 )
-
+            case "phone":
+                return (
+                    <div className='mt-5 flex flex-col gap-2'>
+                        <RightSideLabel
+                            label='Add Phone Number To Show'
+                            isOptional={false}
+                            helpText='type to Show Message to user !'
+                        />
+                        <div className='w-full'>
+                            <Input
+                                defaultValue={textareaContent}
+                                value={textareaContent}
+                                onChange={handleTextareaChange}
+                                placeholder='Insert Phone Number To Show'
+                            />
+                        </div>
+                    </div>
+                )
+            case "number":
+                return (
+                    <div className='mt-5 flex flex-col gap-2'>
+                        <RightSideLabel
+                            label='Add Number To Show'
+                            isOptional={false}
+                            helpText='type to Show Message to user !'
+                        />
+                        <div className='w-full'>
+                            <Input
+                                defaultValue={textareaContent}
+                                value={textareaContent}
+                                onChange={handleTextareaChange}
+                                placeholder='Insert Number To Show'
+                            />
+                        </div>
+                    </div>
+                )
+            case "email":
+                return (
+                    <div className='mt-5 flex flex-col gap-2'>
+                        <RightSideLabel
+                            label='Add Email To Show'
+                            isOptional={false}
+                            helpText='type to Show Message to user !'
+                        />
+                        <div className='w-full'>
+                            <Input
+                                defaultValue={textareaContent}
+                                value={textareaContent}
+                                onChange={handleTextareaChange}
+                                placeholder='Insert Email Address To Show'
+                            />
+                        </div>
+                    </div>
+                )
             case "default":
                 return (
                     <div>dfsdf</div>
@@ -557,9 +616,61 @@ function RightSideBar({ variables, setVariables }: any) {
                                                     }
                                                 </SelectContent>
                                             </Select>
-                                            
+                                            <div className='mt-5'>
+                                                <Label>AI Prompt For this message</Label>
 
-                                            
+                                                <div className='w-full'>
+                                                    <Popover open={variableDropdownOpen} onOpenChange={setVariableDropdownOpen}>
+                                                        <PopoverTrigger asChild>
+                                                            <Textarea
+                                                                defaultValue={aiContentPrompt}
+                                                                value={aiContentPrompt}
+                                                                onChange={(e) => {
+                                                                    handleTextareaChange(e)
+                                                                    setAiContentPrompt(e.target.value)
+                                                                }}
+                                                                placeholder='Enter Your Text or use { To insert variables'
+                                                            />
+                                                        </PopoverTrigger>
+                                                        <PopoverContent className="w-full p-0">
+                                                            <ScrollArea className="h-fit w-[350px] rounded-md">
+                                                                <Command className='w-full'>
+                                                                    <CommandInput
+                                                                        placeholder="Type to Create or Search Variable..."
+                                                                        className='w-full'
+                                                                        onValueChange={(val) => setVariableInputValue(val)}
+                                                                    />
+                                                                    <CommandEmpty>
+                                                                        No variables found.
+                                                                    </CommandEmpty>
+                                                                    <CommandGroup className='w-full'>
+                                                                        <CommandList>
+
+                                                                            {variables.map((variable: string) => (
+                                                                                <CommandItem
+                                                                                    key={variable}
+                                                                                    value={variable}
+                                                                                    onSelect={() => handleAiPromtSelect(variable)}
+                                                                                    className='hover:bg-gray-200'
+                                                                                >
+                                                                                    <Check
+                                                                                        className={cn(
+                                                                                            "mr-2 h-4 w-4",
+                                                                                            variableInputValue === variable ? "opacity-100" : "opacity-0"
+                                                                                        )}
+                                                                                    />
+                                                                                    <p className='text-left w-full font-semibold text-black'>{variable}</p>
+                                                                                </CommandItem>
+                                                                            ))}
+                                                                        </CommandList>
+                                                                    </CommandGroup>
+                                                                </Command>
+                                                            </ScrollArea>
+
+                                                        </PopoverContent>
+                                                    </Popover>
+                                                </div>
+                                            </div>
                                         </div>
 
 

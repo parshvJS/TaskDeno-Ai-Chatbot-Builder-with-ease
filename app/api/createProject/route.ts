@@ -1,9 +1,8 @@
 import { apiError } from "@/lib/apiError";
 import { apiResponse } from "@/lib/apiResponse";
 import { dbConnect } from "@/lib/dbConnect";
-import ChatbotUi from "@/models/chatbotUi.models";
-import Project from "@/models/project.models";
-
+import { ChatbotUi } from 'taskdeno-mongoose-model';
+import { Project } from 'taskdeno-mongoose-model';
 // when user want to create new chatbot this api will establish new project 
 export async function POST(request: Request) {
     await dbConnect();
@@ -21,6 +20,16 @@ export async function POST(request: Request) {
         const newProject = new Project({
             name,
             userId,
+            nodes: [{
+                id: 'start101',
+                type: 'startNode',
+                data: { label: 'Start' },
+                position: {
+                    x: 518,
+                    y: 246
+                },
+            }],
+            variables: ['user_name', 'user_location', 'user_contact_no']
         });
         const res = await newProject.save();
 

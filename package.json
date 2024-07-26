@@ -52,6 +52,7 @@
     "svix": "^1.24.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
+    "taskdeno-mongoose-model": "^1.0.4",
     "typescript": "^5.3.3",
     "usehooks-ts": "^3.1.0",
     "uuidv4": "^6.2.13",

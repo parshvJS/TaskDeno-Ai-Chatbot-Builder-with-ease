@@ -1,5 +1,5 @@
 import { dbConnect } from "@/lib/dbConnect";
-import Project from "@/models/project.models";
+import { Project} from 'taskdeno-mongoose-model';
 
 export async function POST(req: Request) {
     await dbConnect();
