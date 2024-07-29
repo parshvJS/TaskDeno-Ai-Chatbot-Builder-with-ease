@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Panel, Position } from 'reactflow';
 import Logo from '../Logo';
 import projectContext from '@/context/chatbotContext';
-import { ArrowBigDown, ArrowLeft, ArrowLeftSquare, Check, ChevronDown, Divide, Dot, Flame, Loader, Pen, Plus, Save, ScanSearch, X } from 'lucide-react';
+import { ArrowBigDown, ArrowLeft, ArrowLeftSquare, Check, ChevronDown, Divide, Dot, Flame, Loader, Pen, Plus, Save, ScanSearch, Truck, X } from 'lucide-react';
 import { Button } from './button';
 import { useRouter } from 'next/navigation';
 import { giveResponse, openAIModels, sentMessage, toggleBarItems, UserInput } from '@/constants/constants';
@@ -44,6 +44,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import axios from 'axios';
 
 
 const formSchema = z.object({
@@ -64,14 +65,21 @@ const SidePanel = ({
   variables,
   setAiModel,
   setAiPrompt,
-  setVariables }: any) => {
+  setVariables,
+  setIsPublished,
+  isPublished,
+  setIsPublishLoading,
+  isPublishLoading,
+  handlePublish
+}: any) => {
   const router = useRouter();
-  const { project, isSyncLoading, isStoredInDb, storeChangesInDb, syncing, setIsStoredInDb } = useContext(projectContext);
+  const { project, setProject, isSyncLoading, isStoredInDb, storeChangesInDb, syncing, setIsStoredInDb, getPreviousData } = useContext(projectContext);
   const { isSidebarActive, setIsSidebarActive } = useContext(SidebarContext)
   const [activeState, setActiveState] = useState(0);
   const [activeVariableIndex, setActiveVariableIndex] = useState(-1)
   const [changingAiPrompt, setChangingAiPrompt] = useState("")
   const [isSaveEduOpen, setIsSaveEduOpen] = useState(true)
+
   const { toast } = useToast();
 
   // shadcn form
@@ -81,6 +89,11 @@ const SidePanel = ({
       name: "",
     },
   })
+
+
+  // useEffect(()=>{
+  //   setIsPublished(project.isPublished)
+  // },[project.isPublished])
 
   // shadcn form submit function
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -180,9 +193,35 @@ const SidePanel = ({
     }
   }
 
+  const getPublishStatus = () => {
+    if (isPublishLoading) {
+      return (<div className=' bg-green flex items-center p-2 gap-2'>
+        <Loader width={20} height={20} className=' animate-spin' />
+        <p className='font-semibold text-black'>Preparing workflow</p>
+      </div>)
+    }
+    else if (isPublished) {
+      return (
+        <div className=' bg-green flex items-center p-2 gap-2'>
+          <Check width={20} height={20} className='text-green-500' />
+          <p className='font-semibold text-green-500'>System Published & Ready</p>
+        </div>
+      )
+    } else {
+      return (
+        <div className='flex items-center p-2 gap-2'>
+          <Dot size={28} className='text-yellow-6' />
+          <p className='font-semibold text-yellow-500 capitalize'>Not yet published</p>
+        </div>
+      )
+    }
+
+  }
+
   // handle case 2 changes 
   const handleAIModelChange = (model: string) => {
     setIsStoredInDb(false)
+
     setAiModel(model)
   }
   const handleAIPromptChange = () => {
@@ -199,6 +238,8 @@ const SidePanel = ({
     form.reset()
   }
 
+
+
   const showSidePanel = (index: number) => {
 
 
@@ -211,8 +252,11 @@ const SidePanel = ({
               imgUrl='/icons/run.svg'
               helpText='Check Saved status of chatbot '
             />
-            <div className='flex flex-col w-full slim-border bg-gray-100 mb-5'>
+            <div className='flex flex-col w-full slim-border bg-gray-100 mb-2'>
               <p>{getStatus()}</p>
+            </div>
+            <div className='flex flex-col w-full slim-border bg-gray-100 mb-5'>
+              <p>{getPublishStatus()}</p>
             </div>
             <SideLabel
               label='Deploy'
@@ -221,9 +265,17 @@ const SidePanel = ({
             />
             <div className='grid grid-cols-1 gap-2'>
               <div>
-                <Button className='bg-black flex justify-start slim-border w-full gap-2 hover:bg-gray-500'>
-                  <Flame width={20} height={20} className='text-white-1 ' />
-                  <p className='font-medium text-white-1'>Deploy & Publish</p>
+                <Button onClick={handlePublish} className='bg-black flex justify-start slim-border w-full gap-2 hover:bg-gray-500'>
+
+                  {
+                    isPublishLoading ? <div className=' bg-green flex items-center p-2 gap-2'>
+                      <Loader width={20} height={20} className='text-white-1 animate-spin' />
+                      <p className='font-semibold text-white-1'>Preparing Chatbot for this!</p>
+                    </div> : <div className='flex justify-center items-center gap-2 p-2'>
+                      <Flame width={20} height={20} className='text-white-1 ' />
+                      <p className='font-medium text-white-1'>Deploy & Publish</p>
+                    </div>
+                  }
                 </Button>
               </div>
               <div>
@@ -643,8 +695,8 @@ const SidePanel = ({
           <div className='flex items-center space-x-4 w-full'>
             {/* Text on the right */}
             <p className="text-sm text-gray-600 font-medium py-5 px-3">
-  Please note: Always save your changes before leaving the <br />page to ensure they are applied.
-</p>
+              Please note: Always save your changes before leaving the <br />page to ensure they are applied.
+            </p>
           </div>
         </div>
       </Panel>

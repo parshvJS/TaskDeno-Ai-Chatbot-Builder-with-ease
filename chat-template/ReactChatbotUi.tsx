@@ -95,7 +95,7 @@ function ReactChatbotUi(project: any) {
                         <section className='flex flex-col gap-3'>
                             <div className=" max-h-[65px]">
 
-                                <img src={userChatbotImage} alt='logo large' className='w-fit h-fit max-h-[65px]' style={{maxHeight:"65px"}}  />
+                                <img src={userChatbotImage} alt='logo large' className='w-fit h-fit max-h-[65px]' style={{ maxHeight: "65px" }} />
 
                             </div>
 
@@ -360,7 +360,7 @@ function ReactChatbotUi(project: any) {
                                         type='text'
                                         placeholder='Type your message...'
                                         className='w-[300px] ring-0 focus:ring-0  px-4 py-2 border-b-2  border-white-1  rounded-md'
-                                    />
+                                    />  
                                 </div>
                                 <div>
                                     <button className='p-2 w-fit h-fit flex items-center justify-center bg-blue-500 rounded-full text-white'>

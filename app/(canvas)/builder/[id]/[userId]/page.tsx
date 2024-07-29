@@ -12,11 +12,25 @@ import RightSideBar from '@/components/ui/RightSideBar';
 import SidebarContext from '@/context/RightSideBarContext';
 import { useToast } from '@/components/ui/use-toast';
 import { StarterNode } from '@/components/customNodes/StarterNode';
+import { setupDevBundler } from 'next/dist/server/lib/router-utils/setup-dev-bundler';
+import axios from 'axios';
 
 export default function App() {
   const { getPreviousData, project, isSyncLoading, setProject, setIsStoredInDb, storeChangesInDb } = useContext(projectContext);
   const { isSidebarActive, setIsSidebarActive, sidebar } = useContext(SidebarContext)
   const params = useParams<{ id: string }>();
+  const [isPublished, setIsPublished] = useState(project.isPublished)
+  const [isPublishLoading, setIsPublishLoading] = useState(false)
+
+  useEffect(()=>{
+    console.log(isPublished,"chained 999999999999999999999")
+  },[isPublished])
+
+  useEffect(()=>{
+    console.log('iiiiiiiiiiiiiiiii',project.isPublished,'client',isPublished);
+    
+    setIsPublished(project.isPublished)
+  },[project.isPublished])
 
   const reactFlowInstance = useReactFlow();
 
@@ -104,6 +118,8 @@ export default function App() {
 
   const addNode = useCallback((type: string, label: string, initialDatagram: object) => {
     setIsStoredInDb(false);
+    setIsPublished(false)
+   
     const uniqueName = `Group-${nanoid(4)}`;
     let data;
     let emptyUser = {
@@ -157,6 +173,8 @@ export default function App() {
 
   const removeNode = useCallback((id: string) => {
     setIsStoredInDb(false);
+    setIsPublished(false)
+
     setIsSidebarActive(false);
     // Remove the node by filtering out the node with the matching id
     setNodes((nds) => nds.filter((node) => node.id !== id));
@@ -168,11 +186,15 @@ export default function App() {
   // handleNodeChange
   function handleNodeChange<OnNodesChange>(changes: NodeChange[]) {
     setIsStoredInDb(false)
+
+
     onNodesChange(changes)
   }
   // handleEdgeChange
   function handleEdgeChange<OnEdgesChange>(changes: EdgeChange[]) {
     setIsStoredInDb(false)
+
+
     console.log("edge is being deleted", changes);
 
     onEdgesChange(changes)
@@ -193,7 +215,56 @@ export default function App() {
     setEdges((prevEdges) => addEdge({ ...params, type: "smoothstep", animated: true, className: "border-2 border-gray-300" }, prevEdges));
   };
 
+  async function handlePublish() {
+    try {
 
+      await syncChangesToContext()
+      setIsPublishLoading(true)
+      const response = await axios.post('/api/saveExecutionMap', {
+        projectId: project.project_id,
+        nodes: project.nodes,
+        edges: project.edges
+      })
+      console.log(response.data, response.data.success, response.data.statuscode, "0000000000000000000000000000000000000000000000");
+
+      if (response.data.success == false || response.data.statuscode == 400 || response.data.statuscode == 404) {
+        console.log("777777777777772727272");
+       
+
+        toast({
+          title: "Can't Publish your Project !",
+          description: response?.data?.message || "",
+          variant: "destructive"
+        })
+      }
+      else {
+        setIsPublished(true)
+        setProject((prevValues) => {
+          return {
+            ...prevValues,
+            isPublished:true
+          }
+        })
+        toast({
+          title: "Published!",
+          description: response.data.message || "",
+          variant: "success"
+        })
+      }
+    
+    } catch (error: any) {
+      toast({
+        title: "Can't Publish your Project !",
+        description: error.message,
+        variant: "destructive"
+      })
+
+      throw new Error(error.message)
+
+    } finally {
+      setIsPublishLoading(false)
+    }
+  }
   // JSX boundry
   if (isSyncLoading) {
     return (
@@ -228,6 +299,11 @@ export default function App() {
             setAiModel={setAiModel}
             setAiPrompt={setAiPrompt}
             setVariables={setVariables}
+            setIsPublished={setIsPublished}
+            isPublished={isPublished}
+            setIsPublishLoading={setIsPublishLoading}
+            isPublishLoading={isPublishLoading}
+            handlePublish={handlePublish}
           />
           {
             isSidebarActive && <RightSideBar

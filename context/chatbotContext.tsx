@@ -17,7 +17,8 @@ export const INITIAL_PROJECT_DATA = {
     }],
     edges: [],
     aiPrompts: [],
-    aiModel: "GPT-3.5"
+    aiModel: "gpt-3.5-turbo",
+    isPublished:false
 };
 
 export const INITIAL_PROJECT = {
@@ -98,13 +99,14 @@ export const ProjectProvider = ({ children }: { children: any }) => {
                 edges: data.edges,
                 variables: data.variables,
                 aiPrompts: data.aiPrompts,
-                aiModel: data.aiModel
+                aiModel: data.aiModel,
+                isPublished:data.isPublished
             });
             setIsStoredInDb(true);
 
             return data
         } catch (error) {
-
+            throw new Error(error.message)
         } finally {
             setIsSyncLoading(false);
         }
