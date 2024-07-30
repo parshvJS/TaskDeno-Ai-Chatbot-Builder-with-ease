@@ -5,11 +5,6 @@ export const navItems = [
         imgUrl: '/icons/home.svg'
     },
     {
-        route: '/analytics',
-        label: 'Analytics',
-        imgUrl: '/icons/analytics.svg'
-    },
-    {
         route: '/appearance',
         label: 'Appearance & theme',
         imgUrl: '/icons/appearance.svg'
@@ -24,6 +19,17 @@ export const navItems = [
         label: 'Conversation',
         imgUrl: '/icons/conversation.svg'
     },
+    {
+        route: '/leads',
+        label: 'Manage Leads',
+        imgUrl: '/icons/lead.svg'
+    },
+    {
+        route: '/analytics',
+        label: 'Analytics',
+        imgUrl: '/icons/analytics.svg'
+    },
+   
 ]
 
 export const outerNavItems = [

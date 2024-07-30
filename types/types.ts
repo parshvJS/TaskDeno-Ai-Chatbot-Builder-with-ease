@@ -21,3 +21,8 @@ export interface IChatbotType {
     setSyncing: Dispatch<SetStateAction<boolean>>,
     storeChangesInDb: () => void,
   }
+
+export interface chatUserParams {
+    chatbotId: string,
+    userId: string
+}

@@ -8,20 +8,7 @@ import CodeSnippet from '@/components/CodeSnippt';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
-interface chatUserParams {
-    chatbotId: string,
-    userId: string
-}
-const codeBlock = `
-const GroceryItem: React.FC<GroceryItemProps> = ({ item }) => {
-  return (
-    <div>
-      <h2>{item.name}</h2>
-      <p>Price: {item.price}</p>
-      <p>Quantity: {item.quantity}</p>
-    </div>
-  );
-}   `
+
 function page() {
 
     const {isScriptTagGenerating, dashdata, loading, activeProjectId, setActiveProjectId } = useContext(DashdataContext)
