@@ -18,7 +18,36 @@ import projectContext from '@/context/chatbotContext';
 import axios from 'axios';
 import { useToast } from '@/components/ui/use-toast';
 import Image from 'next/image';
+import { DataTable } from './data-table';
+import { columns } from './column';
 export type EachLead = { field: string, isSelected: boolean }
+
+
+const data: Payment[] = [
+    {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    },
+    {
+        id: "489e1d42",
+        amount: 125,
+        status: "processing",
+        email: "example@gmail.com",
+    },
+    // ...
+]
+
+type Payment = {
+    id: string
+    amount: number
+    status: "pending" | "processing" | "success" | "failed"
+    email: string
+}
+
+
+
 function page() {
     const [isLeadsLoading, setIsLeadsLoading] = useState(false)
     const [isEditLeadLoading, setIsEditLeadLoading] = useState(false)
@@ -238,7 +267,9 @@ function page() {
 
 
             </div>
-
+            <div>
+                <DataTable columns={columns} projectId={params.chatbotId} />
+            </div>
         </div>
     )
 }

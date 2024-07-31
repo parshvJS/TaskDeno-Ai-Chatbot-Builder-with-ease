@@ -17,7 +17,8 @@ const isPublicRoute = createRouteMatcher([
   '/api/upload-image',
   '/api/saveExecutionMap',
   '/api/getLeadsField',
-  '/api/saveLeadsField'
+  '/api/saveLeadsField',
+  '/api/getLeadsData',
 ])
 
 export default clerkMiddleware((auth, req) => {
