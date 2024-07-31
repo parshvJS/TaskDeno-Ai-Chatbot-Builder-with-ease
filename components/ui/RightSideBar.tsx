@@ -191,7 +191,7 @@ function RightSideBar({ variables, setVariables }: any) {
                         ai: {
                             type: aiDataType,
                             content: aiContentPrompt,
-                            Variable: aiVariable
+                            variable: aiVariable
                         }
 
                     }

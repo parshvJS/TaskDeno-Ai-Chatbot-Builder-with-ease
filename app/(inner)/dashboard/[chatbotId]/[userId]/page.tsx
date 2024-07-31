@@ -63,35 +63,43 @@ function page() {
         <Label className='text-page-header'>Dashboard</Label>
       </section>
       <div className='w-full grid grid-rows-1 grid-cols-3 gap-3'>
+
         <div onClick={() => router.push(`/builder/${activeProjectId}/${userId}`)}>
           <SlimCard pointer={true} className='w-full h-full flex-1 cursor-pointer flex justify-center items-center flex-col'>
             <Image
               src='/icons/builder-illu.svg'
-              width={220}
+              width={310}
               height={300}
-              alt="Go to builder"
+              alt="Lead management"
             />
             <p className='text-18 font-semibold'>Go To Builder</p>
           </SlimCard>
         </div>
-        <SlimCard pointer={true} className='w-full h-full flex-1 cursor-pointer flex justify-center items-center flex-col'>
-          <Image
-            src='/icons/stats-illu.svg'
-            width={310}
-            height={300}
-            alt="Statistics"
-          />
-          <p className='text-18 font-semibold'>View Statistics</p>
-        </SlimCard>
-        <SlimCard pointer={true} className='w-full h-full flex-1 cursor-pointer flex justify-center items-center flex-col'>
-          <Image
-            src='/icons/lead-illu.svg'
-            width={310}
-            height={300}
-            alt="Lead management"
-          />
-          <p className='text-18 font-semibold'>Manage Leads</p>
-        </SlimCard>
+        <div>
+          <SlimCard pointer={true} className='w-full h-full flex-1 cursor-pointer flex justify-center items-center flex-col'>
+            <Image
+              src='/icons/stats-illu.svg'
+              width={310}
+              height={300}
+              alt="Statistics"
+            />
+            <p className='text-18 font-semibold'>View Statistics</p>
+          </SlimCard>
+        </div>
+
+        <div onClick={() => router.push(`/leads/${activeProjectId}/${userId}`)}>
+          <SlimCard pointer={true} className='w-full h-full flex-1 cursor-pointer flex justify-center items-center flex-col'>
+            <Image
+              src='/icons/lead-illu.svg'
+              width={310}
+              height={300}
+              alt="Lead management"
+            />
+            <p className='text-18 font-semibold'>Manage Leads</p>
+          </SlimCard>
+        </div>
+
+
       </div>
     </div>
 

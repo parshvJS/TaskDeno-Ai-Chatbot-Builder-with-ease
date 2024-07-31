@@ -17,6 +17,7 @@ import {
 import projectContext from '@/context/chatbotContext';
 import axios from 'axios';
 import { useToast } from '@/components/ui/use-toast';
+import Image from 'next/image';
 export type EachLead = { field: string, isSelected: boolean }
 function page() {
     const [isLeadsLoading, setIsLeadsLoading] = useState(false)
@@ -27,6 +28,7 @@ function page() {
     const { userId } = useAuth()
     const params: chatUserParams = useParams();
     const { toast } = useToast()
+
     function handleLeadToggle(index: number) {
         const lead = leads[index].field;
         let newEditedLeads;
@@ -40,8 +42,17 @@ function page() {
                 })
                 return;
             }
+
             newEditedLeads = editedLeads.filter((item) => item !== lead);
         } else {
+            if (editedLeads.length == 5) {
+                toast({
+                    title: "You Can't Store More Than 5 Fields",
+                    description: "You are Adding more than 5 fields",
+                    variant: "destructive"
+                })
+                return;
+            }
             newEditedLeads = [...editedLeads, lead];
         }
         console.log(newEditedLeads, "lolllllllll")
@@ -90,7 +101,43 @@ function page() {
         }
     }
 
+    async function saveEditedLeads() {
+        const projectId = params.chatbotId;
+        if (!projectId) {
+            return;
+        }
+        setIsLeadsLoading(true)
+        try {
+            const response = await axios.post('/api/saveLeadsField', {
+                projectId: projectId,
+                leads: editedLeads
+            })
+            console.log(response.data, response.data.success, response.data.statuscode)
+            if (!response) {
+                toast({
+                    title: "Can't Save Leads",
+                    description: "Can't Save Leads",
+                    variant: 'destructive'
+                })
+            }
+            toast({
+                title: "Saved Leads",
+                description: response.data.message,
+                variant: 'success'
+            })
+        }
+        catch (error: any) {
+            toast({
+                title: "Can't Save Leads",
+                description: error.message,
+                variant: 'destructive'
+            })
+            throw new Error(error.message)
+        } finally {
+            setIsLeadsLoading(false)
+        }
 
+    }
     return (
         <div className='flex flex-col h-full w-full'>
             <Label className='text-page-header'>Manage Leads</Label>
@@ -109,6 +156,7 @@ function page() {
                     <DialogContent>
                         <DialogHeader>
                             <DialogTitle>Select Fields To Store</DialogTitle>
+                            <p className='text-sm'>Toggle Fields To Store And Not To Store</p>
                             <DialogDescription>
                                 {
                                     isEditLeadLoading ? (
@@ -121,7 +169,7 @@ function page() {
                                         </div>
                                     ) : (
                                         <div>
-                                            <div className='flex flex-1 w-full gap-2 my-5'>
+                                            <div className='flex flex-1 w-full gap-2 my-5 flex-wrap'>
                                                 {
                                                     leads.map((lead: EachLead, index: number) => {
                                                         const isActive = editedLeads.includes(lead.field);
@@ -129,16 +177,18 @@ function page() {
                                                             <div
                                                                 key={index} // Make sure to add a key prop when mapping
                                                                 onClick={() => handleLeadToggle(index)}
-                                                                className={`${isActive ? "bg-yellow-300" : "bg-yellow-100"} cursor-pointer p-3 rounded-md `}
+                                                                className={`${isActive ? "bg-yellow-200 border-2 border-yellow-5" : "bg-yellow-100 border-2 border-yellow-100"} cursor-pointer p-3 rounded-md `}
                                                             >
                                                                 <p className='text-black font-semibold'>{lead.field}</p>
                                                             </div>
                                                         );
+
+
                                                     })
                                                 }
 
                                             </div>
-                                            <Button>
+                                            <Button onClick={saveEditedLeads}>
                                                 {
                                                     isLeadsLoading ? (
                                                         <div className='flex gap-2 items-center'>
@@ -151,7 +201,7 @@ function page() {
                                                         </div>
                                                     ) : (
                                                         <div>
-                                                            Save
+                                                            Save Changes
                                                         </div>
                                                     )
                                                 }
@@ -172,6 +222,17 @@ function page() {
                     <div className='flex gap-2'>
                         <CloudDownload strokeWidth={1.5} width={20} height={20} />
                         <p className='font-semibold text-14'>Download As CSV</p>
+                    </div>
+                </Button>
+                <Button variant={"ghost"} className='bg-gray-300'>
+                    <div className='flex gap-2'>
+                        <Image
+                            src="/icons/usecase.svg"
+                            width={20}
+                            height={20}
+                            alt='casestudy'
+                        />
+                        <p className='font-semibold text-14'>AI Data Usage Suggestion</p>
                     </div>
                 </Button>
 

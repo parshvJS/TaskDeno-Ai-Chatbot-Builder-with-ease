@@ -428,5 +428,8 @@ ii. user input : {
 
 <!-- todo -->
 
-1.create initital cahtbot
-2.use it for our usage
+1. add variable feature - done
+2. add feature to use variable
+3. add leads feauture
+4. add conversation feautue
+5. learn and implement bit of brain js
