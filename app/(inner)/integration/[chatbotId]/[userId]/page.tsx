@@ -51,7 +51,7 @@ function page() {
     return (
 
         <>
-            <div className='flex flex-col h-full w-full'>
+            <div className='flex flex-col h-full w-full mx-10 my-5 '>
                 <section className='flex flex-col gap-4 w-fit mb-5'>
                     <Label className='text-page-header'>Integration To Webside</Label>
                     <p className='font-semibold text-14 text-gray-500'>Guide To Add TaskDeno Chatbot To Your Website</p>

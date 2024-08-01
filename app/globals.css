@@ -66,7 +66,7 @@ html {
 }
 
 @layer utilities {
-  
+
   .slim-border {
     @apply border-2 border-gray-200 rounded-md
   }
@@ -92,7 +92,7 @@ html {
   }
 
   .left_sidebar {
-    @apply sticky left-0 top-0 flex w-fit flex-col justify-between border-r-2 border-yellow-50 bg-white-1 pt-8 text-white-1 max-md:hidden lg:w-[240px] lg:pl-8;
+    @apply sticky left-0 top-0 flex w-fit flex-col justify-between bg-white-1 pt-8 text-white-1 max-md:hidden lg:w-[240px] lg:pl-8;
   }
 
   .generate_thumbnail {

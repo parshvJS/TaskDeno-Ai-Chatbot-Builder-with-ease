@@ -58,7 +58,7 @@ function page() {
   }
 
   return (
-    <div className='flex flex-col h-full w-full p-4'>
+    <div className='flex flex-col h-full w-[95%] p-4 mx-10 my-5 '>
       <section className='flex flex-col gap-4 w-fit mb-5'>
         <Label className='text-page-header'>Dashboard</Label>
       </section>

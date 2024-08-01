@@ -544,7 +544,7 @@ function ReactChatbotUi(project: any) {
         </div >
     )
 }
-function addLineBreaks(text: string): string {
+export function addLineBreaks(text: string): string {
 
     return `<p>${text.replace(/[?!]/g, match => match + "<br/>")}</p>`;
 }

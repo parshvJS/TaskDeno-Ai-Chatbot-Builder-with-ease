@@ -394,7 +394,7 @@ function page() {
   }
   // js boundry
   if (isPageLoading) {
-    return <div className='flex flex-col h-[96%] w-full'>
+    return <div className='flex flex-col h-[96%] w-full mx-10 my-5 '>
       {/* <section className='flex flex-col gap-4 w-fit mb-5'>
         <Label className='text-page-header'>Customize Appearence & Theme</Label>
       </section> */}
@@ -421,7 +421,7 @@ function page() {
 
 
   return (
-    <div className='flex flex-col h-[96%] w-full' >
+    <div className='mx-10 my-5 flex flex-col h-[96%] w-full' >
       {/* <section className='flex flex-col gap-4 w-fit mb-5'>
         <Label className='text-page-header'>Customize Appearence & Theme</Label>
       </section> */}

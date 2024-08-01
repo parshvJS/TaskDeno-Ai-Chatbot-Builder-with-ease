@@ -19,6 +19,8 @@ const isPublicRoute = createRouteMatcher([
   '/api/getLeadsField',
   '/api/saveLeadsField',
   '/api/getLeadsData',
+  '/api/getAllconversations',
+  '/api/getChatFromConversation'
 ])
 
 export default clerkMiddleware((auth, req) => {

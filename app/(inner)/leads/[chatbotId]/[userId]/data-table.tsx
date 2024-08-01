@@ -54,7 +54,7 @@ export function DataTable<TData extends Payment, TValue>({
             const leadsData = response.data.data.data.leadsData;
             const leadsField = response.data.data.data.leadsField;
             const pagination = response.data.data.pagination;
-
+            
             setData(leadsData);
             setColumns(leadsField.map((field: string) => ({
                 accessorKey: field,
@@ -87,9 +87,9 @@ export function DataTable<TData extends Payment, TValue>({
     return (
         <div>
             {isLoading ?
-                <div className='flex gap-3'>
-                    <LoaderPinwheel className="animate-spin h-12 w-12" />
-                    <p>Loading Leads</p>
+                <div className='flex justify-center items-center mt-5'>
+                    <LoaderPinwheel className="animate-spin" />
+                    <p>Loading Leads...</p>
                 </div> : <div>
                     <div className="rounded-md border">
                         <Table>

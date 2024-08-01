@@ -5,7 +5,7 @@ import { chatUserParams } from '@/types/types';
 import { useAuth } from '@clerk/nextjs';
 import { CloudDownload, Loader, Loader2, LoaderPinwheel, Settings2 } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import React, { useContext, useState } from 'react'
+import React, { SetStateAction, useContext, useState } from 'react'
 import {
     Dialog,
     DialogContent,
@@ -105,7 +105,7 @@ function page() {
             const leads = rawLeads.data.data
             console.log("Leadsssssss", leads)
             setLeads(leads)
-            const newInititalLeads: string[] = [];
+            const newInititalLeads: EachLead[] = [];
 
             leads.forEach((lead: EachLead) => {
                 if (lead.isSelected) {
@@ -168,7 +168,7 @@ function page() {
 
     }
     return (
-        <div className='flex flex-col h-full w-full'>
+        <div className='mx-10 my-5 flex flex-col h-full w-[95%] '>
             <Label className='text-page-header'>Manage Leads</Label>
             <p className='font-semibold text-14 text-gray-500 mt-2'>All Data That have been collected</p>
 
@@ -268,7 +268,7 @@ function page() {
 
             </div>
             <div>
-                <DataTable columns={columns} projectId={params.chatbotId} />
+                <DataTable projectId={params.chatbotId} />
             </div>
         </div>
     )

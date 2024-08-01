@@ -433,3 +433,12 @@ ii. user input : {
 3. add leads feauture
 4. add conversation feautue
 5. learn and implement bit of brain js
+
+
+<!-- todos -->
+1.create feautre where chat summery generated after user disconnects
+2.create conversation feautre
+    i . create chat fetch api
+    ii. create chat message fetch and summery fetch api
+    iii. show in ui
+3.work on analytics 
