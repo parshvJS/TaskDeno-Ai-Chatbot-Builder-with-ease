@@ -1,6 +1,9 @@
 
 (function () {
     function initChatbot(chatbotId) {
+        console.log("Chatbot ID:", chatbotId),"setting chatbotId in local storage";
+        
+        localStorage.setItem('chatbotId', chatbotId);
         const chatbotContainer = document.createElement('div');
         chatbotContainer.id = 'chatbot-container';
         document.body.appendChild(chatbotContainer);
@@ -16,9 +19,8 @@
         const loadingText = document.createElement('p');
         loadingText.textContent = 'Loading chat...';
         chatbotContainer.appendChild(loadingText);
-
+        console.log("adding iframe");
         const iframe = document.createElement('iframe');
-        localStorage.setItem('chatbotId', chatbotId);
         iframe.src = `http://localhost:3000/api/chatbot-ui?chatbotId=${chatbotId}`;
         iframe.style.width = '100%';
         iframe.style.zIndex = '2147483647';

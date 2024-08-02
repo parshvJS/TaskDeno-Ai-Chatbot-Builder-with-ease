@@ -1,4 +1,5 @@
 'use client'
+import { Button } from '@/components/ui/button'
 import Chat from '@/components/ui/Chat'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
@@ -154,7 +155,10 @@ function page() {
                         )
                     )
                 }
-
+                <div className='flex justify-between items-center w-full p-4'>
+                    <Button onClick={()=>setPaginationNum(paginationNum-1)}>Previous</Button>
+                    <Button onClick={()=>setPaginationNum(paginationNum+1)}>Next</Button>
+                </div>
             </ScrollArea >
             <Separator orientation="vertical" className='bg-yellow-2' />
             <ScrollArea className='w-[50%] h-full flex justify-center items-center'>

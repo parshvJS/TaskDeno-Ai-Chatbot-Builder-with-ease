@@ -34,7 +34,7 @@ export async function GET(request: Request) {
         }
 
 
-        const { htmlContents } = chatbotGenerator(chatbotui[0]);
+        const { htmlContents } = chatbotGenerator(chatbotui[0],chatbotId);
 
         return new Response(htmlContents.htmlContents, {
             headers: {

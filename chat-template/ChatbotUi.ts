@@ -1,6 +1,6 @@
 
 
-export function chatbotGenerator(project: any) {
+export function chatbotGenerator(project: any, chatbotId: string) {
     const {
         colorTheme,
         marginBottom,
@@ -19,11 +19,11 @@ export function chatbotGenerator(project: any) {
     const lighterShades = generateLighterShades(colorTheme, 3);
     const newWelcomeText = addLineBreaks(welcomText)
     const [color1, color2, color3] = lighterShades;
-    const htmlContents = getHtmlContent(colorTheme, color1, color2, color3, marginBottom, marginRight, chatbotName, chatbotLargeLogo, chatbotSmallLogo, newWelcomeText, faq, contact, roundedTheme, panelWidth);
+    const htmlContents = getHtmlContent(chatbotId, colorTheme, color1, color2, color3, marginBottom, marginRight, chatbotName, chatbotLargeLogo, chatbotSmallLogo, newWelcomeText, faq, contact, roundedTheme, panelWidth);
     return { htmlContents }
 }
 
-function getHtmlContent(colorTheme: string, color1: string, color2: string, color3: string, marginBottom: number, marginRight: number, userChatbotName: string, userChatbotImage: string,chatbotSmallLogo:any, welcomText: string, faq: any, contact: any, roundedTheme: boolean, panelWidth: number) {
+function getHtmlContent(chatbotId: string, colorTheme: string, color1: string, color2: string, color3: string, marginBottom: number, marginRight: number, userChatbotName: string, userChatbotImage: string, chatbotSmallLogo: any, welcomText: string, faq: any, contact: any, roundedTheme: boolean, panelWidth: number) {
     const htmlContents = `<html lang="en"><!-- colorTheme,color1, color2, color3, marginBottom, marginRight, userChatbotName, userChatbotImage -->
 
     <head>
@@ -41,8 +41,8 @@ function getHtmlContent(colorTheme: string, color1: string, color2: string, colo
             /* trigger button */
             .chatbot-trigger {
                 position: fixed;
-                bottom: 37px;
-                right: 30px;
+                bottom: ${marginBottom}px;
+                right: ${marginRight}px;
                 width: 60px;
                 height: 60px;
                 /* TODO: custom */
@@ -61,8 +61,8 @@ function getHtmlContent(colorTheme: string, color1: string, color2: string, colo
                 padding: 20px;
                 display: none;
                 position: fixed;
-                bottom: 110px;
-                right: 30px;
+                bottom: ${marginBottom + 60}px;
+                right: ${marginRight}px;
                 width: 360px;
                 height: 80%;
                 background-color: white;
@@ -751,7 +751,19 @@ function getHtmlContent(colorTheme: string, color1: string, color2: string, colo
                 </div>
                 <p id="faq-dynamic-panel" class="bold-font" style="margin-left: 10px;">Help & Support</p>
             </div>
-            <div id="dynamic-faq-questions" class="accordion"></div>
+             <div class="accordion">
+                        ${faq.map((item:any) => `
+                            <div class="accordion-item">
+                                <div class="accordion-header">
+                                    <p>${item.question}</p>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                                </div>
+                                <div class="accordion-content">
+                                    ${item.wholeAnswer}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
     
         </div>
     
@@ -949,7 +961,9 @@ function getHtmlContent(colorTheme: string, color1: string, color2: string, colo
         <script>
     
             let uuid = self.crypto.randomUUID(); //user id
-            let embedId = localStorage.getItem('chatbotId')
+           const embedId = ${chatbotId}
+           localStorage.setItem('chatbotId', embedId)
+
             console.log(localStorage.getItem('chatbotId'), "embedId")
             var currentIndex = -1;
     
@@ -1033,7 +1047,7 @@ function getHtmlContent(colorTheme: string, color1: string, color2: string, colo
                             chatbotSection.innerHTML += \`
                              <div style="display: flex; gap: 8px;">
                             <div
-                                style="width: 100%; height: fit-content; padding: 4px 14px; border-top-left-radius: 5px; border-top-right-radius: 15px; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px; background-color: #D9DADA;  font-weight: 300;">
+                                style="width: 100%; height: fit-content; padding: 4px 14px; border-top-left-radius: 5px; border-top-right-radius: 15px; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px; background-color: ${color3};  font-weight: 300;">
                                 
                                 <button>
                                     <- Go Back 
@@ -1049,7 +1063,7 @@ function getHtmlContent(colorTheme: string, color1: string, color2: string, colo
                             chatbotSection.innerHTML += \`
                                 <div style = "display: flex; gap: 8px;" >
                                     <div
-                                        style="width: fit-content; height: fit-content; padding: 10px 14px; border-top-left-radius: 5px; border-top-right-radius: 15px; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px; background-color: #D9DADA;  font-weight: 300;">
+                                        style="width: fit-content; height: fit-content; padding: 10px 14px; border-top-left-radius: 5px; border-top-right-radius: 15px; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px; background-color: ${color3};  font-weight: 300;">
                                         <img src=\${messageData.content}\ style="width:100%; height:fit-content; max-height:130px; border-radius:6px" 
                             </div>
                             </div>
@@ -1062,7 +1076,7 @@ function getHtmlContent(colorTheme: string, color1: string, color2: string, colo
                             chatbotSection.innerHTML += \`
                                 <div style = "display: flex; gap: 8px;" >
                                     <div
-                                        style="width: 100%; height: fit-content; padding: 4px 14px; border-top-left-radius: 5px; border-top-right-radius: 15px; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px; background-color: #D9DADA;  font-weight: 300;">
+                                        style="width: 100%; height: fit-content; padding: 4px 14px; border-top-left-radius: 5px; border-top-right-radius: 15px; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px; background-color: ${color3};  font-weight: 300;">
                                         <p style="margin:0;">\${messageData.content}\</p>
                                     </div>
                             </div>
@@ -1107,7 +1121,7 @@ function getHtmlContent(colorTheme: string, color1: string, color2: string, colo
                     chatSection.innerHTML += \`
                                 <div style = "display: flex; gap: 8px;  justify-content:end; margin:10px 0px" >
                                     <div
-                                        style="width: fit-content; height: fit-content; padding: 4px 14px; border-top-left-radius: 15px; border-top-right-radius: 5px; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px; background-color: blue;  font-weight: 300;">
+                                        style="width: fit-content; height: fit-content; padding: 4px 14px; border-top-left-radius: 15px; border-top-right-radius: 5px; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px; background-color: ${color3};  font-weight: 300;">
                                         <p style="margin:0;">\${userValue}\</p>
                                     </div>
                             </div>
