@@ -3,7 +3,7 @@ import { apiError } from "@/lib/apiError";
 import { apiResponse } from "@/lib/apiResponse";
 import { dbConnect } from "@/lib/dbConnect";
 import { ChatbotUi } from 'taskdeno-mongoose-model';
-import { Project} from 'taskdeno-mongoose-model';
+import { Project } from 'taskdeno-mongoose-model';
 
 export async function GET(request: Request) {
     await dbConnect();
@@ -34,7 +34,7 @@ export async function GET(request: Request) {
         }
 
 
-        const { htmlContents } = chatbotGenerator(chatbotui[0],chatbotId);
+        const { htmlContents } = chatbotGenerator(chatbotui[0], chatbotId);
 
         return new Response(htmlContents.htmlContents, {
             headers: {

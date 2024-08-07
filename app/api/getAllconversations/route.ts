@@ -16,7 +16,11 @@ export async function POST(req: Request) {
         const skip = (paginationNum - 1) * paginationSize;
 
 
-        const chatbotInstace = await ChatbotInstance.find({ chatbotId: projectId }).skip(skip).limit(paginationSize).select("-conversation");
+        const chatbotInstace = await ChatbotInstance.find({ chatbotId: projectId })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(paginationSize)
+            .select("-conversation");
         if (!chatbotInstace) {
             return Response.json(
                 new apiError(400, "Can't Load Conversations")

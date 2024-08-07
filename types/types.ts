@@ -22,7 +22,36 @@ export interface IChatbotType {
     storeChangesInDb: () => void,
   }
 
-export interface chatUserParams {
+export type chatUserParams =  {
     chatbotId: string,
     userId: string
+}
+
+export type Lead = {
+    field:string,
+    isSelected:boolean
+}
+
+export interface ChatDocument extends Document {
+  _id: string;
+  chatbotId: string;
+  instanceId: string;
+  conversation: Array<{
+    role: string;
+    type?: string;
+    content: string;
+  }>;
+  issueSolved: boolean;
+  aiSummery: string;
+  nickname: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+  leadInfo: {
+    age?: string;
+    email?: string;
+    location?: string;
+    name?: string;
+    contactNumber?: string;
+  };
 }

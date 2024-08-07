@@ -1,4 +1,5 @@
 'use client'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import Chat from '@/components/ui/Chat'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -131,23 +132,25 @@ function page() {
                                 {
                                     allChatData && allChatData.map((chat, index) => {
                                         const isActive = chat.instanceId == activeChatPanel;
-                                        return <div key={index} onClick={() => handleActiveConversation(index)} className={`w-full p-3 hover:bg-yellow-50 cursor-pointer ${isActive ? "bg-yellow-100" : ""}`}>
-                                            <div className='flex gap-2 items-center'>
-                                                <Image
-                                                    src={'/icons/user-icon.svg'}
-                                                    width={30}
-                                                    height={30}
-                                                    alt='user'
-                                                    color='#000'
-                                                />
-                                                <div className=''>
-
-                                                    <p className='text-sm capitalize font-normal'>{chat?.nickname.replace("_", " ") || `User Chat #${index}`}</p>
-                                                    <p className='text-xs text-gray-600'>{timeAgo(chat.createdAt)}</p>
-
+                                        return (
+                                            <div key={index} onClick={() => handleActiveConversation(index)} className={`w-full p-3 hover:bg-yellow-50 cursor-pointer ${isActive ? "bg-yellow-100" : ""}`} >
+                                                <div className='flex gap-2 items-center capitalize'>
+                                                    <Avatar>
+                                                        <AvatarFallback style={{ background: "linear-gradient(to bottom right, #F1FE02, #EBEBEA)" }}>
+                                                            {chat?.nickname
+                                                                .split('_')
+                                                                .map((word:string) => word.charAt(0))
+                                                                .join('') || 'U'
+                                                            }
+                                                        </AvatarFallback>
+                                                    </Avatar>
+                                                    <div className=''>
+                                                        <p className='text-sm capitalize font-normal'>{chat?.nickname.replace("_", " ") || `User Chat #${index}`}</p>
+                                                        <p className='text-xs text-gray-600'>{timeAgo(chat.createdAt)}</p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        );
                                     })
                                 }
 
@@ -156,8 +159,8 @@ function page() {
                     )
                 }
                 <div className='flex justify-between items-center w-full p-4'>
-                    <Button onClick={()=>setPaginationNum(paginationNum-1)}>Previous</Button>
-                    <Button onClick={()=>setPaginationNum(paginationNum+1)}>Next</Button>
+                    <Button onClick={() => setPaginationNum(paginationNum - 1)}>Previous</Button>
+                    <Button onClick={() => setPaginationNum(paginationNum + 1)}>Next</Button>
                 </div>
             </ScrollArea >
             <Separator orientation="vertical" className='bg-yellow-2' />

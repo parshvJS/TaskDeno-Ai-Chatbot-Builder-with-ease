@@ -8,6 +8,7 @@ import CodeSnippet from '@/components/CodeSnippt';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
+import { chatUserParams } from '@/types/types';
 
 function page() {
 
