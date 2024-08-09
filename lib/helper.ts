@@ -1,7 +1,10 @@
 import { ChatDocument } from "@/types/types";
 import { addDays, subDays } from "date-fns";
+import { unlinkSync, writeFile } from "fs";
 import { Document } from "mongoose";
+import { join } from "path";
 import { ChatbotInstance } from "taskdeno-mongoose-model";
+import { uploadOnCloudinary } from "./uploadOnCloudinary";
 
 export function timeAgo(dateString: string): string {
     const date = new Date(dateString);
@@ -155,4 +158,3 @@ export function getChatUsagePerWeek(documents: ChatDocument[]): { day: string, c
       fill: dayColors[day]
     }));
   }
-  

@@ -13,7 +13,7 @@ export async function POST(req:Request){
                 new apiError(400,"Please Provide Projectid and leads array for this operation")
             )
         }
-
+        
         const project = await Project.findByIdAndUpdate(projectId,{
             leadsField:leads
         }).select("variable leadsField")

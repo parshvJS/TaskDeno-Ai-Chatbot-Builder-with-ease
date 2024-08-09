@@ -49,11 +49,12 @@
 
 {
   "compilerOptions": {
+    "downlevelIteration": true,
+    "target": "es2015",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
     },
-    "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,

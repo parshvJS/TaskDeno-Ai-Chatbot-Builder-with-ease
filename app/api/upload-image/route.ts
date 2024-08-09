@@ -33,8 +33,10 @@ export async function POST(req: NextRequest) {
     console.log("Processing", files.length, "files...");
     const file = files[0];
     console.log("Processing file:", file.name);
+
+    // Convert the ArrayBuffer to a Uint8Array, then to a Buffer
     const byteArray = await file.arrayBuffer();
-    const buffer = Buffer.from(byteArray);
+    const buffer = Buffer.from(byteArray) as unknown as ArrayBufferView; // This should be correct as Buffer accepts ArrayBuffer
 
     const rootPath = process.cwd();
     const publicPath = join(rootPath, 'public', file.name);
@@ -51,13 +53,12 @@ export async function POST(req: NextRequest) {
         }
       });
     });
-
     console.log("Uploading to Cloudinary...");
     const cloudinaryUrl = await uploadOnCloudinary(publicPath);
     unlinkSync(publicPath);
-    return Response.json(new apiResponse(200,cloudinaryUrl, "File Uploaded Successfully !"));
+    return Response.json(new apiResponse(200, cloudinaryUrl, "File Uploaded Successfully !"));
   }
-  catch{
+  catch {
     return NextResponse.json({
       success: false,
       message: "Error in Uploading File !"

@@ -286,6 +286,7 @@ export default function App() {
         onConnect={onConnect}
         fitView
       >
+        
         <Background />
         <div className='flex items-center w-full h-full'>
           <SidePanel

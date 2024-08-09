@@ -1,7 +1,7 @@
 'use client'
 import { Label } from '@/components/ui/label';
 import { useParams } from 'next/navigation';
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import React, { ChangeEvent, FormEvent, useCallback, useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ReactChatbotUi from '@/chat-template/ReactChatbotUi';
 import { Axis3D, ChevronDown, ChevronUp, CloudUpload, LoaderPinwheel, Pencil, Trash2 } from 'lucide-react';
@@ -232,6 +232,7 @@ function page() {
     chatbotName: z.string().min(3, "Name must be atleast 3 characters long").max(20, "Name must be atmost 20 characters long"),
     welcomeText: z.string().min(3, "Welcome text must be atleast 3 characters long").max(35, "Welcome text must be atmost 35 characters long")
   })
+
   const contentForm = useForm<z.infer<typeof contentSchema>>({
     resolver: zodResolver(contentSchema),
     defaultValues: {
@@ -279,7 +280,7 @@ function page() {
     }
   }, [currentQuestion, currentPreviewAnswer, currentWholeAnswer])
 
-  function handleAddSection(e) {
+  function handleAddSection(e:FormEvent) {
     e.preventDefault()
     if (currentHeader.length < 1 || currentPreview.length < 1) {
       toast({
@@ -312,7 +313,7 @@ function page() {
     });
   }
 
-  function handleDeleteSection(e) {
+  function handleDeleteSection(e:FormEvent) {
     e.preventDefault()
     // Step 1: Clone the FAQ array
     const updatedFaq = [...faq];
@@ -333,7 +334,7 @@ function page() {
     setIsSecOpen(!isSecOpen)
   }
 
-  function addNewQuestion(e) {
+  function addNewQuestion(e:FormEvent) {
     e.preventDefault()
     if (currentQuestion.length < 1 || currentPreviewAnswer.length < 1 || currentWholeAnswer.length < 1) {
       toast({
