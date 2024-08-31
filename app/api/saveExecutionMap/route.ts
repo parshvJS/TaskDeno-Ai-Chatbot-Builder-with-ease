@@ -36,7 +36,7 @@ export async function POST(req: Request) {
 
         const executionMap = createExecutionMap(nodes, edges);
 
-        let filteredNodes: [{}] = [];
+        let filteredNodes: [{}] = [{}];
         nodes?.forEach((node: any, index: number) => {
             if (index === 0) {
                 filteredNodes.push({

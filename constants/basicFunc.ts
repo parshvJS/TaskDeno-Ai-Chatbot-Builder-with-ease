@@ -33,7 +33,7 @@ export const updateUser = async (userData: any) => {
   };
 
   try {
-    const updatedUser = await UserModel.findOneAndUpdate({ clerkUserId: userData.id }, updateData, { new: true });
+    const updatedUser = await User.findOneAndUpdate({ clerkUserId: userData.id }, updateData, { new: true });
     
   } catch (error) {
     
@@ -44,7 +44,7 @@ export const updateUser = async (userData: any) => {
 // Delete a user
 export const deleteUser = async (userData: any) => {
   try {
-    const deletedUser = await UserModel.findOneAndDelete({ clerkUserId: userData.id });
+    const deletedUser = await User.findOneAndDelete({ clerkUserId: userData.id });
     
   } catch (error) {
     

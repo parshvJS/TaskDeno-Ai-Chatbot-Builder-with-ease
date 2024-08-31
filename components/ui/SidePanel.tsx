@@ -383,7 +383,7 @@ const SidePanel = ({
                     <DropdownMenuSeparator />
                     {
                       openAIModels.map((model, index) => (
-                        <DropdownMenuItem key={index} onSelect={(value: Event) => handleAIModelChange(value?.target?.innerText)} >
+                        <DropdownMenuItem key={index} onSelect={(value:any) =>{console.log(value); handleAIModelChange(value?.target?.innerText)}} >
                           {model.label}
                         </DropdownMenuItem>
                       ))

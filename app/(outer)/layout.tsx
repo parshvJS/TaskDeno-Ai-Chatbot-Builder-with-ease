@@ -4,15 +4,27 @@ import LeftSideBar from "@/components/LeftSideBar";
 import { Toaster } from "@/components/ui/toaster";
 import MobileNav from "@/components/MobileNav";
 import { outerNavItems } from "@/constants/constants";
+import { useAuth } from "@clerk/nextjs";
+import { LoaderPinwheel } from "lucide-react";
 export default function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const { isLoaded, userId, sessionId } = useAuth()
+    if(!isLoaded){
+        return(
+            <div>
+                <LoaderPinwheel className="animate-spin"/>
+                <p>Loading..</p>
+            </div>
+        )
+    }
     return (
         <div className="relative flex flex-col">
             <main className="relative flex ">
-                <LeftSideBar
+            <LeftSideBar
+                    userId={userId || ""}
                     navArray={outerNavItems}
                     isLogoutVisible={true}
                 />

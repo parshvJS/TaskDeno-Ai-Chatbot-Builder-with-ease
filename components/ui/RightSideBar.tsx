@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Check, ChevronsUpDown, Plus, Variable, X } from 'lucide-react';
 import { Panel } from 'reactflow';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from './input';
 import SidebarContext from '@/context/RightSideBarContext';
 import { cn } from '@/lib/utils';
@@ -13,12 +13,12 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 import { ScrollArea } from './scroll-area';
 import { useToast } from './use-toast';
 import {
@@ -27,103 +27,108 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import { giveResponse, sentMessage, UserInput } from '@/constants/constants';
 import Image from 'next/image';
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from './label';
 
-function RightSideBar({ variables, setVariables }: any) {
-    const [open, setOpen] = useState(false)
-    const [value, setValue] = useState("")
-    const { sidebar, setSidebar, setIsSidebarActive, isSidebarActive } = useContext(SidebarContext);
-    const [showInput, setShowInput] = useState(false)
-    const [inputValue, setInputValue] = useState("");
-    const [currentDataType, setCurrentDataType] = useState("")
-    const [chatbotDataType, setChatbotDataType] = useState("")
-    const [chatbotVariable, setChatbotVariable] = useState("")
-    const [variableDropdownOpen, setVariableDropdownOpen] = useState(false);
-    const [variableInputValue, setVariableInputValue] = useState("");
-    const [textareaContent, setTextareaContent] = useState("");
-    const [chatbotImageUrl, setChatbotImageUrl] = useState("")
-    const [chatbotImageUrlValid, setChatbotImageUrlValid] = useState(false)
-    // tab ai response
-    const [aiContentPrompt, setAiContentPrompt] = useState("")
-    const [aiVariable, setAiVariable] = useState("")
-    const [aiDataType, setAiDataType] = useState("")
-    const { toast } = useToast()
-    const activeChatbot = sidebar?.currentNode?.data.message ? sidebar?.currentNode?.data.message : sidebar?.currentNode?.data.ai;
+// Define the types for props
+interface RightSideBarProps {
+    variables: string[];
+    setVariables: React.Dispatch<React.SetStateAction<string[] >>;
+}
+
+// Define the types for sidebar context
+interface SidebarContextType {
+    sidebar: any;
+    setSidebar: React.Dispatch<React.SetStateAction<any>>;
+    setIsSidebarActive: React.Dispatch<React.SetStateAction<boolean>>;
+    isSidebarActive: boolean;
+}
+
+function RightSideBar({ variables, setVariables }: RightSideBarProps) {
+    const [open, setOpen] = useState<boolean>(false);
+    const [value, setValue] = useState<string>("");
+    const { sidebar, setSidebar, setIsSidebarActive, isSidebarActive } = useContext<SidebarContextType>(SidebarContext);
+    const [showInput, setShowInput] = useState<boolean>(false);
+    const [inputValue, setInputValue] = useState<string>("");
+    const [currentDataType, setCurrentDataType] = useState<string>("");
+    const [chatbotDataType, setChatbotDataType] = useState<string>("");
+    const [chatbotVariable, setChatbotVariable] = useState<string>("");
+    const [variableDropdownOpen, setVariableDropdownOpen] = useState<boolean>(false);
+    const [variableInputValue, setVariableInputValue] = useState<string>("");
+    const [textareaContent, setTextareaContent] = useState<string>("");
+    const [chatbotImageUrl, setChatbotImageUrl] = useState<string>("");
+    const [chatbotImageUrlValid, setChatbotImageUrlValid] = useState<boolean>(false);
+
+    const [aiContentPrompt, setAiContentPrompt] = useState<string>("");
+    const [aiVariable, setAiVariable] = useState<string>("");
+    const [aiDataType, setAiDataType] = useState<string>("");
+    const { toast } = useToast();
+
+    const activeChatbot = sidebar?.currentNode?.data.message ?? sidebar?.currentNode?.data.ai;
     const activeChatbotDatatype = sidebar?.currentNode?.data.message ? "message" : "ai";
 
-
-
-    // set intital values for right side bar
+    // Set initial values for right side bar
     useEffect(() => {
         console.log("RSB::useEffect::values are", activeChatbot, sidebar);
-        var userSidebar = sidebar.currentNode.data.user;
-        userSidebar.type && setCurrentDataType(userSidebar.type)
-        userSidebar.variable && setValue(userSidebar.variable)
-        if (activeChatbotDatatype == "message") {
-            const chatBotDatatype = sidebar.currentNode.data.message ? sidebar.currentNode.data.message : sidebar.currentNode.data.ai || null
-            setChatbotVariable(chatBotDatatype.variable)
-            if (activeChatbotDatatype == "message") {
-                setChatbotDataType(sidebar.currentNode.data.message.type)
-            }
-        }
-        else if (activeChatbotDatatype == "ai") {
-            // use ai states
-            const aiDatatype = sidebar.currentNode.data.ai ? sidebar.currentNode.data.ai : null
+        const userSidebar = sidebar.currentNode.data.user;
+        userSidebar.type && setCurrentDataType(userSidebar.type);
+        userSidebar.variable && setValue(userSidebar.variable);
+
+        if (activeChatbotDatatype === "message") {
+            const chatBotDatatype = sidebar.currentNode.data.message ?sidebar.currentNode.data.message : sidebar.currentNode.data.ai || null;
+            setChatbotVariable(chatBotDatatype.variable);
+            setChatbotDataType(sidebar.currentNode.data.message.type);
+        } else if (activeChatbotDatatype === "ai") {
+            const aiDatatype = sidebar.currentNode.data.ai ?? null;
             console.log(aiDataType, "is my-----------------");
 
-            setAiVariable(aiDatatype.Variable)
-            setAiDataType(aiDatatype.type)
-            setAiContentPrompt(aiDatatype.content)
-
+            setAiVariable(aiDatatype.Variable);
+            setAiDataType(aiDatatype.type);
+            setAiContentPrompt(aiDatatype.content);
         }
     }, [sidebar.activeNodeId]);
 
-    // set initital values for text related content 
+    // Set initial values for text related content
     useEffect(() => {
-        if (activeChatbotDatatype == "ai") {
+        if (activeChatbotDatatype === "ai") {
             console.log("ai took over world : content,var,dt", aiContentPrompt, aiVariable, aiDataType);
-
             return;
         }
         if (chatbotDataType) {
             console.log("i am side bar content changer", chatbotDataType, sidebar);
-            var sidebarMessage = sidebar.currentNode.data.message;
+            const sidebarMessage = sidebar.currentNode.data.message;
             switch (chatbotDataType) {
                 case "text":
                     console.log("switch case value::text");
-                    setTextareaContent(sidebarMessage.content)
-                    console.log("sett complted for textArea", sidebar.currentNode.data.message.content, "hhh");
-                    setChatbotImageUrl(sidebarMessage.content)
+                    setTextareaContent(sidebarMessage.content);
+                    console.log("sett completed for textArea", sidebar.currentNode.data.message.content, "hhh");
+                    setChatbotImageUrl(sidebarMessage.content);
                     break;
                 case "image":
                     console.log("switch case value::Image", sidebar);
                     const urlPattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/i;
 
                     if (urlPattern.test(sidebarMessage.content)) {
-                        setChatbotImageUrl(sidebarMessage.content)
-                        setChatbotImageUrlValid(true)
+                        setChatbotImageUrl(sidebarMessage.content);
+                        setChatbotImageUrlValid(true);
                     } else {
-                        setChatbotImageUrl("")
-                        setChatbotImageUrlValid(false)
-
+                        setChatbotImageUrl("");
+                        setChatbotImageUrlValid(false);
                         console.warn("Invalid image URL format");
                     }
-                    // setChatbotImageUrlValid(true)
                     break;
             }
         }
-    }, [chatbotDataType, sidebar.activeNodeId])
+    }, [chatbotDataType, sidebar.activeNodeId]);
 
-
-    // change name of the node
-    const handleChange = (e) => {
+    // Change name of the node
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newName = e.target.value;
-        setSidebar((prevSidebar) => ({
+        setSidebar((prevSidebar:any) => ({
             ...prevSidebar,
             currentNode: {
                 ...prevSidebar.currentNode,
@@ -135,15 +140,15 @@ function RightSideBar({ variables, setVariables }: any) {
         }));
     };
 
-    // changes variable to state
+    // Changes variable to state
     function handleVariableChange(currentValue: string, location: string) {
-        console.log("Location received in handleVariableChange:", location, currentValue); // Add this line
+        console.log("Location received in handleVariableChange:", location, currentValue);
 
-        if (location == "ai") {
+        if (location === "ai") {
             console.log("AI block executing", currentValue, aiVariable);
             setAiVariable(currentValue === aiVariable ? "" : currentValue);
             setOpen(false);
-        } else if (location == "chatbot") {
+        } else if (location === "chatbot") {
             console.log("Chatbot block executing", currentValue, chatbotVariable);
             setChatbotVariable(currentValue === chatbotVariable ? "" : currentValue);
             setOpen(false);
@@ -154,31 +159,29 @@ function RightSideBar({ variables, setVariables }: any) {
         }
     }
 
-
     function handleAddVariable() {
-        const isExist = variables.includes(inputValue)
+        const isExist = variables.includes(inputValue);
         if (isExist) {
             toast({
                 title: "Can't add variable",
                 description: "Variable With Same Name Already Exist !",
                 variant: "destructive"
-            })
-        }
-        else {
-            const variable = inputValue.replace(" ", "_")
-            setVariables((prevVariable: [{ type: string }]) => [...prevVariable, variable])
+            });
+        } else {
+            const variable = inputValue.replace(" ", "_");
+            setVariables((prevVariable) => [...prevVariable, variable]);
             toast({
                 title: "Variable Added !",
                 variant: "success"
-            })
+            });
         }
     }
 
-    // when variable changes then this useEffect changes sidebar
+    // When variable changes then this useEffect changes sidebar
     useEffect(() => {
-        if (activeChatbotDatatype == "ai") {
+        if (activeChatbotDatatype === "ai") {
             console.log("i am ai taking over world", aiVariable, aiDataType, aiContentPrompt);
-            setSidebar((prevSidebar) => ({
+            setSidebar((prevSidebar:any) => ({
                 ...prevSidebar,
                 currentNode: {
                     ...prevSidebar.currentNode,
@@ -193,7 +196,6 @@ function RightSideBar({ variables, setVariables }: any) {
                             content: aiContentPrompt,
                             variable: aiVariable
                         }
-
                     }
                 }
             }));
@@ -205,81 +207,49 @@ function RightSideBar({ variables, setVariables }: any) {
         console.log("i am contentHolder 1", contentHolder);
 
         if (chatbotDataType) {
-            // check chatbot datatype and set content 
             switch (chatbotDataType) {
                 case "text":
                     console.log("wakre");
-
-                    contentHolder = textareaContent
+                    contentHolder = textareaContent;
                     console.log("i am contentHolder 2", contentHolder);
-                    break
+                    break;
                 case "image":
-                    contentHolder = chatbotImageUrl
+                    contentHolder = chatbotImageUrl;
                     break;
             }
-        }
-
-        else {
+        } else {
             console.log("i am backup here  ---------------------", activeChatbot, chatbotDataType);
             switch (activeChatbot.type) {
                 case "text":
-                    contentHolder = activeChatbot.content
+                    contentHolder = activeChatbot.content;
                     break;
                 case "image":
-                    contentHolder = activeChatbot.content
-                    setChatbotImageUrlValid(true)
+                    contentHolder = activeChatbot.content;
                     break;
             }
-
         }
 
-        console.log("i am contentHolder 3", contentHolder);
-        if (activeChatbotDatatype == "message") {
-            setSidebar((prevSidebar) => ({
-                ...prevSidebar,
-                currentNode: {
-                    ...prevSidebar.currentNode,
-                    data: {
-                        ...prevSidebar.currentNode.data,
-                        user: {
-                            type: currentDataType,
-                            variable: value,
-                        },
-                        message: {
-                            type: chatbotDataType,
-                            variable: chatbotVariable,
-                            content: contentHolder
-                        }
-
+        setSidebar((prevSidebar:any) => ({
+            ...prevSidebar,
+            currentNode: {
+                ...prevSidebar.currentNode,
+                data: {
+                    ...prevSidebar.currentNode.data,
+                    user: {
+                        type: currentDataType,
+                        variable: value,
+                    },
+                    message: {
+                        type: chatbotDataType,
+                        content: contentHolder,
+                        variable: chatbotVariable
                     }
                 }
-            }));
-        }
-        else {
-            setSidebar((prevSidebar) => ({
-                ...prevSidebar,
-                currentNode: {
-                    ...prevSidebar.currentNode,
-                    data: {
-                        ...prevSidebar.currentNode.data,
-                        user: {
-                            type: currentDataType,
-                            variable: value,
-                        },
-                        ai: {
-                            type: chatbotDataType,
-                            variable: chatbotVariable
-                        }
+            }
+        }));
+    }, [textareaContent, chatbotImageUrl, chatbotDataType, value, currentDataType, aiVariable, aiContentPrompt, aiDataType, sidebar.currentNode.data.message]);
 
-                    }
-                }
-            }));
-        }
-
-
-    }, [value, currentDataType, chatbotDataType, chatbotVariable, textareaContent, chatbotImageUrl, aiContentPrompt, aiVariable, aiDataType]);
-
-    const handleTextareaChange = (e) => {
+    const handleTextareaChange = (e:any) => {
         const value = e.target.value;
         setTextareaContent(value);
 
@@ -291,18 +261,18 @@ function RightSideBar({ variables, setVariables }: any) {
         }
     };
 
-    const handleVariableSelect = (variable) => {
+    const handleVariableSelect = (variable:any) => {
         const newValue = textareaContent.replace(/\{$/, `{${variable}`);
         setTextareaContent(newValue);
         setVariableDropdownOpen(false);
     };
-    const handleAiPromtSelect = (variable) => {
+    const handleAiPromtSelect = (variable:any) => {
         const newValue = aiContentPrompt.replace(/\{$/, `{${variable}`);
         setAiContentPrompt(newValue);
         setVariableDropdownOpen(false);
     };
 
-    const handleImageUrlChange = (e) => {
+    const handleImageUrlChange = (e:any) => {
         const value = e.target.value;
         setChatbotImageUrl(value);
         console.log("image is ", value);
@@ -845,7 +815,7 @@ function RightSideBar({ variables, setVariables }: any) {
                                                                     <CommandItem
                                                                         key={variable}
                                                                         value={variable}
-                                                                        onSelect={handleVariableChange}
+                                                                        onSelect={(value: string) => handleVariableChange(value, "chatbot")}
                                                                         className='hover:bg-gray-200'
                                                                     >
                                                                         <Check
@@ -916,34 +886,3 @@ function RightSideBar({ variables, setVariables }: any) {
 export default RightSideBar;
 
 
-
-
-
-
-// function onSubmit(values: z.infer<typeof textModification>) {
-//     // Do something with the form values.
-//     // ✅ This will be type-safe and validated.
-//     console.log(values)
-// }
-
-// function showDatatypeModifications(dataType: string) {
-//     switch (dataType) {
-//         case "custom":
-//             return (
-//                 <div className='flex flex-col gap-2'>
-//                     <RightSideLabel
-//                         label='Define Form Schema'
-//                         isOptional={false}
-//                         helpText='Add Maximum length that user can enter'
-//                     />
-//                     {
-//                         dataTypeModification && dataTypeModification.map((field) => (
-//                             <div>
-
-//                             </div>
-//                         ))
-//                     }
-//                 </div>
-//             )
-//     }
-// }

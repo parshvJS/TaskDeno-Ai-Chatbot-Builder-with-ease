@@ -32,6 +32,7 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       colors: {
+        leftNavColor:'#FFF7CD',
         white: {
           1: "#FFFFFF",
           2: "rgba(255, 255, 255, 0.72)",

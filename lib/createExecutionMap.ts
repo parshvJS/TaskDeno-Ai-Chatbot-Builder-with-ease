@@ -1,10 +1,10 @@
-export function createExecutionMap(nodes, edges) {
+export function createExecutionMap(nodes:any, edges:any) {
   const executionMap = [];
   const visited = new Set();
   const nodeMap = new Map();
 
   // Create a map of node connections
-  edges.forEach(edge => {
+  edges.forEach((edge:any) => {
     if (!nodeMap.has(edge.source)) {
       nodeMap.set(edge.source, []);
     }
@@ -38,7 +38,7 @@ export function createExecutionMap(nodes, edges) {
 
 
 
-export function clearNode(node:object) {
+export function clearNode(node:any) {
   const nodeData = node.data;
   console.log(nodeData,"is cleared node")
   if ('message' in nodeData) {
@@ -60,11 +60,11 @@ export function clearNode(node:object) {
 }
 
 
-export function checkNodeData(nodes) {
+export function checkNodeData(nodes:any) {
   let emptyCount = 0;
   const totalNodes = nodes.length;
 
-  nodes.forEach(node => {
+  nodes.forEach((node:any) => {
     const { data } = node;
     if (isNodeEmpty(data)) {
       emptyCount++;
@@ -87,7 +87,7 @@ export function checkNodeData(nodes) {
   }
 }
 
-function isNodeEmpty(data) {
+function isNodeEmpty(data:any) {
   if (data.hasOwnProperty('message') && data.hasOwnProperty('user')) {
     const { message, user } = data;
     if (message.type && user.type) {
