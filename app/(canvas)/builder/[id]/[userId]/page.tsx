@@ -1,7 +1,7 @@
 'use client'
 import React, { useContext, useCallback, useEffect, useMemo, use, useState } from 'react';
 import SidePanel from '@/components/ui/SidePanel';
-import projectContext from '@/context/chatbotContext';
+import projectContext, { INITIAL_PROJECT_DATA } from '@/context/chatbotContext';
 import { LoaderCircle, LoaderPinwheel } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import ReactFlow, { useNodesState, useEdgesState, addEdge, Background, useReactFlow, Node, Edge, OnNodesChange, OnEdgesChange, Connection, EdgeChange, NodeChange, useNodes, StraightEdge, StepEdge } from 'reactflow';
@@ -14,6 +14,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { StarterNode } from '@/components/customNodes/StarterNode';
 import { setupDevBundler } from 'next/dist/server/lib/router-utils/setup-dev-bundler';
 import axios from 'axios';
+import { IChatbotDataType } from '@/types/types';
 
 export default function App() {
   const { getPreviousData, project, isSyncLoading, setProject, setIsStoredInDb, storeChangesInDb } = useContext(projectContext);
@@ -22,21 +23,17 @@ export default function App() {
   const [isPublished, setIsPublished] = useState(project.isPublished)
   const [isPublishLoading, setIsPublishLoading] = useState(false)
 
-  useEffect(()=>{
-    console.log(isPublished,"chained 999999999999999999999")
-  },[isPublished])
+
 
   useEffect(()=>{
-    console.log('iiiiiiiiiiiiiiiii',project.isPublished,'client',isPublished);
     
     setIsPublished(project.isPublished)
   },[project.isPublished])
 
   const reactFlowInstance = useReactFlow();
 
-
   // State to manage nodes and edges
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([
+  const [nodes, setNodes, onNodesChange] = useNodesState([
     {
       id: "start101",
       type: "startNode",
@@ -52,7 +49,7 @@ export default function App() {
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
 
   //cache data for project that will be stored
-  const [variables, setVariables] = useState([])
+  const [variables, setVariables] = useState<any[]>([])
   const [aiPrompt, setAiPrompt] = useState([])
   const [aiModel, setAiModel] = useState("")
 
@@ -67,7 +64,9 @@ export default function App() {
   // gets previous user data that user have created
   useEffect(() => {
     async function fetchData() {
-      const data = await getPreviousData(params.id);
+      let data:any;
+       data = await getPreviousData(params.id);
+        
       console.log("page:: GetPreviousData", data);
 
       setNodes(data.nodes);
@@ -79,8 +78,7 @@ export default function App() {
     }
     fetchData();
     return () => {
-      setProject({})
-
+      setProject(INITIAL_PROJECT_DATA)
     }
   }, [params.id])
 
@@ -88,7 +86,7 @@ export default function App() {
   useEffect(() => {
     const filteredNode = nodes.filter((node) => node.id !== sidebar.activeNodeId)
     const changedNode = sidebar.currentNode;
-    const newNodes = [...filteredNode, changedNode]
+    const newNodes:any = [...filteredNode, changedNode]
     console.log("Page::useEffect::sidebar changed so node changed", newNodes);
     setNodes(newNodes)
   }, [sidebar])
@@ -167,7 +165,7 @@ export default function App() {
     };
     console.log("Page::addNode::data is", data);
 
-    setNodes((nds) => [...nds, newNode]);
+    setNodes((nds:any) => [...nds, newNode]);
   }, [reactFlowInstance, setNodes, setIsStoredInDb]);
 
 
@@ -200,7 +198,7 @@ export default function App() {
     onEdgesChange(changes)
   }
 
-  const onConnect = (params) => {
+  const onConnect = (params:any) => {
     const { source } = params;
 
     const sourceHasOutgoingEdge = edges.some(edge => edge.source === source);
@@ -228,7 +226,6 @@ export default function App() {
       console.log(response.data, response.data.success, response.data.statuscode, "0000000000000000000000000000000000000000000000");
 
       if (response.data.success == false || response.data.statuscode == 400 || response.data.statuscode == 404) {
-        console.log("777777777777772727272");
        
 
         toast({
@@ -239,7 +236,7 @@ export default function App() {
       }
       else {
         setIsPublished(true)
-        setProject((prevValues) => {
+        setProject((prevValues:any) => {
           return {
             ...prevValues,
             isPublished:true

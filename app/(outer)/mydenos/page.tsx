@@ -38,6 +38,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@clerk/nextjs';
 import projectContext from '@/context/chatbotContext';
 import { useUserProjects } from '@/tanstack/query';
+import { IChatbotDataType } from '@/types/types';
 
 
 
@@ -94,7 +95,7 @@ const MyDeno = () => {
       }
       console.log("response", res, "----------------");
 
-      setProject((prevProject: any) => ({
+      setProject((prevProject: IChatbotDataType) => ({
         ...prevProject,
         project_name: values.name,
         project_id: res.data.data._id,
@@ -121,160 +122,163 @@ const MyDeno = () => {
     }
     isLoading(false)
   }, [project])
-  const { data: previousProjects, isLoading: projectLoading, error } = useUserProjects(userId);
-
-
-  useEffect(() => {
+  if (userId) {
+    var { data: previousProjects, isLoading: projectLoading, error } = useUserProjects(userId);
     if (error) {
       toast({
         title: "Can't Fetch your Previous Projects!",
         variant: "destructive",
       });
     }
-  }, [error, toast]);
 
-  return (
-    <div className='flex flex-col h-full w-full'>
-      <section className='flex flex-col gap-4 w-fit mb-5'>
-        <Dialog>
-          <DialogTrigger>
-            <section className='flex flex-col justify-center items-center gap-5 cursor-pointer bg-yellow-400 w-[240px] h-32 rounded-lg hover:bg-yellow-300 transition-all'>
-              <div className='flex justify-center flex-col items-center gap-2'>
-                <Image src={'/icons/add.svg'} width={42} height={42} alt="create new workflow" />
-                <p className='text-white-1 font-bold text-16'>Create AI Workflow</p>
-              </div>
-            </section>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className='text-24 font-semibold'>Choose Starting Point</DialogTitle>
-              <DialogDescription>
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Project Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Project Name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="builder"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <section className='flex gap-4 w-full h-full mt-5'>
-                              <div
-                                onClick={() => setActiveEditingMode(0)}
-                                className={cn(
-                                  `flex flex-col justify-center items-center h-[240px] w-1/2 rounded-lg hover:bg-yellow-100 transition-all ${activeEditingMode == 0 && "bg-yellow-4 hover:bg-yellow-4"}`,
-                                )}
-                              >
-                                <div className='flex gap-2 flex-col justify-center items-center cursor-pointer '>
-                                  <div>
+
+
+
+
+
+    return (
+      <div className='flex flex-col h-full w-full'>
+        <section className='flex flex-col gap-4 w-fit mb-5'>
+          <Dialog>
+            <DialogTrigger>
+              <section className='flex flex-col justify-center items-center gap-5 cursor-pointer bg-yellow-400 w-[240px] h-32 rounded-lg hover:bg-yellow-300 transition-all'>
+                <div className='flex justify-center flex-col items-center gap-2'>
+                  <Image src={'/icons/add.svg'} width={42} height={42} alt="create new workflow" />
+                  <p className='text-white-1 font-bold text-16'>Create AI Workflow</p>
+                </div>
+              </section>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className='text-24 font-semibold'>Choose Starting Point</DialogTitle>
+                <DialogDescription>
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Project Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Project Name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="builder"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <section className='flex gap-4 w-full h-full mt-5'>
+                                <div
+                                  onClick={() => setActiveEditingMode(0)}
+                                  className={cn(
+                                    `flex flex-col justify-center items-center h-[240px] w-1/2 rounded-lg hover:bg-yellow-100 transition-all ${activeEditingMode == 0 && "bg-yellow-4 hover:bg-yellow-4"}`,
+                                  )}
+                                >
+                                  <div className='flex gap-2 flex-col justify-center items-center cursor-pointer '>
+                                    <div>
+                                      <Image
+                                        src={'/images/empty-illu.svg'}
+                                        width={150}
+                                        height={150}
+                                        alt='using scratch'
+                                      />
+                                      <p className='text-16 font-medium text-black text-center'>
+                                        Build From Scratch
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  onClick={() => setActiveEditingMode(1)}
+                                  className={cn(
+                                    `flex flex-col justify-center items-center h-[240px] w-1/2 rounded-lg hover:bg-yellow-100 transition-all ${activeEditingMode == 1 && "bg-yellow-4 hover:bg-yellow-4"}`,
+                                  )}>
+                                  <div className='flex gap-2 flex-col justify-center items-center cursor-pointer'>
                                     <Image
-                                      src={'/images/empty-illu.svg'}
+                                      src={'/images/useTemplate.svg'}
                                       width={150}
                                       height={150}
-                                      alt='using scratch'
+                                      alt='using Template'
                                     />
                                     <p className='text-16 font-medium text-black text-center'>
-                                      Build From Scratch
+                                      Build Using Templates
                                     </p>
                                   </div>
                                 </div>
-                              </div>
-                              <div
-                                onClick={() => setActiveEditingMode(1)}
-                                className={cn(
-                                  `flex flex-col justify-center items-center h-[240px] w-1/2 rounded-lg hover:bg-yellow-100 transition-all ${activeEditingMode == 1 && "bg-yellow-4 hover:bg-yellow-4"}`,
-                                )}>
-                                <div className='flex gap-2 flex-col justify-center items-center cursor-pointer'>
-                                  <Image
-                                    src={'/images/useTemplate.svg'}
-                                    width={150}
-                                    height={150}
-                                    alt='using Template'
-                                  />
-                                  <p className='text-16 font-medium text-black text-center'>
-                                    Build Using Templates
-                                  </p>
-                                </div>
-                              </div>
-                            </section>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit">
-                      {loading ? (
-                        <div className='flex gap-2 justify-center items-center'>
-                          <LoaderCircle className="animate-spin" />
-                          <p>Redirecting To Builder </p>
-                        </div>
-                      ) : (
-                        "Start Building"
-                      )}
-                    </Button>
-                  </form>
-                </Form>
-              </DialogDescription>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
-      </section>
-
-      <Separator />
-      <section className='mt-5 flex flex-col'>
-
-        {projectLoading ? (
-          <div className='flex justify-center items-center h-[240px]'>
-            <Loader2 className="animate-spin" size={50} />
-          </div>
-        ) : (
-          previousProjects == 201 ? (
-            <div className='flex flex-col  justify-center items-center'>
-              <Image
-                src={'/images/no-pro-illu.png'}
-                alt='ideas'
-                width={410}
-                height={310}
-              />
-              <h1 className='font-bold text-xl '>You Dont Have Any Chatbot Right Not</h1>
-            </div>
-          ) :
-            <div className='flex gap-4 w-full h-full mt-5 flex-wrap'>
-              {previousProjects?.map((project: any, index: any) => (
-                <Link key={index} href={`/dashboard/${project._id}/${userId}`}>
-                  <section className='flex flex-col justify-center items-center gap-5 cursor-pointer w-[240px] h-32 rounded-lg bg-gray-100 border-2 border-gray-200 hover:border-gray-400 transition-all'>
-                    <div className='flex justify-center flex-col items-center gap-2'>
-                      <Image
-                        src={'/icons/bot.svg'}
-                        width={22}
-                        height={22}
-                        alt="create new workflow"
-                        className='rounded-full bg-yellow-400 w-[30px] h-[30px] p-1'
+                              </section>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                      <p className='text-black-1 font-bold text-16'>
-                        {project?.name || "AI chatbot"}
-                      </p>
-                    </div>
-                  </section>
-                </Link>
-              ))}
+                      <Button type="submit">
+                        {loading ? (
+                          <div className='flex gap-2 justify-center items-center'>
+                            <LoaderCircle className="animate-spin" />
+                            <p>Redirecting To Builder </p>
+                          </div>
+                        ) : (
+                          "Start Building"
+                        )}
+                      </Button>
+                    </form>
+                  </Form>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        </section>
+
+        <Separator />
+        <section className='mt-5 flex flex-col'>
+
+          {projectLoading ? (
+            <div className='flex justify-center items-center h-[240px]'>
+              <Loader2 className="animate-spin" size={50} />
             </div>
-        )}
-      </section>
-    </div>
-  );
+          ) : (
+            previousProjects == 201 ? (
+              <div className='flex flex-col  justify-center items-center'>
+                <Image
+                  src={'/images/no-pro-illu.png'}
+                  alt='ideas'
+                  width={410}
+                  height={310}
+                />
+                <h1 className='font-bold text-xl '>You Dont Have Any Chatbot Right Not</h1>
+              </div>
+            ) :
+              <div className='flex gap-4 w-full h-full mt-5 flex-wrap'>
+                {previousProjects?.map((project: any, index: number) => (
+                  <Link key={index} href={`/dashboard/${project._id}/${userId}`}>
+                    <section className='flex flex-col justify-center items-center gap-5 cursor-pointer w-[240px] h-32 rounded-lg bg-gray-100 border-2 border-gray-200 hover:border-gray-400 transition-all'>
+                      <div className='flex justify-center flex-col items-center gap-2'>
+                        <Image
+                          src={'/icons/bot.svg'}
+                          width={22}
+                          height={22}
+                          alt="create new workflow"
+                          className='rounded-full bg-yellow-400 w-[30px] h-[30px] p-1'
+                        />
+                        <p className='text-black-1 font-bold text-16'>
+                          {project?.name || "AI chatbot"}
+                        </p>
+                      </div>
+                    </section>
+                  </Link>
+                ))}
+              </div>
+          )}
+        </section>
+      </div>
+    );
+  }
 };
 
 export default MyDeno;

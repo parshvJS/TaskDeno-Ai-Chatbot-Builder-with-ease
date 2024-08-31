@@ -1,14 +1,17 @@
 import { Dispatch, SetStateAction } from "react";
 
-export interface IChatbotDataType{
-    project_id: string;
-    project_name: string;
-    variables:never[],
-    nodes :never[],
-    edges :never[], 
-    aiPrompts:never[]
-}
 
+
+export interface IChatbotDataType{
+  project_id: string;
+  project_name: string;
+  variables:any[],
+  nodes :any[],
+  edges :any[], 
+  aiPrompts:any[],
+  aiModel:string,
+  isPublished:boolean
+}
 export interface IChatbotType {
     project: IChatbotDataType;
     setProject: Dispatch<SetStateAction<IChatbotDataType>>;
